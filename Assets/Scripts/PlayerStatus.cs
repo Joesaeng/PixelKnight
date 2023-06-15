@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerStatus : MonoBehaviour
 {
-    EquipmentManager equipmentManager;
     #region Player Attribute Allocation
     private int vitality;    // 체력 : MaxHp와 방어력
     private int endurance;   // 지구력 : MaxStamina
@@ -36,7 +35,6 @@ public class PlayerStatus : MonoBehaviour
     #endregion
     private void Awake()
     {
-        equipmentManager = GameManager.instance.equipmentManager;
         CalculateStats();
     }
 

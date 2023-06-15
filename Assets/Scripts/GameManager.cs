@@ -2,20 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    public static GameManager instance;
-    [Header("# Managers")]
-    public EquipmentManager equipmentManager;
-
     [Header("# GameObject")]
     public Player player;
 
-
-
-
-    private void Awake()
+    private void Start()
     {
-        instance = this;
+        SceneManager.LoadScene(1);
     }
+    public void GameStart(int val)
+    {
+        //PlayerData data = 
+    }
+
+
+
+
 }

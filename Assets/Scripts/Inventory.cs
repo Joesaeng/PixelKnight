@@ -5,7 +5,18 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     #region SINGLETON
-    public static Inventory instance;
+    private static Inventory instance;
+    public static Inventory Instance
+    {
+        get
+        {
+            if(instance == null)
+            {
+                return null;
+            }
+            return instance;
+        }
+    }
     private void Awake()
     {
         if(instance != null)
@@ -14,6 +25,7 @@ public class Inventory : MonoBehaviour
             return;
         }
         instance = this;
+        DontDestroyOnLoad(this.gameObject);
     }
     #endregion
 
@@ -37,7 +49,7 @@ public class Inventory : MonoBehaviour
     }
     void Start()
     {
-        SlotCnt = 4;
+        SlotCnt = 16;
     }
 
     public bool AddItem(Item item)

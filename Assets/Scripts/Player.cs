@@ -19,15 +19,15 @@ public class Player : MonoBehaviour
     private WaitForSeconds WFSattackDelay;
 
     private int floorLayer;
-    public Vector3 moveDir;
-    public Vector3 velocity;
+    Vector3 moveDir;
+    Vector3 velocity;
     public float moveSpeed;
     public float jumpForce;
     private float horizontal;
 
 
     public float attackDelay;
-    public bool isAttacking = false;
+    private bool isAttacking = false;
     private bool isGround = true;
     
     private void Awake()

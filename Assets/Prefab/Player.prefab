@@ -159,14 +159,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80daeedda62581a46b37aa305eb1bd12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackAnimationClipName: pixamurai_Attack1
+  attackAnimationClipName: pixamurai_Attack
   attackSpeed: 1
-  moveDir: {x: 0, y: 0, z: 0}
-  velocity: {x: 0, y: 0, z: 0}
   moveSpeed: 3
   jumpForce: 5
   attackDelay: 0
-  isAttacking: 0
 --- !u!114 &7376285422946378824
 MonoBehaviour:
   m_ObjectHideFlags: 0
