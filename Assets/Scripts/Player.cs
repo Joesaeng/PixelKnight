@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // 컴포넌트
     Rigidbody2D rigid;
     Animator animator;
     Collider2D col2D;
     SpriteRenderer spriteRenderer;
+    PlayerStatus playerStatus;
     List<AnimationClip> animationClips;
     AnimationClip attackAnimationClip;
 
@@ -19,7 +21,6 @@ public class Player : MonoBehaviour
     private int floorLayer;
     public Vector3 moveDir;
     public Vector3 velocity;
-    //public bool isJumping = false;
     public float moveSpeed;
     public float jumpForce;
     private float horizontal;
@@ -35,6 +36,7 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         col2D = GetComponent<Collider2D>();
+        playerStatus = GetComponent<PlayerStatus>();
         animator.SetFloat("AttackSpeed", attackSpeed);
         floorLayer = LayerMask.GetMask("Floor");
 
@@ -51,6 +53,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         GetKey();
+        moveDir = new Vector3(horizontal, 0, 0); // 스프라이트의 Xflip값을 위한 방향값
         isGround = IsCheckGrounded();
         //if (isAttacking)
         //    return;
@@ -83,7 +86,6 @@ public class Player : MonoBehaviour
 
     void Move()
     {
-        moveDir = new Vector3(horizontal,0,0); // 스프라이트의 Xflip값을 위한 방향값
         if(!isAttacking)
         {
             rigid.AddForce(Vector2.right * horizontal, ForceMode2D.Impulse);
@@ -96,7 +98,6 @@ public class Player : MonoBehaviour
     void Jump()
     {
         rigid.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        //isJumping = true;
         animator.SetBool("isGround", false);
     }
 
