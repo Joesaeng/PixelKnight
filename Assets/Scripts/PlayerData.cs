@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerData : ScriptableObject
 {
     [Header("Main Info")]
+    public int playerID;
     public string charName;
     public string attackAnimationName;
 

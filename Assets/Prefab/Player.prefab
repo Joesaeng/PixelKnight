@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4144888250708176921}
   - component: {fileID: 3497617318878869558}
   - component: {fileID: 3497617318878869557}
+  - component: {fileID: -5917769401234132700}
   - component: {fileID: 7376285422946378824}
   m_Layer: 7
   m_Name: Player
@@ -136,7 +137,7 @@ Animator:
   m_GameObject: {fileID: 3497617318878869567}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: fda745a5b5b0f6a4eb5c3a866d99b19b, type: 2}
+  m_Controller: {fileID: 22100000, guid: d6a4e754843ec0c4282a15f87a477d50, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -159,11 +160,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80daeedda62581a46b37aa305eb1bd12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackAnimationClipName: pixamurai_Attack
+  playerStatus: {fileID: 0}
+  animationClips: []
+  attackAnimationClip: {fileID: 0}
+  animCon:
+  - {fileID: 22100000, guid: d6a4e754843ec0c4282a15f87a477d50, type: 2}
+  - {fileID: 9100000, guid: fda745a5b5b0f6a4eb5c3a866d99b19b, type: 2}
+  attackAnimationClipName: 
   attackSpeed: 1
   moveSpeed: 3
   jumpForce: 5
   attackDelay: 0
+--- !u!114 &-5917769401234132700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3497617318878869567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e31aee8cc5da73c40b0cec4cf29ad1eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  items: []
 --- !u!114 &7376285422946378824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,3 +196,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4e30e852e3620949973af7dca29abc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  vitality: 0
+  endurance: 0
+  strength: 0
+  dexterity: 0
+  luck: 0

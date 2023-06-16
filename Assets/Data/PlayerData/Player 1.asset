@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66648300bd6ff3848adee7ed63a26487, type: 3}
   m_Name: Player 1
   m_EditorClassIdentifier: 
+  playerID: 1
   charName: Samurai
   attackAnimationName: pixamurai_Attack
   vitality: 8
@@ -20,4 +21,4 @@ MonoBehaviour:
   dexterity: 20
   luck: 5
   minAttackSpeed: 1
-  maxAttackSpeed: 2.5
+  maxAttackSpeed: 2

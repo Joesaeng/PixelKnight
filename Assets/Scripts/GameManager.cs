@@ -6,6 +6,7 @@ public class GameManager : Singleton<GameManager>
 {
     [Header("# GameObject")]
     public Player player;
+    public PlayerData selectPlayerData;
 
     private void Start()
     {
@@ -13,7 +14,13 @@ public class GameManager : Singleton<GameManager>
     }
     public void GameStart(int val)
     {
-        //PlayerData data = 
+        selectPlayerData = DataManager.Instance.playerDatas[val];
+        SceneManager.LoadScene(2);
+    }
+    public void DevScene(GameObject _player)
+    {
+        player = _player.GetComponent<Player>();
+        player.playerStatus.SetStatus(selectPlayerData);
     }
 
 

@@ -9,9 +9,10 @@ public class Player : MonoBehaviour
     Animator animator;
     Collider2D col2D;
     SpriteRenderer spriteRenderer;
-    PlayerStatus playerStatus;
-    List<AnimationClip> animationClips;
-    AnimationClip attackAnimationClip;
+    public PlayerStatus playerStatus;
+    public List<AnimationClip> animationClips;
+    public AnimationClip attackAnimationClip;
+    public RuntimeAnimatorController[] animCon;
 
     public string attackAnimationClipName;
 
@@ -37,8 +38,19 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         col2D = GetComponent<Collider2D>();
         playerStatus = GetComponent<PlayerStatus>();
-        animator.SetFloat("AttackSpeed", attackSpeed);
         floorLayer = LayerMask.GetMask("Floor");
+        
+        playerStatus.OnStatsCalculated += UpdatePlayerStats;
+        Debug.Log("Awake");
+    }
+
+    private void UpdatePlayerStats()
+    {
+        animator.runtimeAnimatorController = animCon[GameManager.Instance.selectPlayerData.playerID];
+        attackAnimationClipName = GameManager.Instance.selectPlayerData.attackAnimationName;
+
+        attackSpeed = playerStatus.AttackSpeed;
+        animator.SetFloat("AttackSpeed", attackSpeed);
 
         animationClips = new List<AnimationClip>(animator.runtimeAnimatorController.animationClips);
         attackAnimationClip = animationClips.Find(clip => clip.name == attackAnimationClipName);
@@ -47,6 +59,8 @@ public class Player : MonoBehaviour
         {
             attackDelay = attackAnimationClip.length / attackSpeed;
         }
+        else
+            Debug.Log("어택애니메이션이 널");
         WFSattackDelay = new WaitForSeconds(attackDelay);
     }
 

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66648300bd6ff3848adee7ed63a26487, type: 3}
   m_Name: Player 0
   m_EditorClassIdentifier: 
+  playerID: 0
   charName: Knight
   attackAnimationName: knight_Attack
   vitality: 15
@@ -19,5 +20,5 @@ MonoBehaviour:
   strength: 15
   dexterity: 5
   luck: 5
-  minAttackSpeed: 0.7
+  minAttackSpeed: 1
   maxAttackSpeed: 1.7

@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class PlayerStatus : MonoBehaviour
 {
+    public delegate void StatsCalculatedDelegate();
+    public event StatsCalculatedDelegate OnStatsCalculated;
     #region Player Attribute Allocation
-    private int vitality;    // 체력 : MaxHp와 방어력
-    private int endurance;   // 지구력 : MaxStamina
-    private int strength;    // 근력 : 공격력과 경직도
-    private int dexterity;   // 기량 : 공격속도와 회피율
-    private int luck;        // 운 : 치명타확률과 아이템 드랍률
+    public int vitality;    // 체력 : MaxHp와 방어력
+    public int endurance;   // 지구력 : MaxStamina
+    public int strength;    // 근력 : 공격력과 경직도
+    public int dexterity;   // 기량 : 공격속도와 회피율
+    public int luck;        // 운 : 치명타확률과 아이템 드랍률
     #endregion 
     #region Player Status
     private float maxHp;
@@ -19,12 +21,16 @@ public class PlayerStatus : MonoBehaviour
     private float defence;
     private float damage;
     private float stagger;
-    private readonly float minAttackSpeed = 0.5f;
-    private readonly float maxAttackSpeed = 2.5f;
+    private float minAttackSpeed;
+    private float maxAttackSpeed;
     private float attackSpeed;
+    public float AttackSpeed
+    {
+        get { return attackSpeed; }
+    }
     private float dodge;
-    private readonly float minMoveSpeed = 0.7f;
-    private readonly float maxMoveSpeed = 1.5f;
+    private float minMoveSpeed;
+    private float maxMoveSpeed;
     private float moveSpeed;
     private readonly float minCriticalChance = 0.1f;
     private readonly float maxCriticalChance = 1f;
@@ -35,8 +41,20 @@ public class PlayerStatus : MonoBehaviour
     #endregion
     private void Awake()
     {
-        CalculateStats();
     }
+    public void SetStatus(PlayerData data)
+    {
+        vitality = data.vitality;
+        endurance = data.endurance;
+        strength = data.strength;
+        dexterity = data.dexterity;
+        luck = data.luck;
+        minAttackSpeed = data.minAttackSpeed;
+        maxAttackSpeed = data.maxAttackSpeed;
+        attackSpeed = minAttackSpeed;
+
+        CalculateStats();
+    }    
 
 
     private void CalculateStats()
@@ -46,11 +64,11 @@ public class PlayerStatus : MonoBehaviour
         defence = vitality;
         damage = strength * 1.5f;
         stagger = strength;
-        attackSpeed = dexterity * 0.5f;
+        //attackSpeed = dexterity * 0.5f;
         dodge = dexterity * 0.1f;
         moveSpeed = dexterity * 0.33f;
         criticalChance = luck * 0.5f;
-
+        OnStatsCalculated?.Invoke();
     }
     /*
         HP = vit * 20 + 추가HP
