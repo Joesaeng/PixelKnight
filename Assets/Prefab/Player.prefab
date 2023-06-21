@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3497617318878869558}
   - component: {fileID: 3497617318878869557}
   - component: {fileID: -5917769401234132700}
+  - component: {fileID: -8624652967976029335}
   - component: {fileID: 7376285422946378824}
   m_Layer: 7
   m_Name: Player
@@ -184,6 +185,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   items: []
+--- !u!114 &-8624652967976029335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3497617318878869567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ea622f5e32b6c4fb7ee35eeb486774, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7376285422946378824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,3 +214,21 @@ MonoBehaviour:
   strength: 0
   dexterity: 0
   luck: 0
+  maxHp: 0
+  curHp: 0
+  maxStamina: 0
+  curStamina: 0
+  defence: 0
+  damage: 0
+  stagger: 0
+  poise: 0
+  curPoise: 0
+  minAttackSpeed: 0
+  maxAttackSpeed: 0
+  attackSpeed: 0
+  evade: 0
+  hitRate: 0
+  moveSpeed: 0
+  criticalChance: 0
+  criticalHitDamage: 0
+  increasedItemFindingChance: 0

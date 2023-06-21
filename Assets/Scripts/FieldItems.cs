@@ -7,6 +7,10 @@ public class FieldItems : MonoBehaviour
     public Item item;
     public SpriteRenderer image;
 
+    private void Awake()
+    {
+        item = ScriptableObject.CreateInstance<Item>();
+    }
     public void SetItem(Item _item)
     {
         item.itemName = _item.itemName;
@@ -16,6 +20,7 @@ public class FieldItems : MonoBehaviour
         item.efts = _item.efts;
 
         image.sprite = _item.itemImage;
+        
     }
     public Item GetItem()
     {

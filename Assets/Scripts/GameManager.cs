@@ -21,6 +21,8 @@ public class GameManager : Singleton<GameManager>
     {
         player = _player.GetComponent<Player>();
         player.playerStatus.SetStatus(selectPlayerData);
+        StatusValueUI statusValueUI = GameObject.FindAnyObjectByType<StatusValueUI>();
+        statusValueUI.InitStatusUI();
     }
 
 

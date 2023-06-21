@@ -41,7 +41,6 @@ public class Player : MonoBehaviour
         floorLayer = LayerMask.GetMask("Floor");
         
         playerStatus.OnStatsCalculated += UpdatePlayerStats;
-        Debug.Log("Awake");
     }
 
     private void UpdatePlayerStats()

@@ -17,7 +17,7 @@ public enum ItemLevel
 }
 
 [System.Serializable]
-public class Item
+public class Item : ScriptableObject
 {
     public string itemName; // 아이템 이름
     public Sprite itemImage;
