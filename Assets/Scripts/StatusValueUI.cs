@@ -7,7 +7,7 @@ using TMPro;
 public class StatusValueUI : MonoBehaviour
 {
     PlayerStatus playerStatus;
-    public enum StatusName
+    public enum StatusNameUI
     {
         vit,end,str,dex,luk,stats
     }
@@ -21,12 +21,12 @@ public class StatusValueUI : MonoBehaviour
     }
     void UpdatePlayerStatsUI()
     {
-        textValue[(int)StatusName.vit].text = string.Format("{0:F0}", playerStatus.vitality);
-        textValue[(int)StatusName.end].text = string.Format("{0:F0}", playerStatus.endurance);
-        textValue[(int)StatusName.str].text = string.Format("{0:F0}", playerStatus.strength);
-        textValue[(int)StatusName.dex].text = string.Format("{0:F0}", playerStatus.dexterity);
-        textValue[(int)StatusName.luk].text = string.Format("{0:F0}", playerStatus.luck);
-        textValue[(int)StatusName.stats].text = string.Format(
+        textValue[(int)StatusNameUI.vit].text = string.Format("{0:F0}", playerStatus.dPlayerAttribute[PlayerAttribute.Vitality]);
+        textValue[(int)StatusNameUI.end].text = string.Format("{0:F0}", playerStatus.dPlayerAttribute[PlayerAttribute.Endurance]);
+        textValue[(int)StatusNameUI.str].text = string.Format("{0:F0}", playerStatus.dPlayerAttribute[PlayerAttribute.Strength]);
+        textValue[(int)StatusNameUI.dex].text = string.Format("{0:F0}", playerStatus.dPlayerAttribute[PlayerAttribute.Dexterity]);
+        textValue[(int)StatusNameUI.luk].text = string.Format("{0:F0}", playerStatus.dPlayerAttribute[PlayerAttribute.Luck]);
+        textValue[(int)StatusNameUI.stats].text = string.Format(
             "HP  : {0:F0} \n" +
             "DEF : {1:F0}\n" +
             "STM : {2:F0}\n" +
@@ -39,11 +39,20 @@ public class StatusValueUI : MonoBehaviour
             "MSP : {9:F0}%\n" +
             "CRI : {10:F0}%\n" +
             "CDM : {11:F0}%\n" +
-            "FIND: {12:F0}%",playerStatus.maxHp, playerStatus.defence, playerStatus.maxStamina, playerStatus.poise
-            , playerStatus.damage, playerStatus.stagger, playerStatus.hitRate, playerStatus.evade,
-            playerStatus.attackSpeed*100f, playerStatus.moveSpeed*100f/playerStatus.minMoveSpeed, 
-            playerStatus.criticalChance*100f
-            , playerStatus.criticalHitDamage*100f, playerStatus.increasedItemFindingChance*100f);
+            "FIND: {12:F0}%",
+            playerStatus.dPlayerStatus[StatusName.MaxHp],
+            playerStatus.dPlayerStatus[StatusName.Defence],
+            playerStatus.dPlayerStatus[StatusName.MaxStamina],
+            playerStatus.dPlayerStatus[StatusName.Poise],
+            playerStatus.dPlayerStatus[StatusName.Damage],
+            playerStatus.dPlayerStatus[StatusName.Stagger],
+            playerStatus.dPlayerStatus[StatusName.HitRate],
+            playerStatus.dPlayerStatus[StatusName.Evade],
+            playerStatus.dPlayerStatus[StatusName.AttackSpeed] * 100f,
+            playerStatus.dPlayerStatus[StatusName.MoveSpeed] * 100f / playerStatus.dPlayerStatus[StatusName.MinMoveSpeed],
+            playerStatus.dPlayerStatus[StatusName.CriticalChance] * 100f,
+            playerStatus.dPlayerStatus[StatusName.CriticalHitDamage] * 100f,
+            playerStatus.dPlayerStatus[StatusName.IncreasedItemFindingChance] * 100f);
 
 
         Debug.Log("스탯UI 업데이트");
