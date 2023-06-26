@@ -27,7 +27,7 @@ public class StatusValueUI : MonoBehaviour
         textValue[(int)StatusNameUI.dex].text = string.Format("{0:F0}", playerStatus.dPlayerAttribute[PlayerAttribute.Dexterity]);
         textValue[(int)StatusNameUI.luk].text = string.Format("{0:F0}", playerStatus.dPlayerAttribute[PlayerAttribute.Luck]);
         textValue[(int)StatusNameUI.stats].text = string.Format(
-            "HP  : {0:F0} \n" +
+            "HP  : {0:F0}\n" +
             "DEF : {1:F0}\n" +
             "STM : {2:F0}\n" +
             "POI : {3:F0}\n" +
@@ -40,19 +40,19 @@ public class StatusValueUI : MonoBehaviour
             "CRI : {10:F0}%\n" +
             "CDM : {11:F0}%\n" +
             "FIND: {12:F0}%",
-            playerStatus.dPlayerStatus[StatusName.MaxHp],
-            playerStatus.dPlayerStatus[StatusName.Defence],
-            playerStatus.dPlayerStatus[StatusName.MaxStamina],
-            playerStatus.dPlayerStatus[StatusName.Poise],
-            playerStatus.dPlayerStatus[StatusName.Damage],
-            playerStatus.dPlayerStatus[StatusName.Stagger],
-            playerStatus.dPlayerStatus[StatusName.HitRate],
-            playerStatus.dPlayerStatus[StatusName.Evade],
-            playerStatus.dPlayerStatus[StatusName.AttackSpeed] * 100f,
-            playerStatus.dPlayerStatus[StatusName.MoveSpeed] * 100f / playerStatus.dPlayerStatus[StatusName.MinMoveSpeed],
-            playerStatus.dPlayerStatus[StatusName.CriticalChance] * 100f,
-            playerStatus.dPlayerStatus[StatusName.CriticalHitDamage] * 100f,
-            playerStatus.dPlayerStatus[StatusName.IncreasedItemFindingChance] * 100f);
+            playerStatus.dPlayerFixedStatus[FixedStatusName.MaxHp],
+            playerStatus.dPlayerFixedStatus[FixedStatusName.Defence],
+            playerStatus.dPlayerFixedStatus[FixedStatusName.MaxStamina],
+            playerStatus.dPlayerFixedStatus[FixedStatusName.Poise],
+            playerStatus.dPlayerFixedStatus[FixedStatusName.Damage],
+            playerStatus.dPlayerFixedStatus[FixedStatusName.Stagger],
+            playerStatus.dPlayerFixedStatus[FixedStatusName.HitRate],
+            playerStatus.dPlayerFixedStatus[FixedStatusName.Evade],
+            playerStatus.dPlayerFixedStatus[FixedStatusName.AttackSpeed] * 100f,
+            playerStatus.dPlayerFixedStatus[FixedStatusName.MoveSpeed] * 100f / playerStatus.minMoveSpeed,
+            playerStatus.dPlayerFixedStatus[FixedStatusName.CriticalChance] * 100f,
+            playerStatus.dPlayerFixedStatus[FixedStatusName.CriticalHitDamage] * 100f,
+            playerStatus.dPlayerFixedStatus[FixedStatusName.IncreasedItemFindingChance] * 100f);
 
 
         Debug.Log("스탯UI 업데이트");

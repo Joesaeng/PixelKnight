@@ -12,31 +12,27 @@ public enum PlayerAttribute
     Luck,
 }
 
-public enum StatusName
+public enum FixedStatusName
 {
     MaxHp,
-    CurHp,
     MaxStamina,
-    CurStamina,
     Defence,
     Damage,
     Stagger,
     Poise,
-    CurPoise,
-    MinAttackSpeed,
-    MaxAttackSpeed,
     AttackSpeed,
     Evade,
     HitRate,
-    MinMoveSpeed,
-    MaxMoveSpeed,
     MoveSpeed,
-    MinCriticalChance,
-    MaxCriticalChance,
     CriticalChance,
-    MinCriticalHitDamage,
     CriticalHitDamage,
     IncreasedItemFindingChance,
+}
+public enum DynamicStatusName
+{
+    CurHp,
+    CurStamina,
+    CurPoise
 }
 public class PlayerStatus : MonoBehaviour
 {
@@ -53,11 +49,20 @@ public class PlayerStatus : MonoBehaviour
     #endregion
     #endregion
     #region Player Status
-    public Dictionary<StatusName, float> dPlayerStatus;
+    public Dictionary<FixedStatusName, float> dPlayerFixedStatus;
+    public Dictionary<DynamicStatusName, float> dPlayerDynamicStatus;
+    public float minAttackSpeed;
+    public float maxAttackSpeed;
     public float AttackSpeed
     {
-        get { return dPlayerStatus[StatusName.AttackSpeed]; }
+        get { return dPlayerFixedStatus[FixedStatusName.AttackSpeed]; }
     }
+    public readonly float minMoveSpeed = 2.5f;
+    public readonly float maxMoveSpeed = 3.5f;
+    public readonly float minCriticalChance = 0.05f;
+    public readonly float maxCriticalChance = 1f;
+    public readonly float minCriticalHitDamage = 1.5f;
+
     #region 구버전
     //public float maxHp;
     //public float curHp;
@@ -87,15 +92,20 @@ public class PlayerStatus : MonoBehaviour
     private void Awake()
     {
         dPlayerAttribute = new Dictionary<PlayerAttribute, int>();
-        dPlayerStatus = new Dictionary<StatusName, float>();
+        dPlayerFixedStatus = new Dictionary<FixedStatusName, float>();
+        dPlayerDynamicStatus = new Dictionary<DynamicStatusName, float>();
 
         // PlayerAttribute 개수 계산
         string[] playerAttributeNames = Enum.GetNames(typeof(PlayerAttribute));
         int playerAttributeCount = playerAttributeNames.Length;
 
-        // StatusName 개수 계산
-        string[] statusNames = Enum.GetNames(typeof(StatusName));
+        // FixedStatusName 개수 계산
+        string[] statusNames = Enum.GetNames(typeof(FixedStatusName));
         int statusNameCount = statusNames.Length;
+
+        // DynamicStatusName 개수 계산
+        string[] dynamicStatusNames = Enum.GetNames(typeof(DynamicStatusName));
+        int dynamicStatusNameCount = dynamicStatusNames.Length;
 
         for (int i = 0; i < playerAttributeCount; ++i)
         {
@@ -104,20 +114,14 @@ public class PlayerStatus : MonoBehaviour
         }
         for (int i = 0; i < statusNameCount; ++i)
         {
-            StatusName statusName = (StatusName)Enum.Parse(typeof(StatusName), statusNames[i]);
-            dPlayerStatus.Add(statusName, 0);
+            FixedStatusName statusName = (FixedStatusName)Enum.Parse(typeof(FixedStatusName), statusNames[i]);
+            dPlayerFixedStatus.Add(statusName, 0);
         }
-        if (dPlayerStatus.ContainsKey(StatusName.MinMoveSpeed) &&
-           dPlayerStatus.ContainsKey(StatusName.IncreasedItemFindingChance))
+        for (int i = 0; i < dynamicStatusNameCount; ++i)
         {
-            dPlayerStatus[StatusName.MinMoveSpeed] = 2.5f;
-            dPlayerStatus[StatusName.MaxMoveSpeed] = 3.5f;
-            dPlayerStatus[StatusName.MinCriticalChance] = 0.01f;
-            dPlayerStatus[StatusName.MaxCriticalChance] = 1f;
-            dPlayerStatus[StatusName.MinCriticalHitDamage] = 1.5f;
-
+            DynamicStatusName dynamicStatusName = (DynamicStatusName)Enum.Parse(typeof(DynamicStatusName), dynamicStatusNames[i]);
+            dPlayerDynamicStatus.Add(dynamicStatusName, 0);
         }
-        else Debug.Log("PlayerStatus 초기화 에러");
     }
     public void SetStatus(PlayerData data)
     {
@@ -126,9 +130,9 @@ public class PlayerStatus : MonoBehaviour
         dPlayerAttribute[PlayerAttribute.Endurance] = data.endurance;
         dPlayerAttribute[PlayerAttribute.Strength] = data.strength;
         dPlayerAttribute[PlayerAttribute.Luck] = data.luck;
-        dPlayerStatus[StatusName.MinAttackSpeed] = data.minAttackSpeed;
-        dPlayerStatus[StatusName.MaxAttackSpeed] = data.maxAttackSpeed;
-        dPlayerStatus[StatusName.AttackSpeed] = data.minAttackSpeed;
+        minAttackSpeed = data.minAttackSpeed;
+        maxAttackSpeed = data.maxAttackSpeed;
+        dPlayerFixedStatus[FixedStatusName.AttackSpeed] = data.minAttackSpeed;
         #region 구버전
         //vitality = data.vitality;
         //endurance = data.endurance;
@@ -147,25 +151,14 @@ public class PlayerStatus : MonoBehaviour
 
     private void CalculateStats()
     {
-        dPlayerStatus[StatusName.MaxHp] = dPlayerAttribute[PlayerAttribute.Vitality] * 20f;
-        dPlayerStatus[StatusName.MaxStamina] = dPlayerAttribute[PlayerAttribute.Endurance] * 10f;
-        dPlayerStatus[StatusName.Defence] = dPlayerAttribute[PlayerAttribute.Vitality];
-        dPlayerStatus[StatusName.Poise] = dPlayerAttribute[PlayerAttribute.Endurance];
-        dPlayerStatus[StatusName.Damage] = dPlayerAttribute[PlayerAttribute.Strength] * 1.5f;
-        dPlayerStatus[StatusName.Stagger] = dPlayerAttribute[PlayerAttribute.Strength];
-        dPlayerStatus[StatusName.HitRate] = dPlayerAttribute[PlayerAttribute.Dexterity];
-        dPlayerStatus[StatusName.Evade] = dPlayerAttribute[PlayerAttribute.Dexterity] * 0.5f;
-        dPlayerStatus[StatusName.AttackSpeed] = dPlayerStatus[StatusName.MinAttackSpeed];
-        dPlayerStatus[StatusName.MoveSpeed] = dPlayerStatus[StatusName.MinMoveSpeed];
-        dPlayerStatus[StatusName.CriticalChance] = Mathf.Max(dPlayerAttribute[PlayerAttribute.Luck] * 0.01f, 0.7f);
-        if (dPlayerStatus[StatusName.CriticalChance] >= dPlayerStatus[StatusName.MaxCriticalChance])
-            dPlayerStatus[StatusName.CriticalChance] = dPlayerStatus[StatusName.MaxCriticalChance];
-        else if (dPlayerStatus[StatusName.CriticalChance] <= dPlayerStatus[StatusName.MinCriticalChance])
-            dPlayerStatus[StatusName.CriticalChance] = dPlayerStatus[StatusName.MinCriticalChance];
-        else
-            dPlayerStatus[StatusName.CriticalChance] = dPlayerAttribute[PlayerAttribute.Luck] * 0.01f;
-        dPlayerStatus[StatusName.CriticalHitDamage] = dPlayerStatus[StatusName.MinCriticalHitDamage];
-        dPlayerStatus[StatusName.IncreasedItemFindingChance] = 0f;
+        #region 현재 장비한 아이템들의 추가 Status 할당
+        //ApplyEquip(CurEquips);
+        #endregion
+        #region Attribute 값의 따른 Status 할당
+        AttributeCalculate();
+        #endregion
+        #region 현재 사용중인 스킬들의 추가 Status 할당
+        #endregion
 
         #region 구버전
         //maxHp = vitality * 20f;                     // 최대 체력
@@ -188,6 +181,104 @@ public class PlayerStatus : MonoBehaviour
         //increasedItemFindingChance = 0f;            // 아이템 드랍 추가 확률
         #endregion
         OnStatsCalculated?.Invoke();
+    }
+
+    private void AttributeCalculate()
+    {
+        dPlayerFixedStatus[FixedStatusName.MaxHp] += dPlayerAttribute[PlayerAttribute.Vitality] * 20f;
+        dPlayerFixedStatus[FixedStatusName.MaxStamina] += dPlayerAttribute[PlayerAttribute.Endurance] * 10f;
+        dPlayerFixedStatus[FixedStatusName.Defence] += dPlayerAttribute[PlayerAttribute.Vitality];
+        dPlayerFixedStatus[FixedStatusName.Poise] += dPlayerAttribute[PlayerAttribute.Endurance];
+        dPlayerFixedStatus[FixedStatusName.Damage] += dPlayerAttribute[PlayerAttribute.Strength] * 1.5f;
+        dPlayerFixedStatus[FixedStatusName.Stagger] += dPlayerAttribute[PlayerAttribute.Strength];
+        dPlayerFixedStatus[FixedStatusName.HitRate] += dPlayerAttribute[PlayerAttribute.Dexterity];
+        dPlayerFixedStatus[FixedStatusName.Evade] += dPlayerAttribute[PlayerAttribute.Dexterity] * 0.5f;
+        dPlayerFixedStatus[FixedStatusName.AttackSpeed] += minAttackSpeed;
+        dPlayerFixedStatus[FixedStatusName.MoveSpeed] += minMoveSpeed;
+        dPlayerFixedStatus[FixedStatusName.CriticalChance] += dPlayerAttribute[PlayerAttribute.Luck] * 0.01f;
+        if (dPlayerFixedStatus[FixedStatusName.CriticalChance] >= maxCriticalChance)
+            dPlayerFixedStatus[FixedStatusName.CriticalChance] = maxCriticalChance;
+        else if (dPlayerFixedStatus[FixedStatusName.CriticalChance] <= minCriticalChance)
+            dPlayerFixedStatus[FixedStatusName.CriticalChance] = minCriticalChance;
+        dPlayerFixedStatus[FixedStatusName.CriticalHitDamage] += minCriticalHitDamage;
+    }
+    private void ApplyEquip(Equip[] _CurEquips)
+    {
+        foreach(Equip equip in _CurEquips)
+        {
+            switch (equip.baseOption)
+            {
+                case BaseOption.Damage:
+                    dPlayerFixedStatus[FixedStatusName.Damage] += equip.baseOptionValue;
+                    break;
+                case BaseOption.Defence:
+                    dPlayerFixedStatus[FixedStatusName.Defence] += equip.baseOptionValue;
+                    break;
+                default:
+                    Debug.LogError("PlayerStatus ApplyEquip BaseOptions");
+                    break;
+            }
+        }
+        foreach(Equip equip in _CurEquips)
+        {
+            foreach(var option in equip.additionalOptions)
+            {
+                switch (option.Key)
+                {
+                    case AdditionalOptions.Vitality:
+                        dPlayerAttribute[PlayerAttribute.Vitality] += (int)option.Value;
+                        break;
+                    case AdditionalOptions.Endurance:
+                        dPlayerAttribute[PlayerAttribute.Endurance] += (int)option.Value;
+                        break;
+                    case AdditionalOptions.Strength:
+                        dPlayerAttribute[PlayerAttribute.Strength] += (int)option.Value;
+                        break;
+                    case AdditionalOptions.Dexterity:
+                        dPlayerAttribute[PlayerAttribute.Dexterity] += (int)option.Value;
+                        break;
+                    case AdditionalOptions.Luck:
+                        dPlayerAttribute[PlayerAttribute.Luck] += (int)option.Value;
+                        break;
+                    case AdditionalOptions.MaxHp:
+                        dPlayerFixedStatus[FixedStatusName.MaxHp] += option.Value;
+                        break;
+                    case AdditionalOptions.MaxStamina:
+                        dPlayerFixedStatus[FixedStatusName.MaxStamina] += option.Value;
+                        break;
+                    case AdditionalOptions.Stagger:
+                        dPlayerFixedStatus[FixedStatusName.Stagger] += option.Value;
+                        break;
+                    case AdditionalOptions.Poise:
+                        dPlayerFixedStatus[FixedStatusName.Poise] += option.Value;
+                        break;
+                    case AdditionalOptions.AttackSpeed:
+                        dPlayerFixedStatus[FixedStatusName.AttackSpeed] += option.Value;
+                        break;
+                    case AdditionalOptions.Evade:
+                        dPlayerFixedStatus[FixedStatusName.Evade] += option.Value;
+                        break;
+                    case AdditionalOptions.HitRate:
+                        dPlayerFixedStatus[FixedStatusName.HitRate] += option.Value;
+                        break;
+                    case AdditionalOptions.MoveSpeed:
+                        dPlayerFixedStatus[FixedStatusName.MoveSpeed] += option.Value;
+                        break;
+                    case AdditionalOptions.CriticalChance:
+                        dPlayerFixedStatus[FixedStatusName.CriticalChance] += option.Value;
+                        break;
+                    case AdditionalOptions.CriticalHitDamage:
+                        dPlayerFixedStatus[FixedStatusName.CriticalHitDamage] += option.Value;
+                        break;
+                    case AdditionalOptions.IncreasedItemFindingChance:
+                        dPlayerFixedStatus[FixedStatusName.IncreasedItemFindingChance] += option.Value;
+                        break;
+                    default:
+                        Debug.LogError("PlayerStatus_ApplyEquip_AddtionalOptions");
+                        break;
+                }
+            }
+        }
     }
     /*
         HP = vit * 20 + 추가HP

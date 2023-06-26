@@ -21,7 +21,7 @@ public class Item : ScriptableObject
 {
     public string itemName; // 아이템 이름
     public Sprite itemImage;
-    public List<ItemEffect> efts;
+    public List<ItemEffect> efts = new List<ItemEffect>();
     public ItemType itemType;
     public ItemLevel itemLevel; // 아이템 레벨
 
