@@ -36,8 +36,10 @@ public enum DynamicStatusName
 }
 public class PlayerStatus : MonoBehaviour
 {
+    public Equipment equipment;
     public delegate void StatsCalculatedDelegate();
     public event StatsCalculatedDelegate OnStatsCalculated;
+
     #region Player Attribute Allocation
     public Dictionary<PlayerAttribute, int> dPlayerAttribute;
     #region 구버전
@@ -48,7 +50,9 @@ public class PlayerStatus : MonoBehaviour
     //public int luck;        // 운 : 치명타확률과 아이템 드랍률
     #endregion
     #endregion
+
     #region Player Status
+    private PlayerData initialPlayerData;
     public Dictionary<FixedStatusName, float> dPlayerFixedStatus;
     public Dictionary<DynamicStatusName, float> dPlayerDynamicStatus;
     public float minAttackSpeed;
@@ -91,6 +95,8 @@ public class PlayerStatus : MonoBehaviour
     #endregion
     private void Awake()
     {
+        equipment = Equipment.Instance;
+        equipment.OnChangeEquipment += UpdateStatus;
         dPlayerAttribute = new Dictionary<PlayerAttribute, int>();
         dPlayerFixedStatus = new Dictionary<FixedStatusName, float>();
         dPlayerDynamicStatus = new Dictionary<DynamicStatusName, float>();
@@ -123,16 +129,10 @@ public class PlayerStatus : MonoBehaviour
             dPlayerDynamicStatus.Add(dynamicStatusName, 0);
         }
     }
-    public void SetStatus(PlayerData data)
+    public void InitSetStatus(PlayerData data)
     {
-        dPlayerAttribute[PlayerAttribute.Vitality] = data.vitality;
-        dPlayerAttribute[PlayerAttribute.Dexterity] = data.dexterity;
-        dPlayerAttribute[PlayerAttribute.Endurance] = data.endurance;
-        dPlayerAttribute[PlayerAttribute.Strength] = data.strength;
-        dPlayerAttribute[PlayerAttribute.Luck] = data.luck;
-        minAttackSpeed = data.minAttackSpeed;
-        maxAttackSpeed = data.maxAttackSpeed;
-        dPlayerFixedStatus[FixedStatusName.AttackSpeed] = data.minAttackSpeed;
+        initialPlayerData = data;
+        UpdateStatus();
         #region 구버전
         //vitality = data.vitality;
         //endurance = data.endurance;
@@ -144,15 +144,29 @@ public class PlayerStatus : MonoBehaviour
         //attackSpeed = minAttackSpeed;
         //moveSpeed = minMoveSpeed;
         #endregion
-
+    }
+    public void UpdateStatus()
+    {
+        dPlayerAttribute[PlayerAttribute.Vitality] = initialPlayerData.vitality;
+        dPlayerAttribute[PlayerAttribute.Dexterity] = initialPlayerData.dexterity;
+        dPlayerAttribute[PlayerAttribute.Endurance] = initialPlayerData.endurance;
+        dPlayerAttribute[PlayerAttribute.Strength] = initialPlayerData.strength;
+        dPlayerAttribute[PlayerAttribute.Luck] = initialPlayerData.luck;
+        minAttackSpeed = initialPlayerData.minAttackSpeed;
+        maxAttackSpeed = initialPlayerData.maxAttackSpeed;
+        for(int i = 0; i < dPlayerFixedStatus.Count;++i)
+        {
+            dPlayerFixedStatus[(FixedStatusName)i] = 0f;
+        }
+        //dPlayerFixedStatus[FixedStatusName.AttackSpeed] = initialPlayerData.minAttackSpeed;
         CalculateStats();
-    }    
+    }
 
 
     private void CalculateStats()
     {
         #region 현재 장비한 아이템들의 추가 Status 할당
-        //ApplyEquip(CurEquips);
+        ApplyEquip(equipment.GetCurEquip());
         #endregion
         #region Attribute 값의 따른 Status 할당
         AttributeCalculate();
@@ -221,6 +235,7 @@ public class PlayerStatus : MonoBehaviour
         }
         foreach(Equip equip in _CurEquips)
         {
+            if (equip.additionalOptions == null) continue;
             foreach(var option in equip.additionalOptions)
             {
                 switch (option.Key)

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e38e73e32d6dd674c9ae35753a8168da, type: 3}
-  m_Name: SmallEft
+  m_Script: {fileID: 11500000, guid: 3a189bb168d8d90478a09ea08c2f3d72, type: 3}
+  m_Name: DefaultObject
   m_EditorClassIdentifier: 
-  healingPount: 10
+  m_AddressableAssetSettingsGuid: e3475e7844673fc49873ce28f0e7e948

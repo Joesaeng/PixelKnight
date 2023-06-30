@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: CommonHead
   itemImage: {fileID: -737330134, guid: 878c23393ed683842b122e252ee13830, type: 3}
-  efts: []
+  efts:
+  - {fileID: 11400000, guid: daffd05b535e430438246c27d1fadc3f, type: 2}
   itemType: 0
   itemLevel: 0
   equipSlot: 1

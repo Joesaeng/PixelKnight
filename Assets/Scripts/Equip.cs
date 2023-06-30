@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public enum EquipSlot
 {
@@ -35,37 +37,59 @@ public enum AdditionalOptions
     IncreasedItemFindingChance
 }
 [System.Serializable]
-[CreateAssetMenu(menuName = "ItemDB/Item/Equipment")]
 public class Equip : Item
 {
     public EquipSlot equipSlot;
     public BaseOption baseOption;
-    public Dictionary<AdditionalOptions, float> additionalOptions;
+    public Dictionary<AdditionalOptions, float> additionalOptions = new();
     public float baseOptionValue;
-    public Equip (string _name, string _iconPath, ItemType _type, string _effectPath, ItemLevel _level,
+    public Equip()
+    { }
+    
+    public Equip (string _name, string _iconAddress, ItemType _type, ItemLevel _level,
         EquipSlot _slot, BaseOption _baseOption, float _baseOptionValue)
     {
         this.itemName = _name;
-        this.itemImage = Resources.Load<Sprite>(_iconPath);
+        LoadEquipResourcesAsync(_iconAddress);
+        ItemEquipEft itemEquipEft = new();
+        SetItemEffect(itemEquipEft);
         this.itemType = _type;
-        this.efts.Add(Resources.Load<ItemEffect>(_effectPath));
         this.itemLevel = _level;
         this.equipSlot = _slot;
         this.baseOption = _baseOption;
         this.baseOptionValue = _baseOptionValue;
     }
-    public Equip(string _name, string _iconPath, ItemType _type, string _effectPath, ItemLevel _level,
+    public Equip(string _name, string _iconAddress, ItemType _type, ItemLevel _level,
         EquipSlot _slot, BaseOption _baseOption, float _baseOptionValue, AdditionalOptions _addtionalOption,
         float _addtionalOptionValue)
     {
         this.itemName = _name;
-        this.itemImage = Resources.Load<Sprite>(_iconPath);
+        LoadEquipResourcesAsync(_iconAddress);
+        ItemEquipEft itemEquipEft = new();
+        SetItemEffect(itemEquipEft);
         this.itemType = _type;
-        this.efts.Add(Resources.Load<ItemEffect>(_effectPath));
         this.itemLevel = _level;
         this.equipSlot = _slot;
         this.baseOption = _baseOption;
         this.baseOptionValue = _baseOptionValue;
         this.additionalOptions.Add(_addtionalOption, _addtionalOptionValue);
     }
+
+    public void LoadEquipResourcesAsync(string _iconAddress)
+    {
+        Addressables.LoadAssetAsync<Sprite>(_iconAddress).Completed += OnLoadIcon;
+    }
+    private void OnLoadIcon(UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<Sprite> obj)
+    {
+        this.itemImage = obj.Result;
+    }
+    private void SetItemEffect(ItemEffect itemEffect)
+    {
+        if (itemEffect is ItemEquipEft equipEft)
+        {
+            equipEft.SetEquipInfo(this);
+            this.efts.Add(equipEft);
+        }
+    }
+
 }

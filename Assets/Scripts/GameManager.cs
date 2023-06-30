@@ -7,6 +7,8 @@ public class GameManager : Singleton<GameManager>
     [Header("# GameObject")]
     public Player player;
     public PlayerData selectPlayerData;
+    //public Inventory inventory;
+    //public Equipment equipment;
 
     private void Start()
     {
@@ -20,9 +22,9 @@ public class GameManager : Singleton<GameManager>
     public void DevScene(GameObject _player)
     {
         player = _player.GetComponent<Player>();
-        player.playerStatus.SetStatus(selectPlayerData);
-        StatusValueUI statusValueUI = GameObject.FindAnyObjectByType<StatusValueUI>();
-        statusValueUI.InitStatusUI();
+        player.playerStatus.InitSetStatus(selectPlayerData);
+        //StatusValueUI statusValueUI = GameObject.FindAnyObjectByType<StatusValueUI>();
+        //statusValueUI.InitStatusUI();
     }
 
 

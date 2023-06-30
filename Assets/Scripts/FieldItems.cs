@@ -9,17 +9,17 @@ public class FieldItems : MonoBehaviour
 
     private void Awake()
     {
-        item = ScriptableObject.CreateInstance<Item>();
+        item = new Item();
     }
     public void SetItem(Item _item)
     {
+        item = _item;
         item.itemName = _item.itemName;
         item.itemImage = _item.itemImage;
         item.itemType = _item.itemType;
         item.itemLevel = _item.itemLevel;
         item.efts = _item.efts;
-
-        image.sprite = _item.itemImage;
+        image.sprite = item.itemImage;
         
     }
     public Item GetItem()

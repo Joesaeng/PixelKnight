@@ -12,5 +12,6 @@ public class DevScene : MonoBehaviour
         GameObject player = Instantiate(playerPrefab);
 
         GameManager.Instance.DevScene(player);
+        ItemDataBase.Instance.CreateFieldItem();
     }
 }

@@ -49,14 +49,21 @@ public class Inventory : MonoBehaviour
     }
     void Start()
     {
-        SlotCnt = 16;
+        SlotCnt = 20;
     }
 
     public bool AddItem(Item item)
     {
         if(items.Count < SlotCnt)
         {
-            items.Add(item);
+            if(item is Equip equip)
+            {
+                items.Add(equip);
+            }
+            else
+            {
+                 items.Add(item);
+            }
             if(onChangeItem != null)
                 onChangeItem.Invoke();
             return true;
@@ -76,6 +83,12 @@ public class Inventory : MonoBehaviour
             FieldItems fieldItems = collision.GetComponent<FieldItems>();
             if (AddItem(fieldItems.GetItem()))
                 fieldItems.DestroyItem();
+        }
+        else if (collision.CompareTag("FieldEquip"))
+        {
+            FieldEquip fieldItems = collision.GetComponent<FieldEquip>();
+            if (AddItem(fieldItems.GetItem()))
+                fieldItems.DestroyEquip();
         }
     }
 }

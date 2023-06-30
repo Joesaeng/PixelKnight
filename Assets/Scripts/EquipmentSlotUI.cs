@@ -1,44 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class EquipmentSlotUI : MonoBehaviour
+public class EquipmentSlotUI : MonoBehaviour, IPointerUpHandler
 {
     public EquipSlot slotType;
+    public Equip equip;
     public Image iconImage;
-    public Text nameLabel;
+    private bool isEquipEventSunscribed = false;
 
-    private void OnEnable()
+    private void Start()
     {
-        // Equipment 컴포넌트의 이벤트에 구독합니다.
-        Equipment equipment = GetComponentInParent<Equipment>();
-        if (equipment != null)
+        Init();
+    }
+    public void Init()
+    {
+        if (Equipment.Instance != null && !isEquipEventSunscribed)
         {
-            equipment.OnEquiped += HandleItemEquipped;
-            equipment.OnUnEquiped += HandleItemUnequipped;
+            Equipment.Instance.OnEquiped += HandleItemEquipped;
+            Equipment.Instance.OnUnEquiped += HandleItemUnequipped;
+            isEquipEventSunscribed = true;
         }
     }
 
-    private void OnDisable()
-    {
-        // Equipment 컴포넌트의 이벤트 구독을 해제합니다.
-        Equipment equipment = GetComponentInParent<Equipment>();
-        if (equipment != null)
-        {
-            equipment.OnEquiped -= HandleItemEquipped;
-            equipment.OnUnEquiped -= HandleItemUnequipped;
-        }
-    }
 
-    private void HandleItemEquipped(EquipSlot slot, Equip item)
+    private void HandleItemEquipped(EquipSlot slot, Equip _equip)
     {
         // 해당 슬롯에 장비가 장착되었을 때 UI를 갱신합니다.
         if (slot == slotType)
         {
             // 아이콘, 이름 등을 업데이트합니다.
-            iconImage.sprite = item.itemImage;
-            nameLabel.text = item.itemName;
+            iconImage.sprite = _equip.itemImage;
+            equip = _equip;
+            iconImage.enabled = true;
         }
     }
 
@@ -49,7 +45,17 @@ public class EquipmentSlotUI : MonoBehaviour
         {
             // 아이콘, 이름 등을 초기화합니다.
             iconImage.sprite = null;
-            nameLabel.text = "";
+            equip = null;
+            iconImage.enabled = false;
         }
+    }
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (equip == null)
+        {
+            return;
+        }
+        Inventory.Instance.AddItem(equip);
+        Equipment.Instance.UnequipItem(slotType);
     }
 }

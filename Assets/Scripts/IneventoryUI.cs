@@ -12,12 +12,19 @@ public class IneventoryUI : MonoBehaviour
     bool activeInventory = false;
 
     public Slot[] slots;
+    public EquipmentSlotUI[] equipmentSlots;
     public Transform slotHolder;
+    public Transform equipmentUI;
 
     private void Start()
     {
         inventory = Inventory.Instance;
         slots = slotHolder.GetComponentsInChildren<Slot>();
+        equipmentSlots = equipmentUI.GetComponentsInChildren<EquipmentSlotUI>();
+        foreach(EquipmentSlotUI eqSlot in equipmentSlots)
+        {
+            eqSlot.Init();
+        }
         inventory.onSlotCountChange += SlotChange;
         inventory.onChangeItem += RedrawSlotUI;
         inventoryPanel.SetActive(activeInventory);
