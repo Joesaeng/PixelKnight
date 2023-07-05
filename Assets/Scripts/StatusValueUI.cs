@@ -7,19 +7,12 @@ using TMPro;
 public class StatusValueUI : MonoBehaviour
 {
     PlayerStatus playerStatus;
-    int test = 0;
     public enum StatusNameUI
     {
         vit,end,str,dex,luk,stats
     }
 
     public TextMeshProUGUI[] textValue;
-    //private void OnEnable()
-    //{
-    //    playerStatus = GameManager.Instance.player.playerStatus;
-    //    UpdatePlayerStatsUI();
-    //    playerStatus.OnStatsCalculated += UpdatePlayerStatsUI;
-    //}
     public void InitStatusUI()
     {
         playerStatus = GameManager.Instance.player.playerStatus;
@@ -60,8 +53,5 @@ public class StatusValueUI : MonoBehaviour
             playerStatus.dPlayerFixedStatus[FixedStatusName.CriticalChance] * 100f,
             playerStatus.dPlayerFixedStatus[FixedStatusName.CriticalHitDamage] * 100f,
             playerStatus.dPlayerFixedStatus[FixedStatusName.IncreasedItemFindingChance] * 100f);
-
-        test++;
-        Debug.Log(test);
     }
 }

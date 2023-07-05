@@ -32,7 +32,8 @@ public enum DynamicStatusName
 {
     CurHp,
     CurStamina,
-    CurPoise
+    CurPoise,
+    CurExp
 }
 public class PlayerStatus : MonoBehaviour
 {
@@ -42,16 +43,10 @@ public class PlayerStatus : MonoBehaviour
 
     #region Player Attribute Allocation
     public Dictionary<PlayerAttribute, int> dPlayerAttribute;
-    #region 구버전
-    //public int vitality;    // 체력 : MaxHp와 방어력
-    //public int endurance;   // 지구력 : MaxStamina 와 강인도
-    //public int strength;    // 근력 : 공격력과 경직도
-    //public int dexterity;   // 기량 : 명중률과 회피율
-    //public int luck;        // 운 : 치명타확률과 아이템 드랍률
-    #endregion
     #endregion
 
     #region Player Status
+    [Header("Player Status")]
     private PlayerData initialPlayerData;
     public Dictionary<FixedStatusName, float> dPlayerFixedStatus;
     public Dictionary<DynamicStatusName, float> dPlayerDynamicStatus;
@@ -67,32 +62,13 @@ public class PlayerStatus : MonoBehaviour
     public readonly float maxCriticalChance = 1f;
     public readonly float minCriticalHitDamage = 1.5f;
 
-    #region 구버전
-    //public float maxHp;
-    //public float curHp;
-    //public float maxStamina;
-    //public float curStamina;
-    //public float defence;
-    //public float damage;
-    //public float stagger;          // 경직도
-    //public float poise;            // 강인도
-    //public float curPoise;
-    //public float minAttackSpeed;
-    //public float maxAttackSpeed;
-    //public float attackSpeed;
-    //public float evade;
-    //public float hitRate;
-    //public readonly float minMoveSpeed = 2.5f;
-    //public readonly float maxMoveSpeed = 3.5f;
-    //public float moveSpeed;
-    //public readonly float minCriticalChance = 0.01f;
-    //public readonly float maxCriticalChance = 1f;
-    //public float criticalChance;
-    //public readonly float minCriticalHitDamage = 1.5f;
-    //public float criticalHitDamage;
-    //public float increasedItemFindingChance;
+    [Header("Lv & Experience")]
+    public int playerLv;
+    public float firstExpRequirement;
+    public float expRequirementIncrese;
     #endregion
-    #endregion
+
+    public Action OnPlayerDead;
     private void Awake()
     {
         equipment = Equipment.Instance;
@@ -295,18 +271,37 @@ public class PlayerStatus : MonoBehaviour
             }
         }
     }
+
+    public void ModifyHp(float value)
+    {
+        dPlayerDynamicStatus[DynamicStatusName.CurHp] += value;
+        if(dPlayerDynamicStatus[DynamicStatusName.CurHp] <= 0f)
+        {
+            OnPlayerDead?.Invoke();
+        }
+    }
+    public void ModifyStamina(float value)
+    {
+        dPlayerDynamicStatus[DynamicStatusName.CurStamina] += value;
+    }
+    public void ModifyPoise(float value)
+    {
+        dPlayerDynamicStatus[DynamicStatusName.CurPoise] += value;
+    }
+    public void ModifyExp(float value)
+    {
+        dPlayerDynamicStatus[DynamicStatusName.CurExp] += value;
+    }
     /*
-        HP = vit * 20 + 추가HP
-        지구력 = end * 10 + 추가 지구력
-        def = vit + 장비 def
-        damage = str * 1.5 + 장비 atk
-        stag = str + 기본 무기 경직도
-        asp = 기본 무기 공격속도 + dex * 0.5 + 추가 공격속도
-        dodge = dex * 0.1 + 추가 회피
-        msp = 기본 이동속도 + dex * 0.33
-        cri = 기본 무기 치명타 확률 + luk * 0.5
-        cridmg = 추가 치명타 데미지
-        finding = 추가 파인딩 확률
+     HP 수정 메서드
+     Player 사망
+     
+     Stamina 수정 메서드
+     Exp 수정 메서드
+     Poise 수정 메서드
+     DynamicStatus Update 메서드
+     LvUP 메서드
+     UI 연동
      */
 
 }

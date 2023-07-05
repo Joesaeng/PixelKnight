@@ -76,19 +76,19 @@ public class Inventory : MonoBehaviour
         items.RemoveAt(slotnum);
         onChangeItem.Invoke();
     }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.CompareTag("FieldItem"))
-        {
-            FieldItems fieldItems = collision.GetComponent<FieldItems>();
-            if (AddItem(fieldItems.GetItem()))
-                fieldItems.DestroyItem();
-        }
-        else if (collision.CompareTag("FieldEquip"))
-        {
-            FieldEquip fieldItems = collision.GetComponent<FieldEquip>();
-            if (AddItem(fieldItems.GetItem()))
-                fieldItems.DestroyEquip();
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if(collision.CompareTag("FieldItem"))
+    //    {
+    //        FieldItems fieldItems = collision.GetComponent<FieldItems>();
+    //        if (AddItem(fieldItems.GetItem()))
+    //            fieldItems.DestroyItem();
+    //    }
+    //    else if (collision.CompareTag("FieldEquip"))
+    //    {
+    //        FieldEquip fieldItems = collision.GetComponent<FieldEquip>();
+    //        if (AddItem(fieldItems.GetItem()))
+    //            fieldItems.DestroyEquip();
+    //    }
+    //}
 }

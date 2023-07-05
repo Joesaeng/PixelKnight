@@ -23,8 +23,12 @@ public class GameManager : Singleton<GameManager>
     {
         player = _player.GetComponent<Player>();
         player.playerStatus.InitSetStatus(selectPlayerData);
-        //StatusValueUI statusValueUI = GameObject.FindAnyObjectByType<StatusValueUI>();
-        //statusValueUI.InitStatusUI();
+        player.playerStatus.OnPlayerDead += PlayerDead;
+    }
+
+    void PlayerDead()
+    {
+        // TODO
     }
 
 

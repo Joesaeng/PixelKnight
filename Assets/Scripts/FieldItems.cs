@@ -22,6 +22,17 @@ public class FieldItems : MonoBehaviour
         image.sprite = item.itemImage;
         
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Player"))
+        {
+            if (Inventory.Instance.AddItem(item))
+            {
+                DestroyItem();
+            }
+        }
+    }
     public Item GetItem()
     {
         return item;

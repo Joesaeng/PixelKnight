@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     public List<AnimationClip> animationClips;
     public AnimationClip attackAnimationClip;
     public RuntimeAnimatorController[] animCon;
+    List<Collider2D> attackRanges;
 
     public string attackAnimationClipName;
 
@@ -21,7 +22,8 @@ public class Player : MonoBehaviour
 
     private int floorLayer;
     Vector3 moveDir;
-    Vector3 velocity;
+    Vector3 xFlipScale;
+    int xFlip;
     public float moveSpeed;
     public float jumpForce;
     private float horizontal;
@@ -38,9 +40,21 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         col2D = GetComponent<Collider2D>();
         playerStatus = GetComponent<PlayerStatus>();
+
+        Collider2D[] cols = GetComponentsInChildren<Collider2D>();
+        attackRanges = new List<Collider2D>();
+        foreach(Collider2D col in cols)
+        {
+            if (col.transform == transform)
+                continue;
+            attackRanges.Add(col);
+        }
+
         floorLayer = LayerMask.GetMask("Floor");
-        
+        xFlipScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        xFlip = 1;
         playerStatus.OnStatsCalculated += UpdatePlayerStats;
+        playerStatus.OnPlayerDead += PlayerDead;
     }
 
     private void UpdatePlayerStats()
@@ -120,8 +134,10 @@ public class Player : MonoBehaviour
     }
     void Animation()
     {
+        xFlip = moveDir.x > 0 ? 1 : -1;
+        xFlipScale.x = xFlip;
         if (moveDir.x != 0)
-            spriteRenderer.flipX = moveDir.x < 0;
+            transform.localScale = xFlipScale;
         if (isGround)
         {
             animator.SetBool("isGround", true);
@@ -141,5 +157,23 @@ public class Player : MonoBehaviour
         isAttacking = false;
     }
     
-    
+    void TakeDamage(float _damage)
+    {
+        playerStatus.ModifyHp(-_damage);
+    }
+
+    void PlayerDead()
+    {
+        animator.SetBool("isDead",true);
+    }
+    public void BeginAttack()
+    {
+        foreach (Collider2D attackRange in attackRanges)
+            attackRange.enabled = true;
+    }    
+    public void EndAttack()
+    {
+        foreach (Collider2D attackRange in attackRanges)
+            attackRange.enabled = false;
+    }
 }

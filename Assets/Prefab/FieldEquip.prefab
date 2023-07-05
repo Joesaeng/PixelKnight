@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5632884475815189575}
   - component: {fileID: 5632884475815189574}
   - component: {fileID: -690622857148933997}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: FieldEquip
   m_TagString: FieldEquip
   m_Icon: {fileID: 0}
@@ -117,7 +117,6 @@ MonoBehaviour:
   equip:
     itemName: 
     itemImage: {fileID: 0}
-    efts: []
     itemType: 0
     itemLevel: 0
     equipSlot: 0

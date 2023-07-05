@@ -15,6 +15,16 @@ public class FieldEquip : MonoBehaviour
         this.equip = equip;
         image.sprite = equip.itemImage;
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            if(Inventory.Instance.AddItem(equip))
+            {
+                DestroyEquip();
+            }
+        }
+    }
     public Equip GetItem()
     {
         return equip;
