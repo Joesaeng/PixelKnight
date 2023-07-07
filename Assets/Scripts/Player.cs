@@ -156,10 +156,19 @@ public class Player : MonoBehaviour
 
         isAttacking = false;
     }
-    
+
+
     void TakeDamage(float _damage)
     {
         playerStatus.ModifyHp(-_damage);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("EnemyAttackRange"))
+        {
+
+        }
     }
 
     void PlayerDead()

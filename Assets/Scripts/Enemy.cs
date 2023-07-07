@@ -6,21 +6,25 @@ public class Enemy : MonoBehaviour
 {
     Rigidbody2D rigid;
     Animator anim;
+    EnemyStatus enemyStatus;
     public bool isHit = false;
     public int nextMove;
+    float moveSpeed;
     Vector3 xFlipScale;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        enemyStatus = GetComponent<EnemyStatus>();
         xFlipScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        moveSpeed = enemyStatus.moveSpeed;
 
-        //Invoke("Think", 5);
+        Invoke("Think", 5);
     }
 
     void FixedUpdate()
     {
-        rigid.velocity = new Vector2(nextMove, rigid.velocity.y);
+        rigid.velocity = new Vector2(nextMove*moveSpeed, rigid.velocity.y);
 
         Vector2 frontVec = new Vector2(rigid.position.x + nextMove * 0.3f, rigid.position.y);
         Debug.DrawRay(frontVec, Vector3.down, new Color(0, 1, 0));
@@ -29,7 +33,7 @@ public class Enemy : MonoBehaviour
         {
             nextMove *= -1;
             CancelInvoke();
-            //Invoke("Think", 5);
+            Invoke("Think", 5);
         }
     }
     private void LateUpdate()

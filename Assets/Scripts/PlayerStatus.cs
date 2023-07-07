@@ -52,6 +52,11 @@ public class PlayerStatus : MonoBehaviour
     public Dictionary<DynamicStatusName, float> dPlayerDynamicStatus;
     public float minAttackSpeed;
     public float maxAttackSpeed;
+
+    private float hpRegenerationPerTenSecond;
+    private float staminaRegenerationPerSecond;
+    private float poiseRegenerationPerSecond;
+
     public float AttackSpeed
     {
         get { return dPlayerFixedStatus[FixedStatusName.AttackSpeed]; }
@@ -67,7 +72,8 @@ public class PlayerStatus : MonoBehaviour
     public float firstExpRequirement;
     public float expRequirementIncrese;
     #endregion
-
+    public float TestCurHp;
+    private float hpRegenTime = 0f;
     public Action OnPlayerDead;
     private void Awake()
     {
@@ -105,10 +111,27 @@ public class PlayerStatus : MonoBehaviour
             dPlayerDynamicStatus.Add(dynamicStatusName, 0);
         }
     }
-    public void InitSetStatus(PlayerData data)
+    private void Start()
+    {
+        hpRegenerationPerTenSecond = 5f;
+    }
+    private void Update()
+    {
+        RegeneratePoise();
+        RegenerateStamina();
+        TestCurHp = dPlayerDynamicStatus[DynamicStatusName.CurHp];
+        hpRegenTime += Time.deltaTime;
+        if (hpRegenTime >= 10f)
+        {
+            HpRegeneration();
+            hpRegenTime = 0f;
+        }
+    }
+    public void InitSetStatus(PlayerData data) // 초기 스테이터스 설정
     {
         initialPlayerData = data;
         UpdateStatus();
+        dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp]; 
         #region 구버전
         //vitality = data.vitality;
         //endurance = data.endurance;
@@ -121,7 +144,7 @@ public class PlayerStatus : MonoBehaviour
         //moveSpeed = minMoveSpeed;
         #endregion
     }
-    public void UpdateStatus()
+    public void UpdateStatus() // 스테이터스를 변경해야 할 때 호출되는 메서드
     {
         dPlayerAttribute[PlayerAttribute.Vitality] = initialPlayerData.vitality;
         dPlayerAttribute[PlayerAttribute.Dexterity] = initialPlayerData.dexterity;
@@ -137,9 +160,7 @@ public class PlayerStatus : MonoBehaviour
         //dPlayerFixedStatus[FixedStatusName.AttackSpeed] = initialPlayerData.minAttackSpeed;
         CalculateStats();
     }
-
-
-    private void CalculateStats()
+    private void CalculateStats() // 스테이터스 계산
     {
         #region 현재 장비한 아이템들의 추가 Status 할당
         ApplyEquip(equipment.GetCurEquip());
@@ -172,8 +193,7 @@ public class PlayerStatus : MonoBehaviour
         #endregion
         OnStatsCalculated?.Invoke();
     }
-
-    private void AttributeCalculate()
+    private void AttributeCalculate() // Attribute의 Value를 이용하여 현재 Player Status를 설정
     {
         dPlayerFixedStatus[FixedStatusName.MaxHp] += dPlayerAttribute[PlayerAttribute.Vitality] * 20f;
         dPlayerFixedStatus[FixedStatusName.MaxStamina] += dPlayerAttribute[PlayerAttribute.Endurance] * 10f;
@@ -182,7 +202,7 @@ public class PlayerStatus : MonoBehaviour
         dPlayerFixedStatus[FixedStatusName.Damage] += dPlayerAttribute[PlayerAttribute.Strength] * 1.5f;
         dPlayerFixedStatus[FixedStatusName.Stagger] += dPlayerAttribute[PlayerAttribute.Strength];
         dPlayerFixedStatus[FixedStatusName.HitRate] += dPlayerAttribute[PlayerAttribute.Dexterity];
-        dPlayerFixedStatus[FixedStatusName.Evade] += dPlayerAttribute[PlayerAttribute.Dexterity] * 0.5f;
+        dPlayerFixedStatus[FixedStatusName.Evade] += dPlayerAttribute[PlayerAttribute.Dexterity] * 0.33f;
         dPlayerFixedStatus[FixedStatusName.AttackSpeed] += minAttackSpeed;
         dPlayerFixedStatus[FixedStatusName.MoveSpeed] += minMoveSpeed;
         dPlayerFixedStatus[FixedStatusName.CriticalChance] += dPlayerAttribute[PlayerAttribute.Luck] * 0.01f;
@@ -192,7 +212,7 @@ public class PlayerStatus : MonoBehaviour
             dPlayerFixedStatus[FixedStatusName.CriticalChance] = minCriticalChance;
         dPlayerFixedStatus[FixedStatusName.CriticalHitDamage] += minCriticalHitDamage;
     }
-    private void ApplyEquip(Equip[] _CurEquips)
+    private void ApplyEquip(Equip[] _CurEquips) // 장비의 옵션을 스테이터스에 저장
     {
         foreach(Equip equip in _CurEquips)
         {
@@ -272,12 +292,33 @@ public class PlayerStatus : MonoBehaviour
         }
     }
 
+    void RegenerateStamina()
+    {
+        float staminaRegenAmount = staminaRegenerationPerSecond * Time.deltaTime;
+        if(dPlayerDynamicStatus[DynamicStatusName.CurStamina] < dPlayerFixedStatus[FixedStatusName.MaxStamina])
+            ModifyStamina(staminaRegenAmount);
+    }
+    void RegeneratePoise()
+    {
+        float poiseRegenAmount = poiseRegenerationPerSecond * Time.deltaTime;
+        if (dPlayerDynamicStatus[DynamicStatusName.CurPoise] < dPlayerFixedStatus[FixedStatusName.Poise])
+            ModifyPoise(poiseRegenAmount);
+    }
+    public void HpRegeneration()
+    {
+        if (dPlayerDynamicStatus[DynamicStatusName.CurHp] + hpRegenerationPerTenSecond // 이번에 코루틴에 회복하는 Hp가 MaxHp를 넘어설 경우
+            >= dPlayerFixedStatus[FixedStatusName.MaxHp])
+            dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp]; // 현재 HP를 MaxHp로
+        else ModifyHp(hpRegenerationPerTenSecond);
+    }
+    #region Dynanimc 스테이터스들 수정 메서드
     public void ModifyHp(float value)
     {
         dPlayerDynamicStatus[DynamicStatusName.CurHp] += value;
         if(dPlayerDynamicStatus[DynamicStatusName.CurHp] <= 0f)
         {
             OnPlayerDead?.Invoke();
+            dPlayerDynamicStatus[DynamicStatusName.CurHp] = 0;
         }
     }
     public void ModifyStamina(float value)
@@ -292,6 +333,7 @@ public class PlayerStatus : MonoBehaviour
     {
         dPlayerDynamicStatus[DynamicStatusName.CurExp] += value;
     }
+    #endregion
     /*
      HP 수정 메서드
      Player 사망

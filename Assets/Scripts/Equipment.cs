@@ -27,7 +27,6 @@ public class Equipment : MonoBehaviour
             return;
         }
         instance = this;
-        Debug.Log("Equipment instance success");
     }
     #endregion
 
