@@ -9,6 +9,7 @@ public class EnemyData : ScriptableObject
     [Header("Main Info")]
     public int enemyID;
     public string charName;
+    public float expReward;
 
     [Header("Basic Status")]
     public float maxHp;

@@ -8,7 +8,6 @@ public class Player : MonoBehaviour
     Rigidbody2D rigid;
     Animator animator;
     Collider2D col2D;
-    SpriteRenderer spriteRenderer;
     public PlayerStatus playerStatus;
     public List<AnimationClip> animationClips;
     public AnimationClip attackAnimationClip;
@@ -37,7 +36,6 @@ public class Player : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
         col2D = GetComponent<Collider2D>();
         playerStatus = GetComponent<PlayerStatus>();
 

@@ -7,7 +7,13 @@ public class Enemy : MonoBehaviour
     Rigidbody2D rigid;
     Animator anim;
     EnemyStatus enemyStatus;
-    public bool isHit = false;
+    public Rigidbody2D target;
+
+    public RuntimeAnimatorController[] animCon;
+
+    Vector2 initPosition;
+    public bool isHit;
+    bool isDead;
     public int nextMove;
     float moveSpeed;
     Vector3 xFlipScale;
@@ -22,8 +28,26 @@ public class Enemy : MonoBehaviour
         Invoke("Think", 5);
     }
 
+    private void OnEnable()
+    {
+        transform.position = initPosition;
+        isHit = false;
+        isDead = false;
+        
+        anim.runtimeAnimatorController = animCon[enemyStatus.enemyID];
+        anim.SetBool("isDead", isDead);
+        Invoke("Think", 5);
+        enemyStatus.OnEnemyDead += EnemyDead;
+    }
+
     void FixedUpdate()
     {
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Hit") || isDead)
+        {
+            rigid.velocity = new Vector2(0f, rigid.velocity.y);
+
+            return;
+        }
         rigid.velocity = new Vector2(nextMove*moveSpeed, rigid.velocity.y);
 
         Vector2 frontVec = new Vector2(rigid.position.x + nextMove * 0.3f, rigid.position.y);
@@ -54,10 +78,20 @@ public class Enemy : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("PlayerAttackRange") && !isHit)
+        if (collision.CompareTag("PlayerAttackRange") && !isHit && !isDead)
         {
-            Debug.Log("Enemy Hit!");
+            if (target == null) target = collision.gameObject.GetComponentInParent<Rigidbody2D>();
             isHit = true;
+            if (!enemyStatus.CaculatedHit(collision.gameObject.GetComponentInParent<PlayerStatus>()))
+            {
+                Debug.Log("Miss");
+            }
+            else
+            {
+                Debug.Log("Hit EnemyHp = " + enemyStatus.CurHp);
+                anim.SetTrigger("isHit");
+            }
+            
             StartCoroutine(ResetHitState(GameManager.Instance.player.attackDelay * 0.5f));
         }
     }
@@ -66,8 +100,21 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(delay);
         isHit = false;
     }
+
+    void EnemyDead()
+    {
+        isDead = true;
+        CancelInvoke();
+        StartCoroutine(EnemyDeadAnimPlay());
+    }
+    IEnumerator EnemyDeadAnimPlay()
+    {
+        anim.SetBool("isDead", isDead);
+        yield return new WaitForSeconds(3f);
+        gameObject.SetActive(false);
+    }
+
     /*
-    
     Enemy 스크립트 -공격- 구상---
     1. 기본적으로는 비선공몬스터.
     2. 플레이어에게 공격을 받으면 공격을 한 플레이어를 타겟으로 설정하여 따라가고

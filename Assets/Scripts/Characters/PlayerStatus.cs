@@ -27,6 +27,9 @@ public enum FixedStatusName
     CriticalChance,
     CriticalHitDamage,
     IncreasedItemFindingChance,
+    HpRegen,
+    StaminaRegen,
+    PoiseRegen,
 }
 public enum DynamicStatusName
 {
@@ -46,16 +49,11 @@ public class PlayerStatus : MonoBehaviour
     #endregion
 
     #region Player Status
-    [Header("Player Status")]
     private PlayerData initialPlayerData;
     public Dictionary<FixedStatusName, float> dPlayerFixedStatus;
     public Dictionary<DynamicStatusName, float> dPlayerDynamicStatus;
     public float minAttackSpeed;
     public float maxAttackSpeed;
-
-    private float hpRegenerationPerTenSecond;
-    private float staminaRegenerationPerSecond;
-    private float poiseRegenerationPerSecond;
 
     public float AttackSpeed
     {
@@ -67,12 +65,11 @@ public class PlayerStatus : MonoBehaviour
     public readonly float maxCriticalChance = 1f;
     public readonly float minCriticalHitDamage = 1.5f;
 
-    [Header("Lv & Experience")]
     public int playerLv;
     public float firstExpRequirement;
-    public float expRequirementIncrese;
+    float expRequirementIncrese = 1.3f;
     #endregion
-    public float TestCurHp;
+
     private float hpRegenTime = 0f;
     public Action OnPlayerDead;
     private void Awake()
@@ -113,13 +110,11 @@ public class PlayerStatus : MonoBehaviour
     }
     private void Start()
     {
-        hpRegenerationPerTenSecond = 5f;
     }
     private void Update()
     {
         RegeneratePoise();
         RegenerateStamina();
-        TestCurHp = dPlayerDynamicStatus[DynamicStatusName.CurHp];
         hpRegenTime += Time.deltaTime;
         if (hpRegenTime >= 10f)
         {
@@ -171,32 +166,15 @@ public class PlayerStatus : MonoBehaviour
         #region 현재 사용중인 스킬들의 추가 Status 할당
         #endregion
 
-        #region 구버전
-        //maxHp = vitality * 20f;                     // 최대 체력
-        //defence = vitality;                         // 방어력
-        //maxStamina = endurance * 10f;               // 최대 지구력
-        //poise = endurance;                          // 강인도
-        //damage = strength * 1.5f;                   // 공격력
-        //stagger = strength;                         // 경직도
-        //hitRate = dexterity * 0.2f;                 // 명중률
-        //evade = dexterity * 0.1f;                   // 회피율
-        //attackSpeed = minAttackSpeed;               // 공격속도
-        //moveSpeed = minMoveSpeed;                   // 이동속도
-        //criticalChance = Mathf.Max(luck * 0.01f,0.7f);
-        //if (criticalChance >= maxCriticalChance) 
-        //    criticalChance = maxCriticalChance;
-        //else if (criticalChance <= minCriticalChance) 
-        //    criticalChance = minCriticalChance;
-        //else criticalChance = luck * 0.01f;         // 치명타 확률
-        //criticalHitDamage = minCriticalHitDamage;   // 치명타 데미지
-        //increasedItemFindingChance = 0f;            // 아이템 드랍 추가 확률
-        #endregion
         OnStatsCalculated?.Invoke();
     }
     private void AttributeCalculate() // Attribute의 Value를 이용하여 현재 Player Status를 설정
     {
         dPlayerFixedStatus[FixedStatusName.MaxHp] += dPlayerAttribute[PlayerAttribute.Vitality] * 20f;
         dPlayerFixedStatus[FixedStatusName.MaxStamina] += dPlayerAttribute[PlayerAttribute.Endurance] * 10f;
+        dPlayerFixedStatus[FixedStatusName.StaminaRegen] += dPlayerAttribute[PlayerAttribute.Endurance];
+        dPlayerFixedStatus[FixedStatusName.PoiseRegen] += dPlayerAttribute[PlayerAttribute.Endurance];
+        dPlayerFixedStatus[FixedStatusName.HpRegen] += dPlayerAttribute[PlayerAttribute.Vitality];
         dPlayerFixedStatus[FixedStatusName.Defence] += dPlayerAttribute[PlayerAttribute.Vitality];
         dPlayerFixedStatus[FixedStatusName.Poise] += dPlayerAttribute[PlayerAttribute.Endurance];
         dPlayerFixedStatus[FixedStatusName.Damage] += dPlayerAttribute[PlayerAttribute.Strength] * 1.5f;
@@ -284,6 +262,15 @@ public class PlayerStatus : MonoBehaviour
                     case AdditionalOptions.IncreasedItemFindingChance:
                         dPlayerFixedStatus[FixedStatusName.IncreasedItemFindingChance] += option.Value;
                         break;
+                    case AdditionalOptions.HpRegen:
+                        dPlayerFixedStatus[FixedStatusName.HpRegen] += option.Value;
+                        break;
+                    case AdditionalOptions.StaminaRegen:
+                        dPlayerFixedStatus[FixedStatusName.StaminaRegen] += option.Value;
+                        break;
+                    case AdditionalOptions.PoiseRegen:
+                        dPlayerFixedStatus[FixedStatusName.PoiseRegen] += option.Value;
+                        break;
                     default:
                         Debug.LogError("PlayerStatus_ApplyEquip_AddtionalOptions");
                         break;
@@ -294,22 +281,22 @@ public class PlayerStatus : MonoBehaviour
 
     void RegenerateStamina()
     {
-        float staminaRegenAmount = staminaRegenerationPerSecond * Time.deltaTime;
+        float staminaRegenAmount = dPlayerFixedStatus[FixedStatusName.StaminaRegen] / Time.deltaTime;
         if(dPlayerDynamicStatus[DynamicStatusName.CurStamina] < dPlayerFixedStatus[FixedStatusName.MaxStamina])
             ModifyStamina(staminaRegenAmount);
     }
     void RegeneratePoise()
     {
-        float poiseRegenAmount = poiseRegenerationPerSecond * Time.deltaTime;
+        float poiseRegenAmount = dPlayerFixedStatus[FixedStatusName.PoiseRegen] / Time.deltaTime;
         if (dPlayerDynamicStatus[DynamicStatusName.CurPoise] < dPlayerFixedStatus[FixedStatusName.Poise])
             ModifyPoise(poiseRegenAmount);
     }
     public void HpRegeneration()
     {
-        if (dPlayerDynamicStatus[DynamicStatusName.CurHp] + hpRegenerationPerTenSecond // 이번에 코루틴에 회복하는 Hp가 MaxHp를 넘어설 경우
+        if (dPlayerDynamicStatus[DynamicStatusName.CurHp] + dPlayerFixedStatus[FixedStatusName.HpRegen] // 이번에 코루틴에 회복하는 Hp가 MaxHp를 넘어설 경우
             >= dPlayerFixedStatus[FixedStatusName.MaxHp])
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp]; // 현재 HP를 MaxHp로
-        else ModifyHp(hpRegenerationPerTenSecond);
+        else ModifyHp(dPlayerFixedStatus[FixedStatusName.HpRegen]);
     }
     #region Dynanimc 스테이터스들 수정 메서드
     public void ModifyHp(float value)

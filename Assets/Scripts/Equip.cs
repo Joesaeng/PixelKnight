@@ -34,7 +34,10 @@ public enum AdditionalOptions
     MoveSpeed,
     CriticalChance,
     CriticalHitDamage,
-    IncreasedItemFindingChance
+    IncreasedItemFindingChance,
+    HpRegen,
+    StaminaRegen,
+    PoiseRegen,
 }
 [System.Serializable]
 public class Equip : Item

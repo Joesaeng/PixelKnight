@@ -276,9 +276,6 @@ MonoBehaviour:
   equipment: {fileID: -8624652967976029335}
   minAttackSpeed: 0
   maxAttackSpeed: 0
-  hpRegenerationPerTenSecond: 0
-  staminaRegenerationPerSecond: 0
-  poiseRegenerationPerSecond: 0
   playerLv: 0
-  firstExpRequirement: 0
+  firstExpRequirement: 10
   expRequirementIncrese: 0
