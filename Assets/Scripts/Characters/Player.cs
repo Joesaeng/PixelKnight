@@ -12,8 +12,8 @@ public class Player : MonoBehaviour
     public List<AnimationClip> animationClips;
     public AnimationClip attackAnimationClip;
     public RuntimeAnimatorController[] animCon;
-    List<Collider2D> attackRanges;
-
+    Collider2D attackRange;
+    
     public string attackAnimationClipName;
 
     public float attackSpeed = 1.0f;// 공격 속도
@@ -31,6 +31,8 @@ public class Player : MonoBehaviour
     public float attackDelay;
     private bool isAttacking = false;
     private bool isGround = true;
+    private bool isStun = false;
+    private bool isDead = false;
     
     private void Awake()
     {
@@ -40,19 +42,25 @@ public class Player : MonoBehaviour
         playerStatus = GetComponent<PlayerStatus>();
 
         Collider2D[] cols = GetComponentsInChildren<Collider2D>();
-        attackRanges = new List<Collider2D>();
         foreach(Collider2D col in cols)
         {
             if (col.transform == transform)
                 continue;
-            attackRanges.Add(col);
+            attackRange = col;
         }
 
         floorLayer = LayerMask.GetMask("Floor");
         xFlipScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
         xFlip = 1;
+
+        isAttacking = false;
+        isGround = true;
+        isStun = false;
+        isDead = false;
+
         playerStatus.OnStatsCalculated += UpdatePlayerStats;
         playerStatus.OnPlayerDead += PlayerDead;
+        playerStatus.OnPlayerHit += PlayerStun;
     }
 
     private void UpdatePlayerStats()
@@ -77,6 +85,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if (isDead) return;
         GetKey();
         moveDir = new Vector3(horizontal, 0, 0); // 스프라이트의 Xflip값을 위한 방향값
         isGround = IsCheckGrounded();
@@ -86,14 +95,19 @@ public class Player : MonoBehaviour
 
     void GetKey()
     {
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
+        {
+            rigid.velocity = new Vector2(0f, rigid.velocity.y);
+            return;
+        }
         if (!isAttacking && Input.GetButton("meleeAttack"))
         {
             StartCoroutine(CoAttack());
         }
         horizontal = Input.GetAxisRaw("Horizontal");
-        if ((horizontal == 0 && isGround)||(isAttacking && isGround))
+        if ((horizontal == 0 && isGround)||(isAttacking && isGround && !isStun))
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
-        if (!isAttacking && isGround && Input.GetButtonDown("Jump"))
+        if (!isAttacking && !isStun && isGround && Input.GetButtonDown("Jump"))
         {
             Jump();
         }
@@ -102,6 +116,11 @@ public class Player : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
+        {
+            rigid.velocity = new Vector2(0f, rigid.velocity.y);
+            return;
+        }
         Move();
     }
     private void LateUpdate()
@@ -111,7 +130,7 @@ public class Player : MonoBehaviour
 
     void Move()
     {
-        if(!isAttacking)
+        if(!isAttacking && !isStun)
         {
             rigid.AddForce(Vector2.right * horizontal, ForceMode2D.Impulse);
             if (rigid.velocity.x > moveSpeed)
@@ -155,32 +174,47 @@ public class Player : MonoBehaviour
         isAttacking = false;
     }
 
-
-    void TakeDamage(float _damage)
-    {
-        playerStatus.ModifyHp(-_damage);
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("EnemyAttackRange"))
+        if(collision.CompareTag("EnemyAttackRange") && !isDead)
         {
+            if(playerStatus.CalculatedHit(collision.GetComponentInParent<EnemyStatus>()))
+            {
+                PlayerStun();
+            }
+            
 
         }
     }
-
+    public void PlayerStun()
+    {
+        StartCoroutine(CoStun());
+    }
+    IEnumerator CoStun()
+    {
+        isStun = true;
+        animator.SetTrigger("isHit");
+        float WFS = animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return WFS;
+        isStun = false;
+    }
     void PlayerDead()
     {
-        animator.SetBool("isDead",true);
+        isDead = true;
+        StopAllCoroutines();
+        StartCoroutine(PlayerDeadAnimPlay());
+    }
+    IEnumerator PlayerDeadAnimPlay()
+    {
+        animator.SetTrigger("isDead");
+        yield return new WaitForSeconds(3f);
     }
     public void BeginAttack()
     {
-        foreach (Collider2D attackRange in attackRanges)
-            attackRange.enabled = true;
+        attackRange.enabled = true;
     }    
     public void EndAttack()
     {
-        foreach (Collider2D attackRange in attackRanges)
-            attackRange.enabled = false;
+        attackRange.enabled = false;
     }
 }

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1689453990744219321}
   - component: {fileID: 1689453990744219322}
-  m_Layer: 8
+  m_Layer: 13
   m_Name: AttackRange
   m_TagString: EnemyAttackRange
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ PolygonCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1689453990744219320}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
@@ -224,6 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a20981d6c4858b547a6cc3cdc09b6b83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 0}
   animCon:
   - {fileID: 9100000, guid: d13035a5b931f914fa817d9f06d36a26, type: 2}
   isHit: 0
@@ -241,6 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyID: 0
+  expReward: 0
   maxHp: 0
   maxPoise: 0
   damage: 0

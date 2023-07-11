@@ -38,6 +38,17 @@ public enum DynamicStatusName
     CurPoise,
     CurExp
 }
+public enum DamageOption
+{
+    Critical,
+    Normal
+}
+public struct CalculatedDamage
+{
+    public DamageOption option;
+    public float damage;
+}
+
 public class PlayerStatus : MonoBehaviour
 {
     public Equipment equipment;
@@ -72,6 +83,7 @@ public class PlayerStatus : MonoBehaviour
 
     private float hpRegenTime = 0f;
     public Action OnPlayerDead;
+    public Action OnPlayerHit;
     private void Awake()
     {
         equipment = Equipment.Instance;
@@ -108,9 +120,6 @@ public class PlayerStatus : MonoBehaviour
             dPlayerDynamicStatus.Add(dynamicStatusName, 0);
         }
     }
-    private void Start()
-    {
-    }
     private void Update()
     {
         RegeneratePoise();
@@ -127,6 +136,8 @@ public class PlayerStatus : MonoBehaviour
         initialPlayerData = data;
         UpdateStatus();
         dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp]; 
+        dPlayerDynamicStatus[DynamicStatusName.CurStamina] = dPlayerFixedStatus[FixedStatusName.MaxStamina]; 
+        dPlayerDynamicStatus[DynamicStatusName.CurPoise] = dPlayerFixedStatus[FixedStatusName.Poise]; 
         #region 구버전
         //vitality = data.vitality;
         //endurance = data.endurance;
@@ -176,7 +187,7 @@ public class PlayerStatus : MonoBehaviour
         dPlayerFixedStatus[FixedStatusName.PoiseRegen] += dPlayerAttribute[PlayerAttribute.Endurance];
         dPlayerFixedStatus[FixedStatusName.HpRegen] += dPlayerAttribute[PlayerAttribute.Vitality];
         dPlayerFixedStatus[FixedStatusName.Defence] += dPlayerAttribute[PlayerAttribute.Vitality];
-        dPlayerFixedStatus[FixedStatusName.Poise] += dPlayerAttribute[PlayerAttribute.Endurance];
+        dPlayerFixedStatus[FixedStatusName.Poise] += dPlayerAttribute[PlayerAttribute.Endurance] * 10f;
         dPlayerFixedStatus[FixedStatusName.Damage] += dPlayerAttribute[PlayerAttribute.Strength] * 1.5f;
         dPlayerFixedStatus[FixedStatusName.Stagger] += dPlayerAttribute[PlayerAttribute.Strength];
         dPlayerFixedStatus[FixedStatusName.HitRate] += dPlayerAttribute[PlayerAttribute.Dexterity];
@@ -278,7 +289,7 @@ public class PlayerStatus : MonoBehaviour
             }
         }
     }
-
+    
     void RegenerateStamina()
     {
         float staminaRegenAmount = dPlayerFixedStatus[FixedStatusName.StaminaRegen] / Time.deltaTime;
@@ -305,7 +316,7 @@ public class PlayerStatus : MonoBehaviour
         if(dPlayerDynamicStatus[DynamicStatusName.CurHp] <= 0f)
         {
             OnPlayerDead?.Invoke();
-            dPlayerDynamicStatus[DynamicStatusName.CurHp] = 0;
+            dPlayerDynamicStatus[DynamicStatusName.CurHp] = 0f;
         }
     }
     public void ModifyStamina(float value)
@@ -315,12 +326,66 @@ public class PlayerStatus : MonoBehaviour
     public void ModifyPoise(float value)
     {
         dPlayerDynamicStatus[DynamicStatusName.CurPoise] += value;
+        Debug.Log("Player Poise = " + dPlayerDynamicStatus[DynamicStatusName.CurPoise]);
+        if(dPlayerDynamicStatus[DynamicStatusName.CurPoise] <= 0f)
+        {
+            OnPlayerHit?.Invoke();
+            dPlayerDynamicStatus[DynamicStatusName.CurPoise] = 0f;
+        }
     }
     public void ModifyExp(float value)
     {
         dPlayerDynamicStatus[DynamicStatusName.CurExp] += value;
     }
     #endregion
+    public void TakeDamage(EnemyStatus enemyStatus)
+    {
+        if(dPlayerFixedStatus[FixedStatusName.Defence] < enemyStatus.damage)
+        {
+            ModifyHp(dPlayerFixedStatus[FixedStatusName.Defence] - enemyStatus.damage);
+            Debug.Log("Player HP = " + dPlayerDynamicStatus[DynamicStatusName.CurHp]);
+        }
+        //ModifyPoise(-enemyStatus.stagger);
+
+    }
+    public bool CalculatedHit(EnemyStatus enemyStatus)
+    {
+        bool isHit = false;
+        float hitRate = 0f;
+        float hitDiff = enemyStatus.hitrate - dPlayerFixedStatus[FixedStatusName.Evade];
+        if(hitDiff > 25)
+        {
+            isHit = true;
+            TakeDamage(enemyStatus);
+        }
+        else if(hitDiff > 0)
+        {
+            hitRate = hitDiff * 0.04f;
+        }
+        if (UnityEngine.Random.value < hitRate)
+        {
+            isHit = true;
+            TakeDamage(enemyStatus);
+        }
+
+        return isHit;
+    }
+    public CalculatedDamage CalculateDamage()
+    {
+        CalculatedDamage result;
+        if(UnityEngine.Random.value < dPlayerFixedStatus[FixedStatusName.CriticalChance])
+        {
+            result.option = DamageOption.Critical;
+            result.damage = dPlayerFixedStatus[FixedStatusName.Damage] * dPlayerFixedStatus[FixedStatusName.CriticalHitDamage];
+        }
+        else
+        {
+            result.option = DamageOption.Normal;
+            result.damage = dPlayerFixedStatus[FixedStatusName.Damage];
+        }
+
+        return result;
+    }
     /*
      HP 수정 메서드
      Player 사망

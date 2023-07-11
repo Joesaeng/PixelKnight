@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyID: 0
   charName: Goblin
+  expReward: 0
   maxHp: 150
   maxPoise: 0
-  damage: 10
+  damage: 30
   defence: 3
   stagger: 10
   evade: 0
-  hitrate: 10
+  hitrate: 30
   moveSpeed: 1

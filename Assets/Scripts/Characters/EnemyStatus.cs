@@ -6,6 +6,7 @@ using System;
 
 public class EnemyStatus : MonoBehaviour
 {
+    EnemyData data;
     public int enemyID;
     private string charName;
     public float expReward;
@@ -30,13 +31,14 @@ public class EnemyStatus : MonoBehaviour
 
     private void Awake()
     {
-        SetData(DataManager.Instance.GetEnemyData(enemyID));
+        data = DataManager.Instance.GetEnemyData(enemyID);
+        SetData();
     }
     private void OnEnable()
     {
-        SetData(DataManager.Instance.GetEnemyData(enemyID));
+        SetData();
     }
-    void SetData(EnemyData data)
+    public void SetData()
     {
         this.charName   = data.charName;
         this.expReward = data.expReward;
@@ -65,33 +67,32 @@ public class EnemyStatus : MonoBehaviour
     {
         curPoise += value;
     }
-    public bool CaculatedHit(PlayerStatus playerStatus)
+    public bool CalculatedHit(PlayerStatus playerStatus)
     {
         bool isHit = false;
         float hitRate = 0f;
+        CalculatedDamage caldmg = playerStatus.CalculateDamage();
+        bool isCritical = caldmg.option == DamageOption.Critical ? true : false;
         float hitDiff = playerStatus.dPlayerFixedStatus[FixedStatusName.HitRate] - evade;
         if (hitDiff > 25)
         {
             isHit = true;
-            TakeDamage(playerStatus.dPlayerFixedStatus[FixedStatusName.Damage]);
+            TakeDamage(caldmg.damage);
         }
         else if (hitDiff > 0)
         {
             hitRate = hitDiff * 0.04f;
         }
-        else
-        {
-            hitRate = 0f;
-        }
+
         if(UnityEngine.Random.value < hitRate)
         {
             isHit = true;
-            TakeDamage(playerStatus.dPlayerFixedStatus[FixedStatusName.Damage]);
+            TakeDamage(caldmg.damage);
         }
         return isHit;
     }
-    void TakeDamage(float damage)
+    void TakeDamage(float _damage)
     {
-        ModifyHp(defence - damage);
+        ModifyHp(defence - _damage);
     }
 }

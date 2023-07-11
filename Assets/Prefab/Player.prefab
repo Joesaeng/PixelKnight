@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9080938209126234572}
   - component: {fileID: 1574736549126737433}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: PlayerAttackRange
   m_TagString: PlayerAttackRange
   m_Icon: {fileID: 0}
@@ -278,4 +278,3 @@ MonoBehaviour:
   maxAttackSpeed: 0
   playerLv: 0
   firstExpRequirement: 10
-  expRequirementIncrese: 0
