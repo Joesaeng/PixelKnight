@@ -41,7 +41,7 @@ public enum DynamicStatusName
 public enum DamageOption
 {
     Critical,
-    Normal
+    Normal,
 }
 public struct CalculatedDamage
 {
@@ -84,6 +84,12 @@ public class PlayerStatus : MonoBehaviour
     private float hpRegenTime = 0f;
     public Action OnPlayerDead;
     public Action OnPlayerHit;
+
+    // 임시 스텟 확인용
+    public float tempMaxPoise;
+    public float tempCurPoise;
+    public float tempCurPoiseRegen;
+
     private void Awake()
     {
         equipment = Equipment.Instance;
@@ -124,6 +130,9 @@ public class PlayerStatus : MonoBehaviour
     {
         RegeneratePoise();
         RegenerateStamina();
+        tempCurPoise = dPlayerDynamicStatus[DynamicStatusName.CurPoise];
+        tempCurPoiseRegen = dPlayerFixedStatus[FixedStatusName.PoiseRegen] * Time.deltaTime;
+        tempMaxPoise = dPlayerFixedStatus[FixedStatusName.Poise];
         hpRegenTime += Time.deltaTime;
         if (hpRegenTime >= 10f)
         {
@@ -138,17 +147,6 @@ public class PlayerStatus : MonoBehaviour
         dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp]; 
         dPlayerDynamicStatus[DynamicStatusName.CurStamina] = dPlayerFixedStatus[FixedStatusName.MaxStamina]; 
         dPlayerDynamicStatus[DynamicStatusName.CurPoise] = dPlayerFixedStatus[FixedStatusName.Poise]; 
-        #region 구버전
-        //vitality = data.vitality;
-        //endurance = data.endurance;
-        //strength = data.strength;
-        //dexterity = data.dexterity;
-        //luck = data.luck;
-        //minAttackSpeed = data.minAttackSpeed;
-        //maxAttackSpeed = data.maxAttackSpeed;
-        //attackSpeed = minAttackSpeed;
-        //moveSpeed = minMoveSpeed;
-        #endregion
     }
     public void UpdateStatus() // 스테이터스를 변경해야 할 때 호출되는 메서드
     {
@@ -292,13 +290,13 @@ public class PlayerStatus : MonoBehaviour
     
     void RegenerateStamina()
     {
-        float staminaRegenAmount = dPlayerFixedStatus[FixedStatusName.StaminaRegen] / Time.deltaTime;
+        float staminaRegenAmount = dPlayerFixedStatus[FixedStatusName.StaminaRegen] * Time.deltaTime;
         if(dPlayerDynamicStatus[DynamicStatusName.CurStamina] < dPlayerFixedStatus[FixedStatusName.MaxStamina])
             ModifyStamina(staminaRegenAmount);
     }
     void RegeneratePoise()
     {
-        float poiseRegenAmount = dPlayerFixedStatus[FixedStatusName.PoiseRegen] / Time.deltaTime;
+        float poiseRegenAmount = dPlayerFixedStatus[FixedStatusName.PoiseRegen] * Time.deltaTime;
         if (dPlayerDynamicStatus[DynamicStatusName.CurPoise] < dPlayerFixedStatus[FixedStatusName.Poise])
             ModifyPoise(poiseRegenAmount);
     }
@@ -326,7 +324,6 @@ public class PlayerStatus : MonoBehaviour
     public void ModifyPoise(float value)
     {
         dPlayerDynamicStatus[DynamicStatusName.CurPoise] += value;
-        Debug.Log("Player Poise = " + dPlayerDynamicStatus[DynamicStatusName.CurPoise]);
         if(dPlayerDynamicStatus[DynamicStatusName.CurPoise] <= 0f)
         {
             OnPlayerHit?.Invoke();
@@ -345,7 +342,12 @@ public class PlayerStatus : MonoBehaviour
             ModifyHp(dPlayerFixedStatus[FixedStatusName.Defence] - enemyStatus.damage);
             Debug.Log("Player HP = " + dPlayerDynamicStatus[DynamicStatusName.CurHp]);
         }
-        //ModifyPoise(-enemyStatus.stagger);
+        else
+        {
+            ModifyHp(-1f);
+            Debug.Log("Player HP = " + dPlayerDynamicStatus[DynamicStatusName.CurHp]);
+        }
+        ModifyPoise(-enemyStatus.stagger);
 
     }
     public bool CalculatedHit(EnemyStatus enemyStatus)

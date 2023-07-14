@@ -278,3 +278,6 @@ MonoBehaviour:
   maxAttackSpeed: 0
   playerLv: 0
   firstExpRequirement: 10
+  tempMaxPoise: 0
+  tempCurPoise: 0
+  tempCurPoiseRegen: 0

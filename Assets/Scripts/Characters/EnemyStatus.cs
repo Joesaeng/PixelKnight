@@ -6,10 +6,12 @@ using System;
 
 public class EnemyStatus : MonoBehaviour
 {
+    public Transform effectPoint;
     EnemyData data;
     public int enemyID;
     private string charName;
     public float expReward;
+    GameObject hpBarUI;
 
     public float maxHp;
     public float maxPoise;
@@ -24,6 +26,8 @@ public class EnemyStatus : MonoBehaviour
     private float curPoise;
 
     public Action OnEnemyDead;
+
+    private bool init = false;
     public float CurHp
     {
         get => curHp;
@@ -32,11 +36,11 @@ public class EnemyStatus : MonoBehaviour
     private void Awake()
     {
         data = DataManager.Instance.GetEnemyData(enemyID);
-        SetData();
     }
     private void OnEnable()
     {
         SetData();
+        init = true;
     }
     public void SetData()
     {
@@ -53,6 +57,7 @@ public class EnemyStatus : MonoBehaviour
 
         this.curHp = maxHp;
         this.curPoise = maxPoise;
+        
     }
     void ModifyHp(float value)
     {
@@ -61,6 +66,7 @@ public class EnemyStatus : MonoBehaviour
         {
             OnEnemyDead?.Invoke();
             curHp = 0;
+            //hpBarUI.SetActive(false);
         }
     }
     void ModifyPoise(float value)
@@ -77,6 +83,12 @@ public class EnemyStatus : MonoBehaviour
         if (hitDiff > 25)
         {
             isHit = true;
+            if (isCritical)
+            {
+                Spawner.instance.ShowDamageEffect(0).transform.SetPositionAndRotation
+                (effectPoint.position,Quaternion.identity);
+            }
+
             TakeDamage(caldmg.damage);
         }
         else if (hitDiff > 0)
@@ -88,11 +100,26 @@ public class EnemyStatus : MonoBehaviour
         {
             isHit = true;
             TakeDamage(caldmg.damage);
+            if (isCritical)
+            {
+                Spawner.instance.ShowDamageEffect(0).transform.SetPositionAndRotation
+                (effectPoint.position, Quaternion.identity);
+            }
+        }
+        if (!isHit)
+        {
+            Spawner.instance.ShowDamageEffect(1).transform.SetPositionAndRotation
+            (effectPoint.position, Quaternion.identity);
         }
         return isHit;
     }
     void TakeDamage(float _damage)
     {
         ModifyHp(defence - _damage);
+    }
+    public void SetHPUI(GameObject hpUI)
+    {
+        hpUI.GetComponent<BarValueUI>().InitEnmeyUI(this);
+        hpBarUI = hpUI;
     }
 }

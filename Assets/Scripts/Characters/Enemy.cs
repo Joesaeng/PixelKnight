@@ -7,7 +7,7 @@ public class Enemy : MonoBehaviour
     Rigidbody2D rigid;
     Animator anim;
     EnemyStatus enemyStatus;
-    public Rigidbody2D target;
+    Rigidbody2D target;
     Collider2D attackRange;
 
     public RuntimeAnimatorController[] animCon;
@@ -26,8 +26,6 @@ public class Enemy : MonoBehaviour
         anim = GetComponent<Animator>();
         enemyStatus = GetComponent<EnemyStatus>();
         xFlipScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        initPosition = transform.localPosition;
-        moveSpeed = enemyStatus.moveSpeed;
         attackDelay = new WaitForSeconds(1.5f);
         Collider2D[] cols = GetComponentsInChildren<Collider2D>();
         foreach (Collider2D col in cols)
@@ -36,13 +34,12 @@ public class Enemy : MonoBehaviour
                 continue;
             attackRange = col;
         }
-
-        Invoke("Think", 5);
     }
 
     private void OnEnable()
     {
-        transform.position = initPosition;
+        initPosition = transform.position;
+        moveSpeed = enemyStatus.moveSpeed;
         isHit = false;
         isDead = false;
         isAttacking = false;
@@ -74,7 +71,6 @@ public class Enemy : MonoBehaviour
     }
     private void LateUpdate()
     {
-        //anim.SetInteger("WalkSpeed", nextMove);
         if (nextMove != 0)
         {
             xFlipScale.x = nextMove;
@@ -90,7 +86,6 @@ public class Enemy : MonoBehaviour
         
         if(!isAttacking && ray.collider != null && ray.collider.CompareTag("Player"))
         {
-            
             StartCoroutine(CoAttack());
         }
         else
@@ -109,7 +104,6 @@ public class Enemy : MonoBehaviour
     void Move()
     {
         rigid.velocity = new Vector2(nextMove * moveSpeed, rigid.velocity.y);
-
         Vector2 frontVec = new Vector2(rigid.position.x + nextMove * 0.3f, rigid.position.y);
         Debug.DrawRay(frontVec, Vector3.down, new Color(0, 1, 0));
         RaycastHit2D rayHit = Physics2D.Raycast(frontVec, Vector3.down, 1, LayerMask.GetMask("Floor"));
@@ -123,6 +117,7 @@ public class Enemy : MonoBehaviour
 
     void Think()
     {
+        
         nextMove = Random.Range(-1, 2);
 
         Invoke("Think", Random.Range(2f, 6f));
@@ -135,11 +130,10 @@ public class Enemy : MonoBehaviour
             isHit = true;
             if (!enemyStatus.CalculatedHit(collision.gameObject.GetComponentInParent<PlayerStatus>()))
             {
-                Debug.Log("Miss");
+                
             }
             else
             {
-                Debug.Log("Hit EnemyHp = " + enemyStatus.CurHp);
                 anim.SetTrigger("isHit");
             }
             

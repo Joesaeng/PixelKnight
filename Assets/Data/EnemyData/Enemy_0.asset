@@ -21,5 +21,5 @@ MonoBehaviour:
   defence: 3
   stagger: 10
   evade: 0
-  hitrate: 30
+  hitrate: 15
   moveSpeed: 1

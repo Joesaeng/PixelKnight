@@ -275,8 +275,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 1689453991114565368, guid: 33f6156e55fc251498ac10a24a1297b8, type: 3}
+  enemyHpUIPrefab: {fileID: 6852935644268556838, guid: 6d57cf24e80b5be4dad5fe74c9444886, type: 3}
   fieldItemPrefab: {fileID: 5632884475815189593, guid: e86c071ad12622a4f82b86125fe907ac, type: 3}
   fieldEquipPrefab: {fileID: 5632884475815189593, guid: 02e18d48e82637848a41643d4138541b, type: 3}
+  damageEffectPrefab: {fileID: 3229302182622491195, guid: 2f312f07378245740839cbce602470c7, type: 3}
 --- !u!1 &1678958526
 GameObject:
   m_ObjectHideFlags: 0

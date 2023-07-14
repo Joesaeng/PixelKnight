@@ -180,9 +180,12 @@ public class Player : MonoBehaviour
         {
             if(playerStatus.CalculatedHit(collision.GetComponentInParent<EnemyStatus>()))
             {
-                PlayerStun();
+                
             }
-            
+            else
+            {
+                
+            }
 
         }
     }

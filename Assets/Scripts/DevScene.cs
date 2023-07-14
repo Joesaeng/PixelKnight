@@ -5,6 +5,8 @@ using UnityEngine;
 public class DevScene : MonoBehaviour
 {
     public GameObject playerPrefab;
+    [SerializeField]
+    PlayerGageBarUI gageBarUI;
     void Start()
     {
         PlayerData playerData = GameManager.Instance.selectPlayerData;
@@ -12,6 +14,8 @@ public class DevScene : MonoBehaviour
         GameObject player = Instantiate(playerPrefab);
 
         GameManager.Instance.DevScene(player);
+        gageBarUI.InitGageBarUI();
         ItemDataBase.Instance.CreateFieldItem();
+        
     }
 }
