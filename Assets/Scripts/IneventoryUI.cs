@@ -42,15 +42,11 @@ public class IneventoryUI : MonoBehaviour
         }
     }
 
-    private void Update()
+    public void ActiveInventory()
     {
-        if(Input.GetKeyDown(KeyCode.I))
-        {
-            activeInventory = !activeInventory;
-            inventoryPanel.SetActive(activeInventory);
-        }
+        activeInventory = !activeInventory;
+        inventoryPanel.SetActive(activeInventory);
     }
-
     public void AddSlot()
     {
         inventory.SlotCnt++;

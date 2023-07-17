@@ -40,6 +40,8 @@ public class Enemy : MonoBehaviour
     {
         initPosition = transform.position;
         moveSpeed = enemyStatus.moveSpeed;
+        nextMove = 0;
+        target = null;
         isHit = false;
         isDead = false;
         isAttacking = false;
@@ -142,7 +144,7 @@ public class Enemy : MonoBehaviour
     }
     IEnumerator ResetHitState(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForFixedUpdate();
         isHit = false;
     }
 

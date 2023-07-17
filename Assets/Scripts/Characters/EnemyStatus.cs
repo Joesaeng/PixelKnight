@@ -66,7 +66,7 @@ public class EnemyStatus : MonoBehaviour
         {
             OnEnemyDead?.Invoke();
             curHp = 0;
-            //hpBarUI.SetActive(false);
+            GameManager.Instance.player.playerStatus.ModifyExp(expReward);
         }
     }
     void ModifyPoise(float value)

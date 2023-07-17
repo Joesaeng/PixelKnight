@@ -14,19 +14,14 @@ public class StatusUI : MonoBehaviour
         statusPanel.SetActive(activeStatusUI);
         statusValueUI = statusPanel.transform.GetChild(1).transform.GetChild(2).GetComponent<StatusValueUI>();
     }
-
-    // Update is called once per frame
-    void Update()
+    public void ActiveStatusUI()
     {
-        if(Input.GetKeyDown(KeyCode.P))
+        activeStatusUI = !activeStatusUI;
+        statusPanel.SetActive(activeStatusUI);
+        if (!firstOpen)
         {
-            activeStatusUI = !activeStatusUI;
-            statusPanel.SetActive(activeStatusUI);
-            if(!firstOpen)
-            {
-                statusValueUI.InitStatusUI();
-                firstOpen = true;
-            }
+            statusValueUI.InitStatusUI();
+            firstOpen = true;
         }
     }
 }

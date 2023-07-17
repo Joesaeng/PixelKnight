@@ -24,7 +24,7 @@ public class PlayerGageBarUI : MonoBehaviour
             {
                 sliderHp.value = Utils.Percent(playerStatus.dPlayerDynamicStatus[DynamicStatusName.CurHp], playerStatus.dPlayerFixedStatus[FixedStatusName.MaxHp]);
                 sliderStm.value = Utils.Percent(playerStatus.dPlayerDynamicStatus[DynamicStatusName.CurStamina], playerStatus.dPlayerFixedStatus[FixedStatusName.MaxStamina]);
-                //sliderExp.value = Utils.Percent(playerStatus.dPlayerDynamicStatus[DynamicStatusName.CurExp], playerStatus.dPlayerFixedStatus[FixedStatusName.MaxHp]);
+                sliderExp.value = Utils.Percent(playerStatus.dPlayerDynamicStatus[DynamicStatusName.CurExp], playerStatus.ExpRequirement);
             }
         }
 

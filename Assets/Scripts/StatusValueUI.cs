@@ -13,11 +13,16 @@ public class StatusValueUI : MonoBehaviour
     }
 
     public TextMeshProUGUI[] textValue;
+    public TextMeshProUGUI remaingPointText;
     public void InitStatusUI()
     {
         playerStatus = GameManager.Instance.player.playerStatus;
         UpdatePlayerStatsUI();
         playerStatus.OnStatsCalculated += UpdatePlayerStatsUI;
+    }
+    void UpdateRemainingPoint()
+    {
+        remaingPointText.text = string.Format(": " + playerStatus.RemainingPoint);
     }
     void UpdatePlayerStatsUI()
     {

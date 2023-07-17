@@ -76,9 +76,26 @@ public class PlayerStatus : MonoBehaviour
     public readonly float maxCriticalChance = 1f;
     public readonly float minCriticalHitDamage = 1.5f;
 
-    public int playerLv;
-    public float firstExpRequirement;
-    float expRequirementIncrese = 1.3f;
+    #region 레벨 관련
+    private int playerLv = 0;
+    public float PlayerLv
+    {
+        get { return playerLv; }
+    }
+    private float expRequirement = 50;
+    public float ExpRequirement
+    {
+        get { return expRequirement; } 
+    }
+    private float expRequirementIncrese = 1.3f;
+    private int remainingPoint = 0;
+    public int RemainingPoint
+    {
+        get { return remainingPoint; } 
+    }
+    public int addedPoint;
+    public Action OnLevelUp;
+    #endregion
     #endregion
 
     private float hpRegenTime = 0f;
@@ -188,7 +205,7 @@ public class PlayerStatus : MonoBehaviour
         dPlayerFixedStatus[FixedStatusName.Poise] += dPlayerAttribute[PlayerAttribute.Endurance] * 10f;
         dPlayerFixedStatus[FixedStatusName.Damage] += dPlayerAttribute[PlayerAttribute.Strength] * 1.5f;
         dPlayerFixedStatus[FixedStatusName.Stagger] += dPlayerAttribute[PlayerAttribute.Strength];
-        dPlayerFixedStatus[FixedStatusName.HitRate] += dPlayerAttribute[PlayerAttribute.Dexterity];
+        dPlayerFixedStatus[FixedStatusName.HitRate] += dPlayerAttribute[PlayerAttribute.Dexterity] + 20f;
         dPlayerFixedStatus[FixedStatusName.Evade] += dPlayerAttribute[PlayerAttribute.Dexterity] * 0.33f;
         dPlayerFixedStatus[FixedStatusName.AttackSpeed] += minAttackSpeed;
         dPlayerFixedStatus[FixedStatusName.MoveSpeed] += minMoveSpeed;
@@ -333,8 +350,20 @@ public class PlayerStatus : MonoBehaviour
     public void ModifyExp(float value)
     {
         dPlayerDynamicStatus[DynamicStatusName.CurExp] += value;
+        if(dPlayerDynamicStatus[DynamicStatusName.CurExp] >= expRequirement)
+        {
+            dPlayerDynamicStatus[DynamicStatusName.CurExp] -= expRequirement;
+            expRequirement *= expRequirementIncrese;
+            LevelUp();
+        }
     }
     #endregion
+    private void LevelUp()
+    {
+        playerLv += 1;
+        remainingPoint += 5;
+        OnLevelUp?.Invoke();
+    }
     public void TakeDamage(EnemyStatus enemyStatus)
     {
         if(dPlayerFixedStatus[FixedStatusName.Defence] < enemyStatus.damage)

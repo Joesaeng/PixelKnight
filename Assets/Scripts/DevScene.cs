@@ -6,6 +6,8 @@ public class DevScene : MonoBehaviour
 {
     public GameObject playerPrefab;
     [SerializeField]
+    PlayerLevelText levelText;
+    [SerializeField]
     PlayerGageBarUI gageBarUI;
     void Start()
     {
@@ -15,6 +17,7 @@ public class DevScene : MonoBehaviour
 
         GameManager.Instance.DevScene(player);
         gageBarUI.InitGageBarUI();
+        levelText.InitLevelText();
         ItemDataBase.Instance.CreateFieldItem();
         
     }
