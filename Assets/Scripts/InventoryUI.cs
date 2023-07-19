@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class IneventoryUI : MonoBehaviour
+public class InventoryUI : MonoBehaviour
 {
     Inventory inventory;
 
     public GameObject inventoryPanel;
-    bool activeInventory = false;
+    public bool activeInventory = false;
 
     public Slot[] slots;
     public EquipmentSlotUI[] equipmentSlots;

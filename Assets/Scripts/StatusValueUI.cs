@@ -19,6 +19,7 @@ public class StatusValueUI : MonoBehaviour
         playerStatus = GameManager.Instance.player.playerStatus;
         UpdatePlayerStatsUI();
         playerStatus.OnStatsCalculated += UpdatePlayerStatsUI;
+        playerStatus.OnUpdateRemaingPoint += UpdateRemainingPoint;
     }
     void UpdateRemainingPoint()
     {

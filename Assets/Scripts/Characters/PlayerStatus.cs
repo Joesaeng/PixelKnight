@@ -57,6 +57,7 @@ public class PlayerStatus : MonoBehaviour
 
     #region Player Attribute Allocation
     public Dictionary<PlayerAttribute, int> dPlayerAttribute;
+    public Dictionary<PlayerAttribute, int> dAddedAttribute;
     #endregion
 
     #region Player Status
@@ -93,7 +94,7 @@ public class PlayerStatus : MonoBehaviour
     {
         get { return remainingPoint; } 
     }
-    public int addedPoint;
+    public int addedPoint;                  // 현재까지 총 받은 포인트
     public Action OnLevelUp;
     #endregion
     #endregion
@@ -101,17 +102,15 @@ public class PlayerStatus : MonoBehaviour
     private float hpRegenTime = 0f;
     public Action OnPlayerDead;
     public Action OnPlayerHit;
+    public Action OnUpdateRemaingPoint;
 
-    // 임시 스텟 확인용
-    public float tempMaxPoise;
-    public float tempCurPoise;
-    public float tempCurPoiseRegen;
 
     private void Awake()
     {
         equipment = Equipment.Instance;
         equipment.OnChangeEquipment += UpdateStatus;
         dPlayerAttribute = new Dictionary<PlayerAttribute, int>();
+        dAddedAttribute = new Dictionary<PlayerAttribute, int>();
         dPlayerFixedStatus = new Dictionary<FixedStatusName, float>();
         dPlayerDynamicStatus = new Dictionary<DynamicStatusName, float>();
 
@@ -132,6 +131,11 @@ public class PlayerStatus : MonoBehaviour
             PlayerAttribute playerAttribute = (PlayerAttribute)Enum.Parse(typeof(PlayerAttribute), playerAttributeNames[i]);
             dPlayerAttribute.Add(playerAttribute, 0);
         }
+        for (int i = 0; i < playerAttributeCount; ++i)
+        {
+            PlayerAttribute playerAttribute = (PlayerAttribute)Enum.Parse(typeof(PlayerAttribute), playerAttributeNames[i]);
+            dAddedAttribute.Add(playerAttribute, 0);
+        }
         for (int i = 0; i < statusNameCount; ++i)
         {
             FixedStatusName statusName = (FixedStatusName)Enum.Parse(typeof(FixedStatusName), statusNames[i]);
@@ -147,9 +151,6 @@ public class PlayerStatus : MonoBehaviour
     {
         RegeneratePoise();
         RegenerateStamina();
-        tempCurPoise = dPlayerDynamicStatus[DynamicStatusName.CurPoise];
-        tempCurPoiseRegen = dPlayerFixedStatus[FixedStatusName.PoiseRegen] * Time.deltaTime;
-        tempMaxPoise = dPlayerFixedStatus[FixedStatusName.Poise];
         hpRegenTime += Time.deltaTime;
         if (hpRegenTime >= 10f)
         {
@@ -167,11 +168,11 @@ public class PlayerStatus : MonoBehaviour
     }
     public void UpdateStatus() // 스테이터스를 변경해야 할 때 호출되는 메서드
     {
-        dPlayerAttribute[PlayerAttribute.Vitality] = initialPlayerData.vitality;
-        dPlayerAttribute[PlayerAttribute.Dexterity] = initialPlayerData.dexterity;
-        dPlayerAttribute[PlayerAttribute.Endurance] = initialPlayerData.endurance;
-        dPlayerAttribute[PlayerAttribute.Strength] = initialPlayerData.strength;
-        dPlayerAttribute[PlayerAttribute.Luck] = initialPlayerData.luck;
+        dPlayerAttribute[PlayerAttribute.Vitality] = initialPlayerData.vitality + dAddedAttribute[PlayerAttribute.Vitality];
+        dPlayerAttribute[PlayerAttribute.Dexterity] = initialPlayerData.dexterity + dAddedAttribute[PlayerAttribute.Dexterity];
+        dPlayerAttribute[PlayerAttribute.Endurance] = initialPlayerData.endurance + dAddedAttribute[PlayerAttribute.Endurance];
+        dPlayerAttribute[PlayerAttribute.Strength] = initialPlayerData.strength + dAddedAttribute[PlayerAttribute.Strength];
+        dPlayerAttribute[PlayerAttribute.Luck] = initialPlayerData.luck + dAddedAttribute[PlayerAttribute.Luck];
         minAttackSpeed = initialPlayerData.minAttackSpeed;
         maxAttackSpeed = initialPlayerData.maxAttackSpeed;
         for(int i = 0; i < dPlayerFixedStatus.Count;++i)
@@ -324,6 +325,12 @@ public class PlayerStatus : MonoBehaviour
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp]; // 현재 HP를 MaxHp로
         else ModifyHp(dPlayerFixedStatus[FixedStatusName.HpRegen]);
     }
+    public void ModifyAttribute(PlayerAttribute key, int value)
+    {
+        dAddedAttribute[key] += value;
+        addedPoint += value;
+        UpdateStatus();
+    }
     #region Dynanimc 스테이터스들 수정 메서드
     public void ModifyHp(float value)
     {
@@ -361,8 +368,13 @@ public class PlayerStatus : MonoBehaviour
     private void LevelUp()
     {
         playerLv += 1;
-        remainingPoint += 5;
+        ModifyRemainingPoint(5);
         OnLevelUp?.Invoke();
+    }
+    public void ModifyRemainingPoint(int value)
+    {
+        remainingPoint += value;
+        OnUpdateRemaingPoint?.Invoke();
     }
     public void TakeDamage(EnemyStatus enemyStatus)
     {

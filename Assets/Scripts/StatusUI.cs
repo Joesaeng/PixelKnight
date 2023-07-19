@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class StatusUI : MonoBehaviour
 {
-    bool activeStatusUI = false;
+    public bool activeStatusUI = false;
     bool firstOpen = false;
     public GameObject statusPanel;
     StatusValueUI statusValueUI;
