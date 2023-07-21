@@ -46,6 +46,8 @@ public class InventoryUI : MonoBehaviour
     {
         activeInventory = !activeInventory;
         inventoryPanel.SetActive(activeInventory);
+        if (SelectItemUI.Instance.selectItemPanel.activeSelf)
+            SelectItemUI.Instance.selectItemPanel.SetActive(false);
     }
     public void AddSlot()
     {
