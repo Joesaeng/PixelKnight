@@ -235,6 +235,8 @@ MonoBehaviour:
   attackSpeed: 1
   moveSpeed: 3
   jumpForce: 5
+  jumpStamina: 5
+  attackStamina: 8
   attackDelay: 0
 --- !u!114 &-5917769401234132700
 MonoBehaviour:
@@ -276,8 +278,4 @@ MonoBehaviour:
   equipment: {fileID: -8624652967976029335}
   minAttackSpeed: 0
   maxAttackSpeed: 0
-  playerLv: 0
-  firstExpRequirement: 10
-  tempMaxPoise: 0
-  tempCurPoise: 0
-  tempCurPoiseRegen: 0
+  addedPoint: 0

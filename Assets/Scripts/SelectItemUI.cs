@@ -27,7 +27,6 @@ public class SelectItemUI : MonoBehaviour
             return;
         }
         instance = this;
-        DontDestroyOnLoad(this.gameObject);
     }
     #endregion
     public GameObject selectItemPanel;
@@ -46,6 +45,12 @@ public class SelectItemUI : MonoBehaviour
 
     public void SetItem(int _slotNum)
     {
+        foreach (var text in itemAddtionalOption)
+        {
+            Destroy(text.gameObject);
+        }
+        itemAddtionalOption.Clear();
+
         selectItemPanel.SetActive(true);
         slotNum = _slotNum;
 
@@ -102,11 +107,7 @@ public class SelectItemUI : MonoBehaviour
     }
     void SetAddtionalOption(Dictionary<AdditionalOptions, float> additionalOptions)
     {
-        foreach (var text in itemAddtionalOption)
-        {
-            Destroy(text.gameObject);
-        }
-        itemAddtionalOption.Clear();
+        
         foreach (var option in additionalOptions)
         {
             string name = "";
@@ -163,7 +164,7 @@ public class SelectItemUI : MonoBehaviour
                     break;
                 case AdditionalOptions.MoveSpeed:
                     name = "MoveSpeed";
-                    value = string.Format(option.Value * 100f + "%");
+                    value = string.Format((option.Value * 100f).ToString("F0"));
                     break;
                 case AdditionalOptions.CriticalChance:
                     name = "CriticalChance";
@@ -175,7 +176,7 @@ public class SelectItemUI : MonoBehaviour
                     break;
                 case AdditionalOptions.IncreasedItemFindingChance:
                     name = "IncreasedItemFindingChance";
-                    value = string.Format(option.Value * 100f + "%");
+                    value = option.Value.ToString("F0");
                     break;
                 case AdditionalOptions.HpRegen:
                     name = "HpRegen";

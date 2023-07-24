@@ -27,6 +27,8 @@ public class Player : MonoBehaviour
     public float jumpForce;
     private float horizontal;
 
+    public float jumpStamina = 5f;
+    public float attackStamina = 8f;
 
     public float attackDelay;
     private bool isAttacking = false;
@@ -102,14 +104,16 @@ public class Player : MonoBehaviour
         }
         if (!isAttacking && Input.GetButton("meleeAttack"))
         {
-            StartCoroutine(CoAttack());
+            if(playerStatus.UseStamina(attackStamina))
+                StartCoroutine(CoAttack());
         }
         horizontal = Input.GetAxisRaw("Horizontal");
         if ((horizontal == 0 && isGround)||(isAttacking && isGround && !isStun))
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
         if (!isAttacking && !isStun && isGround && Input.GetButtonDown("Jump"))
         {
-            Jump();
+            if(playerStatus.UseStamina(jumpStamina))
+                Jump();
         }
         //float vertical = Input.GetAxis("Vertical");
 

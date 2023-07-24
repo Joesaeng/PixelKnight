@@ -9,6 +9,8 @@ public class DevScene : MonoBehaviour
     PlayerLevelText levelText;
     [SerializeField]
     PlayerGageBarUI gageBarUI;
+    [SerializeField]
+    IngameBarUI ingameBarUI;
     void Start()
     {
         PlayerData playerData = GameManager.Instance.selectPlayerData;
@@ -18,6 +20,7 @@ public class DevScene : MonoBehaviour
         GameManager.Instance.DevScene(player);
         gageBarUI.InitGageBarUI();
         levelText.InitLevelText();
+        ingameBarUI.InstantiatePlayerPoiseUI();
         ItemDataBase.Instance.CreateFieldItem();
         
     }

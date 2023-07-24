@@ -88,7 +88,8 @@ public class EnemyStatus : MonoBehaviour
                 Spawner.instance.ShowDamageEffect(0).transform.SetPositionAndRotation
                 (effectPoint.position,Quaternion.identity);
             }
-
+            Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
+                (transform.position, Quaternion.identity);
             TakeDamage(caldmg.damage);
         }
         else if (hitDiff > 0)
@@ -105,6 +106,8 @@ public class EnemyStatus : MonoBehaviour
                 Spawner.instance.ShowDamageEffect(0).transform.SetPositionAndRotation
                 (effectPoint.position, Quaternion.identity);
             }
+            Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
+                (transform.position, Quaternion.identity);
         }
         if (!isHit)
         {

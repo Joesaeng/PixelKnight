@@ -6,12 +6,21 @@ public class BarValueUI : MonoBehaviour
 {
     [SerializeField]
     private Slider slider;
+    [SerializeField]
+    Image fill;
+    Color fillColor = new Color(142f/255f,0f,0f);
     private EnemyStatus enemyStatus;
+    private PlayerStatus playerStatus;
     public void InitEnmeyUI(EnemyStatus _enemyStatus)
     {
         enemyStatus = _enemyStatus;
+        fill.color = fillColor;
     }
-
+    public void InitPlayerStatus()
+    {
+        playerStatus = GameManager.Instance.player.playerStatus;
+        fill.color = new Color(130f / 255f, 130f / 255f, 130f / 255f);
+    }
     private void Update()
     {
         if (slider != null)
@@ -21,6 +30,10 @@ public class BarValueUI : MonoBehaviour
                 slider.value = Utils.Percent(enemyStatus.CurHp, enemyStatus.maxHp);
                 if (slider.gameObject.activeSelf && enemyStatus.CurHp <= 0f) slider.gameObject.SetActive(false);
                 else if (!slider.gameObject.activeSelf && enemyStatus.CurHp >0f) slider.gameObject.SetActive(true);
+            }
+            if(playerStatus != null)
+            {
+                slider.value = Utils.Percent(playerStatus.dPlayerDynamicStatus[DynamicStatusName.CurPoise], playerStatus.dPlayerFixedStatus[FixedStatusName.Poise]);
             }
         }
 

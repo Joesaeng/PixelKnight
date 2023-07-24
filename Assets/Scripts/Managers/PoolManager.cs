@@ -78,7 +78,6 @@ public class PoolManager : Singleton<PoolManager>
                         if(!enemy.activeSelf)
                         {
                             select = enemy;
-                            select.SetActive(true);
                             break;
                         }
                     }
@@ -96,7 +95,6 @@ public class PoolManager : Singleton<PoolManager>
                         if (!enemyUI.activeSelf)
                         {
                             select = enemyUI;
-                            select.SetActive(true);
                             break;
                         }
                     }
@@ -114,7 +112,6 @@ public class PoolManager : Singleton<PoolManager>
                         if (!equip.activeSelf)
                         {
                             select = equip;
-                            select.SetActive(true);
                             break;
                         }
                     }
@@ -132,7 +129,6 @@ public class PoolManager : Singleton<PoolManager>
                         if (!item.activeSelf)
                         {
                             select = item;
-                            select.SetActive(true);
                             break;
                         }
                     }
@@ -150,7 +146,6 @@ public class PoolManager : Singleton<PoolManager>
                         if (!item.activeSelf)
                         {
                             select = item;
-                            select.SetActive(true);
                             break;
                         }
                     }
@@ -162,7 +157,9 @@ public class PoolManager : Singleton<PoolManager>
                 }
                 break;
         }
-            
+        select.SetActive(false);
+
+        select.SetActive(true);
 
         return select;
     }

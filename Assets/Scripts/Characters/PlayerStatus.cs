@@ -381,12 +381,10 @@ public class PlayerStatus : MonoBehaviour
         if(dPlayerFixedStatus[FixedStatusName.Defence] < enemyStatus.damage)
         {
             ModifyHp(dPlayerFixedStatus[FixedStatusName.Defence] - enemyStatus.damage);
-            Debug.Log("Player HP = " + dPlayerDynamicStatus[DynamicStatusName.CurHp]);
         }
         else
         {
             ModifyHp(-1f);
-            Debug.Log("Player HP = " + dPlayerDynamicStatus[DynamicStatusName.CurHp]);
         }
         ModifyPoise(-enemyStatus.stagger);
 
@@ -400,6 +398,8 @@ public class PlayerStatus : MonoBehaviour
         {
             isHit = true;
             TakeDamage(enemyStatus);
+            Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
+                (transform.position, Quaternion.identity);
         }
         else if(hitDiff > 0)
         {
@@ -409,6 +409,8 @@ public class PlayerStatus : MonoBehaviour
         {
             isHit = true;
             TakeDamage(enemyStatus);
+            Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
+                (transform.position, Quaternion.identity);
         }
 
         return isHit;
@@ -428,6 +430,17 @@ public class PlayerStatus : MonoBehaviour
         }
 
         return result;
+    }
+    public bool UseStamina(float value)
+    {
+        bool isUse = false;
+        if(dPlayerDynamicStatus[DynamicStatusName.CurStamina] > value)
+        {
+            ModifyStamina(-value);
+            isUse = true;
+        }
+
+        return isUse;
     }
     /*
      HP 수정 메서드
