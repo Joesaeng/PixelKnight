@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class Player : MonoBehaviour
 {
     // ÄÄÆ÷³ÍÆ®
@@ -9,6 +11,7 @@ public class Player : MonoBehaviour
     Animator animator;
     Collider2D col2D;
     public PlayerStatus playerStatus;
+    public PlayerSkills skills;
     public List<AnimationClip> animationClips;
     public AnimationClip attackAnimationClip;
     public RuntimeAnimatorController[] animCon;
@@ -25,7 +28,8 @@ public class Player : MonoBehaviour
     int xFlip;
     public float moveSpeed;
     public float jumpForce;
-    private float horizontal;
+    public float horizontal;
+    public float vertical;
 
     public float jumpStamina = 5f;
     public float attackStamina = 8f;
@@ -35,6 +39,7 @@ public class Player : MonoBehaviour
     private bool isGround = true;
     private bool isStun = false;
     private bool isDead = false;
+    private bool isDash = false;
     
     private void Awake()
     {
@@ -42,6 +47,7 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
         col2D = GetComponent<Collider2D>();
         playerStatus = GetComponent<PlayerStatus>();
+        skills = GetComponent<PlayerSkills>();
 
         Collider2D[] cols = GetComponentsInChildren<Collider2D>();
         foreach(Collider2D col in cols)
@@ -102,21 +108,38 @@ public class Player : MonoBehaviour
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
             return;
         }
-        if (!isAttacking && Input.GetButton("meleeAttack"))
+        if (!isAttacking && Input.GetKey(KeySetting.keys[KeyAction.MeleeAttack]))
         {
             if(playerStatus.UseStamina(attackStamina))
                 StartCoroutine(CoAttack());
         }
-        horizontal = Input.GetAxisRaw("Horizontal");
-        if ((horizontal == 0 && isGround)||(isAttacking && isGround && !isStun))
-            rigid.velocity = new Vector2(0f, rigid.velocity.y);
-        if (!isAttacking && !isStun && isGround && Input.GetButtonDown("Jump"))
+        if (!isAttacking)
+        {
+            GetSkillKeyDown();
+        }
+        horizontal = InputSystem.Instance.GetHorizontalInput();
+        vertical = InputSystem.Instance.GetVerticalInput();
+        //if ((horizontal == 0 && isGround)||(isAttacking && isGround && !isStun))
+        //    rigid.velocity = new Vector2(0f, rigid.velocity.y);
+        if (!isAttacking && !isStun && isGround && Input.GetKeyDown(KeySetting.keys[KeyAction.Jump]))
         {
             if(playerStatus.UseStamina(jumpStamina))
                 Jump();
         }
-        //float vertical = Input.GetAxis("Vertical");
+    }
+    void GetSkillKeyDown()
+    {
+        KeyAction key = InputSystem.Instance.GetSkillKeyDown();
+        if (key == KeyAction.KeyCount) return;
+        if (playerStatus.UseStamina(skills.GetData(key - KeyAction.Skill_1).staminaUsage))
+        {
+            skills.UseSkill(key - KeyAction.Skill_1);
+            StartCoroutine(CoSkill());
+            
+        }
 
+  
+        
     }
     private void FixedUpdate()
     {
@@ -136,11 +159,12 @@ public class Player : MonoBehaviour
     {
         if(!isAttacking && !isStun)
         {
-            rigid.AddForce(Vector2.right * horizontal, ForceMode2D.Impulse);
-            if (rigid.velocity.x > moveSpeed)
-                rigid.velocity = new Vector2(moveSpeed, rigid.velocity.y);
-            if (rigid.velocity.x < moveSpeed * (-1))
-                rigid.velocity = new Vector2(moveSpeed * (-1), rigid.velocity.y);
+            //rigid.AddForce(Vector2.right * horizontal, ForceMode2D.Impulse);
+            //if (rigid.velocity.x > moveSpeed)
+            //    rigid.velocity = new Vector2(moveSpeed, rigid.velocity.y);
+            //if (rigid.velocity.x < moveSpeed * (-1))
+            //    rigid.velocity = new Vector2(moveSpeed * (-1), rigid.velocity.y);
+            rigid.velocity = new Vector2(horizontal * moveSpeed, rigid.velocity.y);
         }
     }
     void Jump()
@@ -178,6 +202,22 @@ public class Player : MonoBehaviour
         isAttacking = false;
     }
 
+    IEnumerator CoSkill()
+    {
+        isAttacking = true;
+        isDash = true;
+        animator.SetTrigger("Skill");
+        Vector2 dir = new Vector2(transform.localScale.x, 0f);
+        Vector2 curPosition = transform.position;
+        rigid.AddForce(dir * 300f, ForceMode2D.Impulse);
+
+        yield return animator.GetCurrentAnimatorStateInfo(0).length;
+
+        rigid.velocity = Vector2.zero;
+
+        isAttacking = false;
+        isDash = false;
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("EnemyAttackRange") && !isDead)

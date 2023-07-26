@@ -25,7 +25,6 @@ public class GameManager : Singleton<GameManager>
         player.playerStatus.InitSetStatus(selectPlayerData);
         player.playerStatus.OnPlayerDead += PlayerDead;
     }
-
     void PlayerDead()
     {
         // TODO

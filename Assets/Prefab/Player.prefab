@@ -80,6 +80,7 @@ GameObject:
   - component: {fileID: -5917769401234132700}
   - component: {fileID: -8624652967976029335}
   - component: {fileID: 7376285422946378824}
+  - component: {fileID: 6978033305073334550}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -226,6 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerStatus: {fileID: 0}
+  skills: {fileID: 0}
   animationClips: []
   attackAnimationClip: {fileID: 0}
   animCon:
@@ -233,6 +235,7 @@ MonoBehaviour:
   - {fileID: 9100000, guid: fda745a5b5b0f6a4eb5c3a866d99b19b, type: 2}
   attackAnimationClipName: 
   attackSpeed: 1
+  keys: 
   moveSpeed: 3
   jumpForce: 5
   jumpStamina: 5
@@ -279,3 +282,15 @@ MonoBehaviour:
   minAttackSpeed: 0
   maxAttackSpeed: 0
   addedPoint: 0
+--- !u!114 &6978033305073334550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3497617318878869567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 067b47cfb9713f14a8cb2c2d09024198, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

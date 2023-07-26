@@ -9,6 +9,7 @@ public enum PoolType
     FieldItem,
     FieldEquip,
     DamageEffect,
+    Skill
 }
 
 public class PoolManager : Singleton<PoolManager>
@@ -18,6 +19,7 @@ public class PoolManager : Singleton<PoolManager>
     public GameObject fieldItemPrefab;
     public GameObject fieldEquipPrefab;
     public GameObject damageEffectPrefab;
+    public GameObject skillPrefab;
     int poolSize = 2;
 
     List<GameObject> enemyPool;
@@ -25,6 +27,7 @@ public class PoolManager : Singleton<PoolManager>
     List<GameObject> fieldItemPool;
     List<GameObject> fieldEquipPool;
     List<GameObject> damageEffectPool;
+    List<GameObject> skillPool;
 
     private void Awake()
     {
@@ -33,6 +36,7 @@ public class PoolManager : Singleton<PoolManager>
         fieldItemPool = new List<GameObject>();
         fieldEquipPool = new List<GameObject>();
         damageEffectPool = new List<GameObject>();
+        skillPool = new List<GameObject>();
         for(int i = 0; i < poolSize; ++i)
         {
             GameObject newObj = Instantiate(enemyPrefab,transform);
@@ -62,6 +66,12 @@ public class PoolManager : Singleton<PoolManager>
             GameObject newObj = Instantiate(damageEffectPrefab, transform);
             newObj.SetActive(false);
             damageEffectPool.Add(newObj);
+        }
+        for (int i = 0; i < poolSize; ++i)
+        {
+            GameObject newObj = Instantiate(skillPrefab, transform);
+            newObj.SetActive(false);
+            skillPool.Add(newObj);
         }
 
     }
@@ -141,11 +151,11 @@ public class PoolManager : Singleton<PoolManager>
                 break;
             case PoolType.DamageEffect:
                 {
-                    foreach (GameObject item in damageEffectPool)
+                    foreach (GameObject obj in damageEffectPool)
                     {
-                        if (!item.activeSelf)
+                        if (!obj.activeSelf)
                         {
-                            select = item;
+                            select = obj;
                             break;
                         }
                     }
@@ -161,6 +171,27 @@ public class PoolManager : Singleton<PoolManager>
 
         select.SetActive(true);
 
+        return select;
+    }
+    public GameObject GetSkill(int index)
+    {
+        GameObject select = null;
+        foreach (GameObject obj in skillPool)
+        {
+            if (!obj.activeSelf)
+            {
+                select = obj;
+                break;
+            }
+        }
+        if (!select)
+        {
+            select = Instantiate(skillPrefab, transform);
+            skillPool.Add(select);
+        }
+        select.GetComponent<Skill>().SetData(index);
+
+        select.SetActive(true);
         return select;
     }
 }
