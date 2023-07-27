@@ -103,11 +103,6 @@ public class Player : MonoBehaviour
 
     void GetKey()
     {
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
-        {
-            rigid.velocity = new Vector2(0f, rigid.velocity.y);
-            return;
-        }
         if (!isAttacking && Input.GetKey(KeySetting.keys[KeyAction.MeleeAttack]))
         {
             if(playerStatus.UseStamina(attackStamina))
@@ -134,7 +129,7 @@ public class Player : MonoBehaviour
         if (playerStatus.UseStamina(skills.GetData(key - KeyAction.Skill_1).staminaUsage))
         {
             skills.UseSkill(key - KeyAction.Skill_1);
-            StartCoroutine(CoSkill());
+            StartCoroutine(CoSkill(key - KeyAction.Skill_1));
             
         }
 
@@ -146,6 +141,12 @@ public class Player : MonoBehaviour
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
         {
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
+            return;
+        }
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && isGround)
+        {
+            if(isGround)
+                rigid.velocity = new Vector2(0f, rigid.velocity.y);
             return;
         }
         Move();
@@ -202,25 +203,22 @@ public class Player : MonoBehaviour
         isAttacking = false;
     }
 
-    IEnumerator CoSkill()
+    IEnumerator CoSkill(int index)
     {
         isAttacking = true;
         isDash = true;
         animator.SetTrigger("Skill");
-        Vector2 dir = new Vector2(transform.localScale.x, 0f);
-        Vector2 curPosition = transform.position;
-        rigid.AddForce(dir * 300f, ForceMode2D.Impulse);
-
-        yield return animator.GetCurrentAnimatorStateInfo(0).length;
-
-        rigid.velocity = Vector2.zero;
+        Vector2 nextPosition = rigid.position + new Vector2(skills.GetData(index).range * transform.localScale.x,0f);
+        transform.position = nextPosition;
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length * 0.25f);
 
         isAttacking = false;
         isDash = false;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("EnemyAttackRange") && !isDead)
+        Debug.Log("PlayerTriggerEnter");
+        if (collision.CompareTag("EnemyAttackRange") && !isDead)
         {
             if(playerStatus.CalculatedHit(collision.GetComponentInParent<EnemyStatus>()))
             {
@@ -259,7 +257,7 @@ public class Player : MonoBehaviour
     public void BeginAttack()
     {
         attackRange.enabled = true;
-    }    
+    }
     public void EndAttack()
     {
         attackRange.enabled = false;

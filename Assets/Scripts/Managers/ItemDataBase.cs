@@ -16,36 +16,8 @@ public class ItemDataBase : Singleton<ItemDataBase>
     private void Start()
     {
         SetItemDataBase();
-        int test = 0;
-        while(test == itemDB.Count)
-        {
-            foreach(Item item in itemDB)
-            {
-                if (item.itemImage == null)
-                    continue;
-                test++;
-            }
-        }
-        //CreateFieldItem();
     }
 
-    public void CreateFieldItem() // юс╫ц
-    {
-        for (int i = 0; i < pos.Length; ++i)
-        {
-            GameObject go;
-            if (itemDB[i] is Equip equip)
-            {
-                go = Instantiate(fieldEquipPrefab, pos[i], Quaternion.identity);
-                go.GetComponent<FieldEquip>().SetEquip(equip);
-            }
-            else
-            {
-                go = Instantiate(fieldItemPrefab, pos[i], Quaternion.identity);
-                go.GetComponent<FieldItems>().SetItem(itemDB[i]);
-            }
-        }
-    }
     private void SetItemDataBase()
     {
         Equip[] equips = 
@@ -69,5 +41,17 @@ public class ItemDataBase : Singleton<ItemDataBase>
 
 
         itemDB.AddRange(equips);
+    }
+    public Item GetItemData(int index)
+    {
+        return itemDB[index];
+    }
+    public Equip GetEquipData(int index)
+    {
+        if (itemDB[index] is Equip equip)
+        {
+            return equip;
+        }
+        else return null;
     }
 }

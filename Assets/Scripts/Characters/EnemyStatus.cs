@@ -114,6 +114,50 @@ public class EnemyStatus : MonoBehaviour
             Spawner.instance.ShowDamageEffect(1).transform.SetPositionAndRotation
             (effectPoint.position, Quaternion.identity);
         }
+        
+        return isHit;
+    }
+    public bool CalculatedHit(PlayerStatus playerStatus, SkillData skillData)
+    {
+        bool isHit = false;
+        float hitRate = 0f;
+        CalculatedDamage caldmg = playerStatus.CalculateDamage();
+        bool isCritical = caldmg.option == DamageOption.Critical ? true : false;
+        float hitDiff = playerStatus.dPlayerFixedStatus[FixedStatusName.HitRate] - evade;
+        if (hitDiff > 25)
+        {
+            isHit = true;
+            if (isCritical)
+            {
+                Spawner.instance.ShowDamageEffect(0).transform.SetPositionAndRotation
+                (effectPoint.position, Quaternion.identity);
+            }
+            Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
+                (transform.position, Quaternion.identity);
+            TakeDamage(caldmg.damage * skillData.damageRatio);
+        }
+        else if (hitDiff > 0)
+        {
+            hitRate = hitDiff * 0.04f;
+        }
+
+        if (UnityEngine.Random.value < hitRate)
+        {
+            isHit = true;
+            TakeDamage(caldmg.damage * skillData.damageRatio);
+            if (isCritical)
+            {
+                Spawner.instance.ShowDamageEffect(0).transform.SetPositionAndRotation
+                (effectPoint.position, Quaternion.identity);
+            }
+            Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
+                (transform.position, Quaternion.identity);
+        }
+        if (!isHit)
+        {
+            Spawner.instance.ShowDamageEffect(1).transform.SetPositionAndRotation
+            (effectPoint.position, Quaternion.identity);
+        }
         return isHit;
     }
     void TakeDamage(float _damage)

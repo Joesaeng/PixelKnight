@@ -21,7 +21,5 @@ public class DevScene : MonoBehaviour
         gageBarUI.InitGageBarUI();
         levelText.InitLevelText();
         ingameBarUI.InstantiatePlayerPoiseUI();
-        ItemDataBase.Instance.CreateFieldItem();
-        
     }
 }

@@ -21,6 +21,7 @@ public class Item
 {
     public string itemName; // 아이템 이름
     public Sprite itemImage;
+    public string iconAddress;
     public List<ItemEffect> efts = new List<ItemEffect>();
     public ItemType itemType;
     public ItemLevel itemLevel; // 아이템 레벨

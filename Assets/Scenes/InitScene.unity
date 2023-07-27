@@ -364,7 +364,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cff130fde635d9f4db741c45d4f7a20a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 1689453991114565368, guid: 33f6156e55fc251498ac10a24a1297b8, type: 3}
+  enemyPrefab: {fileID: 1689453991114565368, guid: 9d3468e450fcb6c4683b556a2f546494, type: 3}
   enemyHpUIPrefab: {fileID: 6852935644268556838, guid: 6d57cf24e80b5be4dad5fe74c9444886, type: 3}
   fieldItemPrefab: {fileID: 5632884475815189593, guid: e86c071ad12622a4f82b86125fe907ac, type: 3}
   fieldEquipPrefab: {fileID: 5632884475815189593, guid: 02e18d48e82637848a41643d4138541b, type: 3}

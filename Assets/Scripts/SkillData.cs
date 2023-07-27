@@ -7,6 +7,7 @@ public class SkillData : ScriptableObject
 {
     public int skillId;
     public string skillName;
+    public float animationLength;
     public float damageRatio;
     public float range;
     public float staminaUsage;

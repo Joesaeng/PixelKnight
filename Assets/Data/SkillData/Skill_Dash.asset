@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillId: 0
   skillName: Dash
+  animationLength: 0.33
   damageRatio: 1.5
   range: 3
   staminaUsage: 15

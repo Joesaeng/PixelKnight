@@ -33,16 +33,26 @@ public class Spawner : MonoBehaviour
             enemy.GetComponent<EnemyStatus>().SetData();
         }
         OnEnemySpawn?.Invoke();
-        Invoke("EnemySpawn", 15f);
+        //Invoke("EnemySpawn", 15f);
     }
 
     public GameObject ShowDamageEffect(int index)
     {
-        GameObject effect = null;
-        effect = PoolManager.Instance.Get(PoolType.DamageEffect);
+        GameObject effect = PoolManager.Instance.Get(PoolType.DamageEffect);
         effect.GetComponent<DamageEffect>().SetEffect(index);
 
         return effect;
     }
-
+    public void ItemSpawn(Vector2 pos)
+    {
+        //if(UnityEngine.Random.value <= 0.5f)
+        {
+            Equip equip = new Equip();
+            int randomIndex = UnityEngine.Random.Range(0, ItemDataBase.Instance.itemDB.Count);
+            equip.SetItemData(ItemDataBase.Instance.GetEquipData(randomIndex));
+            GameObject obj = PoolManager.Instance.Get(PoolType.FieldEquip);
+            obj.GetComponent<FieldEquip>().SetEquip(equip);
+            obj.transform.position = pos;
+        }
+    }
 }

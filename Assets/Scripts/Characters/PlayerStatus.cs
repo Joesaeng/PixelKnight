@@ -412,7 +412,11 @@ public class PlayerStatus : MonoBehaviour
             Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
                 (transform.position, Quaternion.identity);
         }
-
+        if (!isHit)
+        {
+            Spawner.instance.ShowDamageEffect(1).transform.SetPositionAndRotation
+            (transform.position, Quaternion.identity);
+        }
         return isHit;
     }
     public CalculatedDamage CalculateDamage()

@@ -53,7 +53,8 @@ public class Equip : Item
         EquipSlot _slot, BaseOption _baseOption, float _baseOptionValue)
     {
         this.itemName = _name;
-        LoadEquipResourcesAsync(_iconAddress);
+        this.iconAddress = _iconAddress;
+        LoadEquipResourcesAsync(iconAddress);
         ItemEquipEft itemEquipEft = new();
         SetItemEffect(itemEquipEft);
         this.itemType = _type;
@@ -67,7 +68,8 @@ public class Equip : Item
         float _addtionalOptionValue)
     {
         this.itemName = _name;
-        LoadEquipResourcesAsync(_iconAddress);
+        this.iconAddress = _iconAddress;
+        LoadEquipResourcesAsync(iconAddress);
         ItemEquipEft itemEquipEft = new();
         SetItemEffect(itemEquipEft);
         this.itemType = _type;
@@ -92,6 +94,25 @@ public class Equip : Item
         {
             equipEft.SetEquipInfo(this);
             this.efts.Add(equipEft);
+        }
+    }
+    public void SetItemData(Equip equip)
+    {
+        this.itemName = equip.itemName;
+        LoadEquipResourcesAsync(equip.iconAddress);
+        ItemEquipEft itemEquipEft = new();
+        SetItemEffect(itemEquipEft);
+        this.itemType = equip.itemType;
+        this.itemLevel = equip.itemLevel;
+        this.equipSlot = equip.equipSlot;
+        this.baseOption = equip.baseOption;
+        this.baseOptionValue = equip.baseOptionValue;
+        if(equip.additionalOptions.Count>0)
+        {
+            foreach(var option in equip.additionalOptions)
+            {
+                this.additionalOptions.Add(option.Key, option.Value);
+            }
         }
     }
 

@@ -7,12 +7,10 @@ public class Skill : MonoBehaviour
     public GameObject[] skills;
     public SkillData data;
     GameObject curSkill;
-    Animator animator;
     public void SetData(int index)
     {
         curSkill = skills[index];
         data = DataManager.Instance.GetSkillData(index);
-        animator = curSkill.GetComponent<Animator>();
     }
     private void OnEnable()
     {
@@ -23,10 +21,9 @@ public class Skill : MonoBehaviour
     {
         curSkill.SetActive(true);
 
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
+        yield return new WaitForSeconds(data.animationLength);
 
         curSkill.SetActive(false);
         gameObject.SetActive(false);
     }
-
 }
