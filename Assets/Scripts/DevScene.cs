@@ -11,6 +11,8 @@ public class DevScene : MonoBehaviour
     PlayerGageBarUI gageBarUI;
     [SerializeField]
     IngameBarUI ingameBarUI;
+    [SerializeField]
+    VirtualCam virtualCam;
     void Start()
     {
         PlayerData playerData = GameManager.Instance.selectPlayerData;
@@ -21,5 +23,6 @@ public class DevScene : MonoBehaviour
         gageBarUI.InitGageBarUI();
         levelText.InitLevelText();
         ingameBarUI.InstantiatePlayerPoiseUI();
+        virtualCam.SetFollow(player.transform);
     }
 }

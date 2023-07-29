@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1429084682526200969
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7449907795927902695}
+  m_Layer: 7
+  m_Name: ChkGround
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7449907795927902695
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1429084682526200969}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.438, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3497617318878869555}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1524721093084998207
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,6 +166,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9080938209126234572}
+  - {fileID: 7449907795927902695}
+  - {fileID: 2377191561503997096}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -179,7 +212,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1989500723, guid: 3080d0e2ea8e1024396f86fd6a5516c5, type: 3}
+  m_Sprite: {fileID: 1407864228, guid: 3080d0e2ea8e1024396f86fd6a5516c5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -209,7 +242,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!70 &4144888250708176921
 CapsuleCollider2D:
@@ -260,6 +293,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80daeedda62581a46b37aa305eb1bd12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chkPos: {fileID: 7449907795927902695}
+  frontChk: {fileID: 2377191561503997096}
   playerStatus: {fileID: 0}
   skills: {fileID: 0}
   animationClips: []
@@ -280,6 +315,9 @@ MonoBehaviour:
   jumpStamina: 5
   attackStamina: 8
   attackDelay: 0
+  isSlope: 0
+  slopeDistance: 0.6
+  slopeAngle: 0
 --- !u!114 &-5917769401234132700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,6 +371,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 067b47cfb9713f14a8cb2c2d09024198, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3589923249704920327
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2377191561503997096}
+  m_Layer: 7
+  m_Name: frontChk
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2377191561503997096
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3589923249704920327}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.313, y: -0.311, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3497617318878869555}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7997848407888630874
 GameObject:
   m_ObjectHideFlags: 0

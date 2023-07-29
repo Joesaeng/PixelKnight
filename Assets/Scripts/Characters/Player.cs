@@ -9,7 +9,9 @@ public class Player : MonoBehaviour
     // 컴포넌트
     Rigidbody2D rigid;
     Animator animator;
-    Collider2D col2D;
+    Collider2D myCollider;
+    public Transform chkPos;
+    public Transform frontChk;
     public PlayerStatus playerStatus;
     public PlayerSkills skills;
     public List<AnimationClip> animationClips;
@@ -42,14 +44,20 @@ public class Player : MonoBehaviour
     private bool isStun = false;
     private bool isDead = false;
     private bool isDash = false;
+    private bool isSlope = false;
+    private bool isJump = false;
+
+    public float slopeDistance;
+    public float slopeAngle;
+    Vector2 slopePerp;
 
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        col2D = GetComponent<Collider2D>();
         playerStatus = GetComponent<PlayerStatus>();
         skills = GetComponent<PlayerSkills>();
+        myCollider = GetComponent<Collider2D>();
 
         floorLayer = LayerMask.GetMask("Floor");
         xFlipScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
@@ -91,6 +99,17 @@ public class Player : MonoBehaviour
         GetKey();
         moveDir = new Vector3(horizontal, 0, 0); // 스프라이트의 Xflip값을 위한 방향값
         isGround = IsCheckGrounded();
+        RaycastHit2D hit = Physics2D.Raycast(chkPos.position, Vector2.down, slopeDistance, floorLayer);
+        RaycastHit2D fronthit = Physics2D.Raycast(frontChk.position, Vector2.down, 0.4f, floorLayer);
+
+        if (hit || fronthit)
+        {
+            if (fronthit)
+                IsCheckSlope(fronthit);
+            else if (hit)
+                IsCheckSlope(hit);
+        }
+
     }
 
     void GetKey()
@@ -106,11 +125,7 @@ public class Player : MonoBehaviour
         }
         horizontal = InputSystem.Instance.GetHorizontalInput();
         vertical = InputSystem.Instance.GetVerticalInput();
-        if (!isAttacking && !isStun && isGround && Input.GetKeyDown(KeySetting.keys[KeyAction.Jump]))
-        {
-            if (playerStatus.UseStamina(jumpStamina))
-                Jump();
-        }
+
     }
     void GetSkillKeyDown()
     {
@@ -125,6 +140,8 @@ public class Player : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        Move();
+        Jump();
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
         {
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
@@ -136,7 +153,6 @@ public class Player : MonoBehaviour
                 rigid.velocity = new Vector2(0f, rigid.velocity.y);
             return;
         }
-        Move();
     }
     private void LateUpdate()
     {
@@ -145,20 +161,52 @@ public class Player : MonoBehaviour
 
     void Move()
     {
-        if (!isAttacking && !isStun)
+        rigid.constraints = horizontal == 0 ? RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation
+            : RigidbodyConstraints2D.FreezeRotation;
+        if (isSlope && isGround && !isJump)
+        {
+            rigid.velocity = slopePerp * moveSpeed * horizontal * -1;
+        }
+        else if (!isSlope && isGround && !isJump)
+        {
+            rigid.velocity = new Vector2(horizontal * moveSpeed, 0);
+        }
+        else
         {
             rigid.velocity = new Vector2(horizontal * moveSpeed, rigid.velocity.y);
         }
     }
     void Jump()
     {
-        rigid.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        animator.SetBool("isGround", false);
+        if (rigid.velocity.y <= 0f) isJump = false;
+        if (!isAttacking && !isStun && isGround && !isJump && Input.GetKeyDown(KeySetting.keys[KeyAction.Jump]))
+        {
+            if (playerStatus.UseStamina(jumpStamina))
+            {
+                rigid.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                animator.SetBool("isGround", false);
+                isJump = true;
+            }
+        }
+
     }
 
     private bool IsCheckGrounded()
     {
-        return Physics2D.BoxCast(col2D.bounds.center, col2D.bounds.size, 0f, Vector2.down, 0.1f, floorLayer);
+        return Physics2D.BoxCast(myCollider.bounds.center,myCollider.bounds.size , 0f, Vector2.down, 0.01f, floorLayer);
+    }
+    private void IsCheckSlope(RaycastHit2D hit)
+    {
+        if (hit)
+        {
+            slopePerp = Vector2.Perpendicular(hit.normal).normalized;
+            slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+            if (slopeAngle != 0)
+                isSlope = true;
+            else
+                isSlope = false;
+            Debug.DrawLine(hit.point, hit.point + slopePerp,Color.green);
+        }
     }
     void Animation()
     {
