@@ -60,7 +60,7 @@ public class Enemy : MonoBehaviour
             anim.SetFloat("WalkSpeed", 0f);
             return;
         }
-        if(target)
+        if (target)
         {
             CancelInvoke();
             Chase();
@@ -85,8 +85,8 @@ public class Enemy : MonoBehaviour
         nextMove = rigid.position.x - target.position.x >= 0f ? -1 : 1;
         Vector2 dir = target.position - rigid.position;
         RaycastHit2D ray = Physics2D.Raycast(rigid.position, dir, 0.7f, LayerMask.GetMask("Player"));
-        
-        if(!isAttacking && ray.collider != null && ray.collider.CompareTag("Player"))
+
+        if (!isAttacking && ray.collider != null && ray.collider.CompareTag("Player"))
         {
             StartCoroutine(CoAttack());
         }
@@ -119,53 +119,46 @@ public class Enemy : MonoBehaviour
 
     void Think()
     {
-        
+
         nextMove = Random.Range(-1, 2);
 
         Invoke("Think", Random.Range(2f, 6f));
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Debug.Log("EnemyTriggerEnter");
-        if (target == null) target = GameManager.Instance.player.GetComponent<Rigidbody2D>();
-        if (collision.CompareTag("PlayerAttackRange") && !isHit && !isDead)
-        {
-            //isHit = true;
-            if (!enemyStatus.CalculatedHit(collision.gameObject.GetComponentInParent<PlayerStatus>()))
-            {
-                
-            }
-            else
-            {
-                anim.SetTrigger("isHit");
-            }
-            
-            StartCoroutine(ResetHitState(GameManager.Instance.player.attackDelay * 0.5f));
-        }
         if (collision.CompareTag("PlayerSkillRange") && !isHit && !isDead)
         {
-            //isHit = true;
-            if (!enemyStatus.CalculatedHit(GameManager.Instance.player.playerStatus,collision.GetComponentInParent<Skill>().data))
-            {
-
-            }
-            else
+            if (target == null) target = GameManager.Instance.player.GetComponent<Rigidbody2D>();
+            isHit = true;
+            if (enemyStatus.CalculatedHit(GameManager.Instance.player.playerStatus, collision.GetComponentInParent<Skill>().data))
             {
                 anim.SetTrigger("isHit");
             }
 
-            StartCoroutine(ResetHitState(GameManager.Instance.player.attackDelay * 0.5f));
+            StartCoroutine(ResetHitState());
         }
     }
-    IEnumerator ResetHitState(float delay)
+    public void Hit(PlayerStatus playerstatus)
     {
-        yield return new WaitForSeconds(delay);
+        if (isDead) return;
+        if (target == null) target = playerstatus.GetComponent<Rigidbody2D>();
+        isHit = true;
+        if (enemyStatus.CalculatedHit(playerstatus))
+        {
+            anim.SetTrigger("isHit");
+        }
+
+        StartCoroutine(ResetHitState());
+    }
+    IEnumerator ResetHitState()
+    {
+        yield return new WaitForEndOfFrame();
         isHit = false;
     }
 
     void EnemyDead()
     {
-        if(!isDead)Spawner.instance.ItemSpawn(transform.position);
+        if (!isDead) Spawner.instance.ItemSpawn(transform.position);
         isDead = true;
         CancelInvoke();
         StartCoroutine(EnemyDeadAnimPlay());
@@ -173,7 +166,7 @@ public class Enemy : MonoBehaviour
     IEnumerator EnemyDeadAnimPlay()
     {
         anim.SetBool("isDead", isDead);
-        
+
         yield return new WaitForSeconds(2.5f);
         gameObject.SetActive(false);
     }

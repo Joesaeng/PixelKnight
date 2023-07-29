@@ -15,8 +15,10 @@ public class Player : MonoBehaviour
     public List<AnimationClip> animationClips;
     public AnimationClip attackAnimationClip;
     public RuntimeAnimatorController[] animCon;
-    Collider2D attackRange;
-    
+    public Transform[] attackRangePos;
+
+    public HashSet<Rigidbody2D> targets = new();
+
     public string attackAnimationClipName;
 
     public float attackSpeed = 1.0f;// 공격 속도
@@ -40,7 +42,7 @@ public class Player : MonoBehaviour
     private bool isStun = false;
     private bool isDead = false;
     private bool isDash = false;
-    
+
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -48,14 +50,6 @@ public class Player : MonoBehaviour
         col2D = GetComponent<Collider2D>();
         playerStatus = GetComponent<PlayerStatus>();
         skills = GetComponent<PlayerSkills>();
-
-        Collider2D[] cols = GetComponentsInChildren<Collider2D>();
-        foreach(Collider2D col in cols)
-        {
-            if (col.transform == transform)
-                continue;
-            attackRange = col;
-        }
 
         floorLayer = LayerMask.GetMask("Floor");
         xFlipScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
@@ -97,28 +91,24 @@ public class Player : MonoBehaviour
         GetKey();
         moveDir = new Vector3(horizontal, 0, 0); // 스프라이트의 Xflip값을 위한 방향값
         isGround = IsCheckGrounded();
-        //if (isAttacking)
-        //    return;
     }
 
     void GetKey()
     {
         if (!isAttacking && Input.GetKey(KeySetting.keys[KeyAction.MeleeAttack]))
         {
-            if(playerStatus.UseStamina(attackStamina))
+            if (playerStatus.UseStamina(attackStamina))
                 StartCoroutine(CoAttack());
         }
-        if (!isAttacking)
+        if (!isDash)
         {
             GetSkillKeyDown();
         }
         horizontal = InputSystem.Instance.GetHorizontalInput();
         vertical = InputSystem.Instance.GetVerticalInput();
-        //if ((horizontal == 0 && isGround)||(isAttacking && isGround && !isStun))
-        //    rigid.velocity = new Vector2(0f, rigid.velocity.y);
         if (!isAttacking && !isStun && isGround && Input.GetKeyDown(KeySetting.keys[KeyAction.Jump]))
         {
-            if(playerStatus.UseStamina(jumpStamina))
+            if (playerStatus.UseStamina(jumpStamina))
                 Jump();
         }
     }
@@ -130,11 +120,8 @@ public class Player : MonoBehaviour
         {
             skills.UseSkill(key - KeyAction.Skill_1);
             StartCoroutine(CoSkill(key - KeyAction.Skill_1));
-            
         }
 
-  
-        
     }
     private void FixedUpdate()
     {
@@ -145,7 +132,7 @@ public class Player : MonoBehaviour
         }
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && isGround)
         {
-            if(isGround)
+            if (isGround)
                 rigid.velocity = new Vector2(0f, rigid.velocity.y);
             return;
         }
@@ -158,13 +145,8 @@ public class Player : MonoBehaviour
 
     void Move()
     {
-        if(!isAttacking && !isStun)
+        if (!isAttacking && !isStun)
         {
-            //rigid.AddForce(Vector2.right * horizontal, ForceMode2D.Impulse);
-            //if (rigid.velocity.x > moveSpeed)
-            //    rigid.velocity = new Vector2(moveSpeed, rigid.velocity.y);
-            //if (rigid.velocity.x < moveSpeed * (-1))
-            //    rigid.velocity = new Vector2(moveSpeed * (-1), rigid.velocity.y);
             rigid.velocity = new Vector2(horizontal * moveSpeed, rigid.velocity.y);
         }
     }
@@ -195,9 +177,8 @@ public class Player : MonoBehaviour
     IEnumerator CoAttack()
     {
         isAttacking = true;
-        
-        animator.SetTrigger("Attack");
 
+        animator.SetTrigger("Attack");
         yield return WFSattackDelay;
 
         isAttacking = false;
@@ -208,27 +189,25 @@ public class Player : MonoBehaviour
         isAttacking = true;
         isDash = true;
         animator.SetTrigger("Skill");
-        Vector2 nextPosition = rigid.position + new Vector2(skills.GetData(index).range * transform.localScale.x,0f);
+        Vector2 nextPosition = rigid.position + new Vector2(skills.GetData(index).range * transform.localScale.x, 0f);
         transform.position = nextPosition;
         yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length * 0.25f);
 
         isAttacking = false;
         isDash = false;
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        Debug.Log("PlayerTriggerEnter");
-        if (collision.CompareTag("EnemyAttackRange") && !isDead)
+        if (collision.CompareTag("Enemy"))
         {
-            if(playerStatus.CalculatedHit(collision.GetComponentInParent<EnemyStatus>()))
-            {
-                
-            }
-            else
-            {
-                
-            }
-
+            targets.Add(collision.attachedRigidbody);
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (targets.Count > 0)
+        {
+            targets.Remove(collision.attachedRigidbody);
         }
     }
     public void PlayerStun()
@@ -256,10 +235,12 @@ public class Player : MonoBehaviour
     }
     public void BeginAttack()
     {
-        attackRange.enabled = true;
-    }
-    public void EndAttack()
-    {
-        attackRange.enabled = false;
+        if (targets.Count > 0)
+        {
+            foreach (var target in targets)
+            {
+                target.GetComponent<Enemy>().Hit(playerStatus);
+            }
+        }
     }
 }
