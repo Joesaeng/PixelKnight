@@ -173,7 +173,7 @@ public class PoolManager : Singleton<PoolManager>
 
         return select;
     }
-    public GameObject GetSkill(int index)
+    public GameObject GetSkill(SkillName name)
     {
         GameObject select = null;
         foreach (GameObject obj in skillPool)
@@ -189,8 +189,9 @@ public class PoolManager : Singleton<PoolManager>
             select = Instantiate(skillPrefab, transform);
             skillPool.Add(select);
         }
-        select.GetComponent<Skill>().SetData(index);
+        select.GetComponent<Skill>().SetData(name);
 
+        select.SetActive(false);
         select.SetActive(true);
         return select;
     }

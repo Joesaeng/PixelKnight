@@ -33,7 +33,7 @@ public class Spawner : MonoBehaviour
             enemy.GetComponent<EnemyStatus>().SetData();
         }
         OnEnemySpawn?.Invoke();
-        //Invoke("EnemySpawn", 15f);
+        Invoke("EnemySpawn", 15f);
     }
 
     public GameObject ShowDamageEffect(int index)

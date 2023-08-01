@@ -15,6 +15,8 @@ public class Enemy : MonoBehaviour
     Vector2 initPosition;
     public bool isHit;
     bool isDead;
+    public bool IsDead
+    { get { return isDead; } }    
     public bool isAttacking;
     public WaitForSeconds attackDelay;
     public int nextMove;
@@ -148,6 +150,15 @@ public class Enemy : MonoBehaviour
             anim.SetTrigger("isHit");
         }
 
+        StartCoroutine(ResetHitState());
+    }
+    public void JudgementHit()
+    {
+        if (isDead) return;
+        if (target == null) target = GameManager.Instance.player.GetComponent<Rigidbody2D>();
+        isHit = true;
+        enemyStatus.CalculatedHit(GameManager.Instance.player.playerStatus, DataManager.Instance.GetSkillData(SkillName.Judgement));
+        anim.SetTrigger("isHit");
         StartCoroutine(ResetHitState());
     }
     IEnumerator ResetHitState()

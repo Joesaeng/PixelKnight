@@ -7,10 +7,10 @@ public class Skill : MonoBehaviour
     public GameObject[] skills;
     public SkillData data;
     GameObject curSkill;
-    public void SetData(int index)
+    public void SetData(SkillName name)
     {
-        curSkill = skills[index];
-        data = DataManager.Instance.GetSkillData(index);
+        curSkill = skills[(int)name];
+        data = DataManager.Instance.GetSkillData(name);
     }
     private void OnEnable()
     {

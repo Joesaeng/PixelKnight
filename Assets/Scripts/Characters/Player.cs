@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     public Transform[] attackRangePos;
 
     public HashSet<Rigidbody2D> targets = new();
+    public HashSet<Rigidbody2D> judgementtargets = new();
 
     public string attackAnimationClipName;
 
@@ -43,7 +44,7 @@ public class Player : MonoBehaviour
     private bool isGround = true;
     private bool isStun = false;
     private bool isDead = false;
-    private bool isDash = false;
+    private bool isSkill = false;
     private bool isSlope = false;
     private bool isJump = false;
 
@@ -119,7 +120,7 @@ public class Player : MonoBehaviour
             if (playerStatus.UseStamina(attackStamina))
                 StartCoroutine(CoAttack());
         }
-        if (!isDash)
+        if (!isSkill)
         {
             GetSkillKeyDown();
         }
@@ -134,7 +135,7 @@ public class Player : MonoBehaviour
         if (playerStatus.UseStamina(skills.GetData(key - KeyAction.Skill_1).staminaUsage))
         {
             skills.UseSkill(key - KeyAction.Skill_1);
-            StartCoroutine(CoSkill(key - KeyAction.Skill_1));
+            StartCoroutine(CoSkill(skills.GetData(key - KeyAction.Skill_1).skillName));
         }
 
     }
@@ -147,7 +148,7 @@ public class Player : MonoBehaviour
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
             return;
         }
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") && isGround)
+        if (isAttacking && isGround)
         {
             if (isGround)
                 rigid.velocity = new Vector2(0f, rigid.velocity.y);
@@ -193,7 +194,7 @@ public class Player : MonoBehaviour
 
     private bool IsCheckGrounded()
     {
-        return Physics2D.BoxCast(myCollider.bounds.center,myCollider.bounds.size , 0f, Vector2.down, 0.01f, floorLayer);
+        return Physics2D.BoxCast(myCollider.bounds.center, myCollider.bounds.size, 0f, Vector2.down, 0.01f, floorLayer);
     }
     private void IsCheckSlope(RaycastHit2D hit)
     {
@@ -205,7 +206,7 @@ public class Player : MonoBehaviour
                 isSlope = true;
             else
                 isSlope = false;
-            Debug.DrawLine(hit.point, hit.point + slopePerp,Color.green);
+            Debug.DrawLine(hit.point, hit.point + slopePerp, Color.green);
         }
     }
     void Animation()
@@ -232,31 +233,63 @@ public class Player : MonoBehaviour
         isAttacking = false;
     }
 
-    IEnumerator CoSkill(int index)
+    IEnumerator CoSkill(SkillName name)
     {
         isAttacking = true;
-        isDash = true;
+        isSkill = true;
+        SkillData skillData = DataManager.Instance.GetSkillData(name);
+        animator.SetFloat("SkillSpeed", skillData.skillSpeed);
         animator.SetTrigger("Skill");
-        Vector2 nextPosition = rigid.position + new Vector2(skills.GetData(index).range * transform.localScale.x, 0f);
-        transform.position = nextPosition;
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length * 0.25f);
+        switch (name)
+        {
+            case SkillName.Dash: // Dash
+                {
+                    Vector2 nextPosition = rigid.position + new Vector2(skillData.range * transform.localScale.x, 0f);
+                    transform.position = nextPosition;
+                    yield return new WaitForSeconds(skillData.animationLength*0.66f);
+                    break;
+                }
+            case SkillName.Judgement: // Judgement
+                {
+                    foreach (var target in GetJudgetTarget())
+                    {
+                        target.GetComponent<Enemy>().JudgementHit();
+                    }
+                    yield return new WaitForSeconds(skillData.animationLength*0.66f);
+                    break;
+                }
+            default:
+                {
+                    yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length * 0.25f);
+                    break;
+                }
+        }
+
 
         isAttacking = false;
-        isDash = false;
+        isSkill = false;
     }
-    private void OnTriggerStay2D(Collider2D collision)
+    public void AddTarget(Rigidbody2D target)
     {
-        if (collision.CompareTag("Enemy"))
-        {
-            targets.Add(collision.attachedRigidbody);
-        }
+        targets.Add(target);
     }
-    private void OnTriggerExit2D(Collider2D collision)
+    public void RemoveTarget(Rigidbody2D target)
     {
-        if (targets.Count > 0)
-        {
-            targets.Remove(collision.attachedRigidbody);
-        }
+        if(targets.Contains(target))
+            targets.Remove(target);
+    }
+    public void AddJudgeTarget(Rigidbody2D target)
+    {
+        judgementtargets.Add(target);
+    }
+    public void RemoveJudgeTarget(Rigidbody2D target)
+    {
+        if(judgementtargets.Contains(target))
+            judgementtargets.Remove(target);
+    }
+    public HashSet<Rigidbody2D> GetJudgetTarget()
+    {
+        return judgementtargets;
     }
     public void PlayerStun()
     {

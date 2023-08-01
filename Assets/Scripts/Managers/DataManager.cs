@@ -15,8 +15,8 @@ public class DataManager : Singleton<DataManager>
     {
         return enemyDatas[id];
     }
-    public SkillData GetSkillData(int id)
+    public SkillData GetSkillData(SkillName name)
     {
-        return skillDatas[id];
+        return skillDatas[(int)name];
     }
 }
