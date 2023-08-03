@@ -132,6 +132,7 @@ public class Player : MonoBehaviour
     {
         KeyAction key = InputSystem.Instance.GetSkillKeyDown();
         if (key == KeyAction.KeyCount) return;
+        if (skills.GetData(key - KeyAction.Skill_1) == null) return;
         if (playerStatus.UseStamina(skills.GetData(key - KeyAction.Skill_1).staminaUsage))
         {
             skills.UseSkill(key - KeyAction.Skill_1);

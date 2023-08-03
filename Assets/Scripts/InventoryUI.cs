@@ -4,12 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryUI : MonoBehaviour
+public class InventoryUI : MenuUI
 {
     Inventory inventory;
-
-    public GameObject inventoryPanel;
-    public bool activeInventory = false;
 
     public Slot[] slots;
     public EquipmentSlotUI[] equipmentSlots;
@@ -27,7 +24,7 @@ public class InventoryUI : MonoBehaviour
         }
         inventory.onSlotCountChange += SlotChange;
         inventory.onChangeItem += RedrawSlotUI;
-        inventoryPanel.SetActive(activeInventory);
+        menuPanel.SetActive(activeMenu);
     }
 
     private void SlotChange(int val)
@@ -42,10 +39,10 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    public void ActiveInventory()
+    public override void ActiveMenu()
     {
-        activeInventory = !activeInventory;
-        inventoryPanel.SetActive(activeInventory);
+        activeMenu = !activeMenu;
+        menuPanel.SetActive(activeMenu);
         if (SelectItemUI.Instance.selectItemPanel.activeSelf)
             SelectItemUI.Instance.selectItemPanel.SetActive(false);
     }

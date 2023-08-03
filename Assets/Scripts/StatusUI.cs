@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StatusUI : MonoBehaviour
+public class StatusUI : MenuUI
 {
-    public bool activeStatusUI = false;
     bool firstOpen = false;
-    public GameObject statusPanel;
     StatusValueUI statusValueUI;
     void Start()
     {
-        statusPanel.SetActive(activeStatusUI);
-        statusValueUI = statusPanel.transform.GetChild(1).transform.GetChild(2).GetComponent<StatusValueUI>();
+        menuPanel.SetActive(activeMenu);
+        statusValueUI = menuPanel.transform.GetChild(1).transform.GetChild(2).GetComponent<StatusValueUI>();
     }
-    public void ActiveStatusUI()
+    public override void ActiveMenu()
     {
-        activeStatusUI = !activeStatusUI;
-        statusPanel.SetActive(activeStatusUI);
+        activeMenu = !activeMenu;
+        menuPanel.SetActive(activeMenu);
         if (!firstOpen)
         {
             statusValueUI.InitStatusUI();

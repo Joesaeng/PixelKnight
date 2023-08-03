@@ -4,24 +4,20 @@ using UnityEngine;
 
 public class OnOffAllUI : MonoBehaviour
 {
-    InventoryUI inventoryUI;
-    StatusUI statusUI;
+    MenuUI[] menuUIList;
+    
     private void Awake()
     {
-        inventoryUI = GetComponent<InventoryUI>();
-        statusUI = GetComponent<StatusUI>();
+        menuUIList = GetComponents<MenuUI>();
     }
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            if(inventoryUI.activeInventory)
+            for(int i = 0; i < menuUIList.Length;++i)
             {
-                inventoryUI.ActiveInventory();
-            }
-            if(statusUI.activeStatusUI)
-            {
-                statusUI.ActiveStatusUI();
+                if (menuUIList[i].activeMenu)
+                    menuUIList[i].ActiveMenu();
             }
         }
     }

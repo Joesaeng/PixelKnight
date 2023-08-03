@@ -5,16 +5,21 @@ using UnityEngine;
 public enum SkillName
 {
     Dash,
-    Judgement
+    Judgement,
+    NULL,
 }
 [CreateAssetMenu(fileName = "Skill", menuName = "SkillData")]
 public class SkillData : ScriptableObject
 {
     public int skillId;
     public SkillName skillName;
+    public string skillNameString;
+    public Sprite skillIcon;
     public float skillSpeed;
     public float animationLength;
     public float damageRatio;
     public float range;
     public float staminaUsage;
+    [TextArea]
+    public string slillDesc;
 }
