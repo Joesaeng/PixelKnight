@@ -72,6 +72,8 @@ public class Enemy : MonoBehaviour
             Move();
         }
         anim.SetFloat("WalkSpeed", Mathf.Abs(rigid.velocity.x));
+        if (rigid.velocity.y <= -50f) // ¸Ê ¹ÛÀ¸·Î ÀÌÅ»ÇßÀ»¶§ °­Á¦·Î »ç¸Á Ã³¸®
+            enemyStatus.ModifyHp(-10000000f);
     }
     private void LateUpdate()
     {
@@ -177,7 +179,7 @@ public class Enemy : MonoBehaviour
     IEnumerator EnemyDeadAnimPlay()
     {
         anim.SetBool("isDead", isDead);
-
+        transform.SetParent(PoolManager.Instance.transform);
         yield return new WaitForSeconds(2.5f);
         gameObject.SetActive(false);
     }

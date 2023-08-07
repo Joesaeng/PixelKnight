@@ -7,17 +7,12 @@ public class Spawner : MonoBehaviour
 {
     public static Spawner instance;
 
-    public List<Transform> enemySpawnPoint;
-    public Action OnEnemySpawn;
+    public SpawnPoint[] enemySpawnPoints;
+    public Action<GameObject> OnEnemySpawn;
     private void Awake()
     {
         instance = this;
-        Transform[] temp = GetComponentsInChildren<Transform>();
-        foreach(Transform t in temp)
-        {
-            if (t.transform == this.transform) continue;
-            enemySpawnPoint.Add(t);
-        }
+        enemySpawnPoints = GetComponentsInChildren<SpawnPoint>();
     }
 
     private void Start()
@@ -26,14 +21,11 @@ public class Spawner : MonoBehaviour
     }
     void EnemySpawn()
     {
-        for(int i = 0; i < enemySpawnPoint.Count; ++i)
+        foreach(SpawnPoint point in enemySpawnPoints)
         {
-            GameObject enemy = PoolManager.Instance.Get(PoolType.Enemy);
-            enemy.transform.position = enemySpawnPoint[i].position;
-            enemy.GetComponent<EnemyStatus>().SetData();
+            SpawnEnemy(point);
         }
-        OnEnemySpawn?.Invoke();
-        Invoke("EnemySpawn", 15f);
+        
     }
 
     public GameObject ShowDamageEffect(int index)
@@ -54,5 +46,14 @@ public class Spawner : MonoBehaviour
             obj.GetComponent<FieldEquip>().SetEquip(equip);
             obj.transform.position = pos;
         }
+    }
+    public void SpawnEnemy(SpawnPoint point)
+    {
+        GameObject enemy = PoolManager.Instance.Get(PoolType.Enemy);
+        enemy.transform.position = point.transform.position;
+        enemy.transform.SetParent(point.transform);
+        enemy.GetComponent<EnemyStatus>().SetData();
+        point.SetEnemy(enemy.GetComponent<Enemy>());
+        OnEnemySpawn?.Invoke(enemy);
     }
 }

@@ -11,6 +11,9 @@ public enum KeyAction
     Skill_2,
     Skill_3,
     Skill_4,
+    Inventory,
+    Status,
+    Skill,
     KeyCount
 }
 
@@ -24,7 +27,8 @@ public class KeyManager : Singleton<KeyManager>
     {
         KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.LeftArrow,KeyCode.RightArrow,
         KeyCode.Z,KeyCode.C,
-        KeyCode.Q,KeyCode.W,KeyCode.E,KeyCode.R
+        KeyCode.Q,KeyCode.W,KeyCode.E,KeyCode.R,
+        KeyCode.I,KeyCode.P,KeyCode.K
     };
     private void Awake()
     {

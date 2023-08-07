@@ -35,11 +35,16 @@ public class SkillUI : MenuUI
         {
             usedSkillSlots[i].OnUsedSkill += SetUsedSkill;
         }
+        InputSystem.Instance.OnSkillMenu += KeyInputAtiveMenu;
     }
     public override void ActiveMenu()
     {
         activeMenu = !activeMenu;
         menuPanel.SetActive(activeMenu);
+    }
+    public override void KeyInputAtiveMenu()
+    {
+        ActiveMenu();
     }
     void SelectSkill(SkillDescUI descUI)
     {

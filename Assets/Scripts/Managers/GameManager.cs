@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 public class GameManager : Singleton<GameManager>
 {
     [Header("# GameObject")]
     public Player player;
     public PlayerData selectPlayerData;
-    //public Inventory inventory;
-    //public Equipment equipment;
 
+    [Header("# preps")]
+    public int curGold;
+
+    public Action OnChangedGold;
     private void Start()
     {
         SceneManager.LoadScene(1);
+        ModifyGold(0);
     }
     public void GameStart(int val)
     {
@@ -24,6 +28,15 @@ public class GameManager : Singleton<GameManager>
         player = _player.GetComponent<Player>();
         player.playerStatus.InitSetStatus(selectPlayerData);
         player.playerStatus.OnPlayerDead += PlayerDead;
+    }
+    public void ModifyGold(int value)
+    {
+        curGold += value;
+        OnChangedGold?.Invoke();
+    }
+    public int GetCurGold()
+    {
+        return curGold;
     }
     void PlayerDead()
     {

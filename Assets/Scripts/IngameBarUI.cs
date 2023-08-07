@@ -15,20 +15,16 @@ public class IngameBarUI : MonoBehaviour
     {
         cam = Camera.main;
         Spawner.instance.OnEnemySpawn += InstantiateHPUI;
-        
+
     }
-    public void InstantiateHPUI()
+    public void InstantiateHPUI(GameObject enemy)
     {
-        GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
-        for (int i = 0; i < enemys.Length; ++i)
-        {
-            objectList.Add(enemys[i].transform);
-            GameObject hpBar = PoolManager.Instance.Get(PoolType.EnemyHpUI);
-            hpBar.transform.position = enemys[i].transform.position;
-            hpBar.transform.SetParent(transform);
-            barList.Add(hpBar);
-            enemys[i].GetComponent<EnemyStatus>().SetHPUI(hpBar);
-        }
+        objectList.Add(enemy.transform);
+        GameObject hpBar = PoolManager.Instance.Get(PoolType.EnemyHpUI);
+        hpBar.transform.position = enemy.transform.position;
+        hpBar.transform.SetParent(transform);
+        barList.Add(hpBar);
+        enemy.GetComponent<EnemyStatus>().SetHPUI(hpBar);
     }
     public void InstantiatePlayerPoiseUI()
     {
@@ -42,7 +38,7 @@ public class IngameBarUI : MonoBehaviour
 
     private void Update()
     {
-        for(int i =0;i<objectList.Count; ++i)
+        for (int i = 0; i < objectList.Count; ++i)
         {
             barList[i].transform.position = cam.WorldToScreenPoint(objectList[i].position + new Vector3(0, 0.7f, 0));
         }

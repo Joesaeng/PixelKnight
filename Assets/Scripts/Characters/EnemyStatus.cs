@@ -11,7 +11,7 @@ public class EnemyStatus : MonoBehaviour
     public int enemyID;
     private string charName;
     public float expReward;
-    GameObject hpBarUI;
+    public int goldReward;
 
     public float maxHp;
     public float maxPoise;
@@ -46,6 +46,7 @@ public class EnemyStatus : MonoBehaviour
     {
         this.charName   = data.charName;
         this.expReward = data.expReward;
+        this.goldReward = data.goldReward;
         this.maxHp      = data.maxHp;
         this.maxPoise   = data.maxPoise;
         this.damage     = data.damage;
@@ -59,7 +60,7 @@ public class EnemyStatus : MonoBehaviour
         this.curPoise = maxPoise;
         
     }
-    void ModifyHp(float value)
+    public void ModifyHp(float value)
     {
         curHp += value;
         if(curHp <= 0)
@@ -67,6 +68,7 @@ public class EnemyStatus : MonoBehaviour
             OnEnemyDead?.Invoke();
             curHp = 0;
             GameManager.Instance.player.playerStatus.ModifyExp(expReward);
+            GameManager.Instance.ModifyGold(goldReward);
         }
     }
     void ModifyPoise(float value)
@@ -167,6 +169,5 @@ public class EnemyStatus : MonoBehaviour
     public void SetHPUI(GameObject hpUI)
     {
         hpUI.GetComponent<BarValueUI>().InitEnmeyUI(this);
-        hpBarUI = hpUI;
     }
 }

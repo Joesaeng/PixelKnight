@@ -25,6 +25,7 @@ public class InventoryUI : MenuUI
         inventory.onSlotCountChange += SlotChange;
         inventory.onChangeItem += RedrawSlotUI;
         menuPanel.SetActive(activeMenu);
+        InputSystem.Instance.OnInventoryMenu += KeyInputAtiveMenu;
     }
 
     private void SlotChange(int val)
@@ -45,6 +46,10 @@ public class InventoryUI : MenuUI
         menuPanel.SetActive(activeMenu);
         if (SelectItemUI.Instance.selectItemPanel.activeSelf)
             SelectItemUI.Instance.selectItemPanel.SetActive(false);
+    }
+    public override void KeyInputAtiveMenu()
+    {
+        ActiveMenu();
     }
     public void AddSlot()
     {

@@ -8,4 +8,5 @@ public abstract class MenuUI : MonoBehaviour
     public bool activeMenu = false;
 
     public abstract void ActiveMenu();
+    public abstract void KeyInputAtiveMenu();
 }

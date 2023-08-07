@@ -15,6 +15,7 @@ MonoBehaviour:
   enemyID: 0
   charName: Goblin
   expReward: 10
+  goldReward: 15
   maxHp: 150
   maxPoise: 0
   damage: 30

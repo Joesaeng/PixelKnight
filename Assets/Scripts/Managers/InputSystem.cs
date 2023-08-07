@@ -8,11 +8,15 @@ public class InputSystem : Singleton<InputSystem>
     private float horizontalInput;
     private float verticalInput;
 
+    public Action OnInventoryMenu;
+    public Action OnStatusMenu;
+    public Action OnSkillMenu;
     private void Update()
     {
         SetHorizontalInput();
         SetVerticalInput();
         GetSkillKeyDown();
+        GetMenuKeyDown();
     }
     private void SetHorizontalInput()
     {
@@ -48,5 +52,11 @@ public class InputSystem : Singleton<InputSystem>
 
 
         return key;
+    }
+    private void GetMenuKeyDown()
+    {
+        if (Input.GetKeyDown(KeySetting.keys[KeyAction.Inventory])) OnInventoryMenu?.Invoke();
+        else if (Input.GetKeyDown(KeySetting.keys[KeyAction.Status])) OnStatusMenu?.Invoke();
+        else if (Input.GetKeyDown(KeySetting.keys[KeyAction.Skill])) OnSkillMenu?.Invoke();
     }
 }
