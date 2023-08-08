@@ -27,4 +27,8 @@ public class StatusUI : MenuUI
             firstOpen = true;
         }
     }
+    public void ResetStatus()
+    {
+        statusValueUI.GetPlayerStatus().ResetStatus();
+    }
 }

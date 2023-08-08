@@ -18,12 +18,17 @@ public class StatusValueUI : MonoBehaviour
     {
         playerStatus = GameManager.Instance.player.playerStatus;
         UpdatePlayerStatsUI();
+        UpdateRemainingPoint();
         playerStatus.OnStatsCalculated += UpdatePlayerStatsUI;
         playerStatus.OnUpdateRemaingPoint += UpdateRemainingPoint;
     }
     void UpdateRemainingPoint()
     {
         remaingPointText.text = string.Format(": " + playerStatus.RemainingPoint);
+    }
+    public PlayerStatus GetPlayerStatus()
+    {
+        return playerStatus;
     }
     void UpdatePlayerStatsUI()
     {
