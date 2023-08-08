@@ -438,7 +438,7 @@ public class PlayerStatus : MonoBehaviour
     public bool UseStamina(float value)
     {
         bool isUse = false;
-        if(dPlayerDynamicStatus[DynamicStatusName.CurStamina] > value)
+        if(dPlayerDynamicStatus[DynamicStatusName.CurStamina] >= value)
         {
             ModifyStamina(-value);
             isUse = true;

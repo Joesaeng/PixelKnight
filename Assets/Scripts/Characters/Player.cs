@@ -135,8 +135,11 @@ public class Player : MonoBehaviour
         if (skills.GetData(key - KeyAction.Skill_1) == null) return;
         if (playerStatus.UseStamina(skills.GetData(key - KeyAction.Skill_1).staminaUsage))
         {
-            skills.UseSkill(key - KeyAction.Skill_1);
-            StartCoroutine(CoSkill(skills.GetData(key - KeyAction.Skill_1).skillName));
+            if (skills.UseSkill(key - KeyAction.Skill_1))
+            {
+                StartCoroutine(CoSkill(skills.GetData(key - KeyAction.Skill_1).skillName));
+
+            }
         }
 
     }
@@ -247,7 +250,7 @@ public class Player : MonoBehaviour
                 {
                     Vector2 nextPosition = rigid.position + new Vector2(skillData.range * transform.localScale.x, 0f);
                     transform.position = nextPosition;
-                    yield return new WaitForSeconds(skillData.animationLength*0.66f);
+                    yield return new WaitForSeconds(skillData.animationLength * 0.66f);
                     break;
                 }
             case SkillName.Judgement: // Judgement
@@ -256,7 +259,7 @@ public class Player : MonoBehaviour
                     {
                         target.GetComponent<Enemy>().JudgementHit();
                     }
-                    yield return new WaitForSeconds(skillData.animationLength*0.66f);
+                    yield return new WaitForSeconds(skillData.animationLength * 0.66f);
                     break;
                 }
             default:
@@ -276,7 +279,7 @@ public class Player : MonoBehaviour
     }
     public void RemoveTarget(Rigidbody2D target)
     {
-        if(targets.Contains(target))
+        if (targets.Contains(target))
             targets.Remove(target);
     }
     public void AddJudgeTarget(Rigidbody2D target)
@@ -285,7 +288,7 @@ public class Player : MonoBehaviour
     }
     public void RemoveJudgeTarget(Rigidbody2D target)
     {
-        if(judgementtargets.Contains(target))
+        if (judgementtargets.Contains(target))
             judgementtargets.Remove(target);
     }
     public HashSet<Rigidbody2D> GetJudgetTarget()

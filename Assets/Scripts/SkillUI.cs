@@ -18,10 +18,7 @@ public class SkillUI : MenuUI
     public UsedSkillSlot[] usedSkillSlots;
     public SkillData selectSkillData;
     public Action<UsedSkills> OnChangedUsedSkill;
-    private void Awake()
-    {
-        
-    }
+
     private void Start()
     {
         menuPanel.SetActive(activeMenu);

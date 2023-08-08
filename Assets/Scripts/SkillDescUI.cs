@@ -12,19 +12,27 @@ public struct SkillSelectData
 }
 public class SkillDescUI : MonoBehaviour, IPointerUpHandler
 {
+    [Header("Skill Info")]
     public SkillData skillData;
     public Image skillIcon;
     public TextMeshProUGUI skillName;
     public TextMeshProUGUI skillDesc;
     Outline outline;
+    Button selectButton;
     public SkillSelectData selectData;
     public Action<SkillDescUI> OnSelect;
+
+    [Header("Buy Skill")]
+    public GameObject disableImage;
+    public TextMeshProUGUI cost;
+    bool canUse = false;
     private void Awake()
     {
         outline = GetComponent<Outline>();
         selectData.select = false;
         selectData.skillData = skillData;
         outline.enabled = selectData.select;
+        selectButton = GetComponent<Button>();
     }
     private void Start()
     {
@@ -34,30 +42,43 @@ public class SkillDescUI : MonoBehaviour, IPointerUpHandler
             skillIcon.sprite = skillData.skillIcon;
             skillName.text = skillData.skillNameString;
             skillDesc.text = skillData.slillDesc;
+            cost.text = skillData.goldCost.ToString() + " 골드로 구매 가능";
         }
         else
         {
             skillIcon.sprite = null;
             skillName.text = "업데이트 예정";
             skillDesc.text = "";
-            GetComponent<Button>().enabled = false;
+            selectButton.enabled = false;
+            disableImage.SetActive(false);
         }
     }
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (selectData.select)
+        if(canUse)
         {
-            selectData.select = false;
-            OnSelect?.Invoke(null);
+            if (selectData.select)
+            {
+                selectData.select = false;
+                OnSelect?.Invoke(null);
+            }
+            else
+            {
+                selectData.select = true;
+                OnSelect?.Invoke(this);
+
+            }
+            outline.enabled = selectData.select;
         }
         else
         {
-            selectData.select = true;
-            OnSelect?.Invoke(this);
-
+            if(GameManager.Instance.GetCurGold() >= skillData.goldCost)
+            {
+                GameManager.Instance.ModifyGold(-skillData.goldCost);
+                canUse = true;
+                disableImage.SetActive(false);
+            }
         }
-        outline.enabled = selectData.select;
-
     }
     public void SetSelect(bool b)
     {
