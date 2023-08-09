@@ -84,7 +84,7 @@ public class SelectItemUI : MonoBehaviour
                 baseOptionName = "Defence";
             baseOptionValue = ((int)equip.baseOptionValue).ToString();
             itemBaseOption.text = string.Format(baseOptionName + " " + baseOptionValue);
-            if(equip.additionalOptions.Count > 0)
+            if (equip.additionalOptions.Count > 0)
             {
                 SetAddtionalOption(equip.additionalOptions);
             }
@@ -105,9 +105,20 @@ public class SelectItemUI : MonoBehaviour
             selectItemPanel.SetActive(false);
         }
     }
+    public void DestroyButton()
+    {
+        if (item == null) return;
+        Inventory.Instance.RemoveItem(slotNum);
+        foreach (var text in itemAddtionalOption)
+        {
+            Destroy(text.gameObject);
+        }
+        itemAddtionalOption.Clear();
+        selectItemPanel.SetActive(false);
+    }
     void SetAddtionalOption(Dictionary<AdditionalOptions, float> additionalOptions)
     {
-        
+
         foreach (var option in additionalOptions)
         {
             string name = "";

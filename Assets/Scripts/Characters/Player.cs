@@ -295,6 +295,11 @@ public class Player : MonoBehaviour
     {
         return judgementtargets;
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("EnemyAttackRange") && !isDead)
+            playerStatus.CalculatedHit(collision.GetComponentInParent<EnemyStatus>());
+    }
     public void PlayerStun()
     {
         StartCoroutine(CoStun());

@@ -26,6 +26,7 @@ public class PlayerSkills : MonoBehaviour
                     if (target.GetComponent<Enemy>().IsDead) continue;
                     GameObject judge = PoolManager.Instance.GetSkill(skillDatas[index].skillName);
                     judge.transform.position = target.transform.position;
+                    isUse = true;
                 }
                 break;
             default:
