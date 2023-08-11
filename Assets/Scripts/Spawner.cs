@@ -21,11 +21,11 @@ public class Spawner : MonoBehaviour
     }
     void EnemySpawn()
     {
-        foreach(SpawnPoint point in enemySpawnPoints)
+        foreach (SpawnPoint point in enemySpawnPoints)
         {
             SpawnEnemy(point);
         }
-        
+
     }
 
     public GameObject ShowDamageEffect(int index)
@@ -42,11 +42,20 @@ public class Spawner : MonoBehaviour
             Equip equip = new Equip();
             int randomIndex = UnityEngine.Random.Range(0, ItemDataBase.Instance.itemDB.Count);
             equip.SetItemData(ItemDataBase.Instance.GetEquipData(randomIndex));
+            if (UnityEngine.Random.value <= 0.05f)
+                equip.LevelUpItem(ItemLevel.Unique);
+            else if (UnityEngine.Random.value <= 0.15f)
+                equip.LevelUpItem(ItemLevel.Rare);
+            else if (UnityEngine.Random.value <= 0.4f)
+                equip.LevelUpItem(ItemLevel.Advanced);
+            else
+                equip.LevelUpItem(ItemLevel.Common);
             GameObject obj = PoolManager.Instance.Get(PoolType.FieldEquip);
             obj.GetComponent<FieldEquip>().SetEquip(equip);
             obj.transform.position = pos;
         }
     }
+ 
     public void SpawnEnemy(SpawnPoint point)
     {
         GameObject enemy = PoolManager.Instance.Get(PoolType.Enemy);

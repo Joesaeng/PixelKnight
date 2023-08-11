@@ -8,7 +8,7 @@ public class InventoryUI : MenuUI
 {
     Inventory inventory;
 
-    public Slot[] slots;
+    public List<Slot> slots;
     public EquipmentSlotUI[] equipmentSlots;
     public Transform slotHolder;
     public Transform equipmentUI;
@@ -16,9 +16,10 @@ public class InventoryUI : MenuUI
     private void Start()
     {
         inventory = Inventory.Instance;
-        slots = slotHolder.GetComponentsInChildren<Slot>();
+        Slot[] tSlots = slotHolder.GetComponentsInChildren<Slot>();
+        slots.AddRange(tSlots);
         equipmentSlots = equipmentUI.GetComponentsInChildren<EquipmentSlotUI>();
-        foreach(EquipmentSlotUI eqSlot in equipmentSlots)
+        foreach (EquipmentSlotUI eqSlot in equipmentSlots)
         {
             eqSlot.Init();
         }
@@ -31,7 +32,7 @@ public class InventoryUI : MenuUI
 
     private void SlotChange(int val)
     {
-        for(int i = 0; i < slots.Length; ++i)
+        for (int i = 0; i < slots.Count; ++i)
         {
             slots[i].slotNum = i;
             if (i < inventory.SlotCnt)
@@ -55,11 +56,23 @@ public class InventoryUI : MenuUI
     public void AddSlot()
     {
         inventory.SlotCnt++;
+        if (slots.Count < inventory.SlotCnt)
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                GameObject newSlot = PoolManager.Instance.Get(PoolType.Slot);
+                newSlot.transform.SetParent(slotHolder);
+                newSlot.transform.localScale = new Vector3(1f, 1f, 1f);
+                slots.Add(newSlot.GetComponent<Slot>());
+            }
+            SlotChange(inventory.SlotCnt);
+            RedrawSlotUI();
+        }
     }
 
     void RedrawSlotUI()
     {
-        for (int i = 0; i < slots.Length; i++)
+        for (int i = 0; i < slots.Count; i++)
         {
             slots[i].RemoveSlot();
         }

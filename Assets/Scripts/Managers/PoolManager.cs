@@ -9,7 +9,8 @@ public enum PoolType
     FieldItem,
     FieldEquip,
     DamageEffect,
-    Skill
+    Skill,
+    Slot
 }
 
 public class PoolManager : Singleton<PoolManager>
@@ -20,6 +21,7 @@ public class PoolManager : Singleton<PoolManager>
     public GameObject fieldEquipPrefab;
     public GameObject damageEffectPrefab;
     public GameObject skillPrefab;
+    public GameObject inventorySlotPrefab;
     int poolSize = 2;
 
     List<GameObject> enemyPool;
@@ -28,6 +30,7 @@ public class PoolManager : Singleton<PoolManager>
     List<GameObject> fieldEquipPool;
     List<GameObject> damageEffectPool;
     List<GameObject> skillPool;
+    List<GameObject> slotPool;
 
     private void Awake()
     {
@@ -37,6 +40,7 @@ public class PoolManager : Singleton<PoolManager>
         fieldEquipPool = new List<GameObject>();
         damageEffectPool = new List<GameObject>();
         skillPool = new List<GameObject>();
+        slotPool = new List<GameObject>();
         for(int i = 0; i < poolSize; ++i)
         {
             GameObject newObj = Instantiate(enemyPrefab,transform);
@@ -72,6 +76,12 @@ public class PoolManager : Singleton<PoolManager>
             GameObject newObj = Instantiate(skillPrefab, transform);
             newObj.SetActive(false);
             skillPool.Add(newObj);
+        }
+        for (int i = 0; i < poolSize; ++i)
+        {
+            GameObject newObj = Instantiate(inventorySlotPrefab, transform);
+            newObj.SetActive(false);
+            slotPool.Add(newObj);
         }
 
     }
@@ -163,6 +173,23 @@ public class PoolManager : Singleton<PoolManager>
                     {
                         select = Instantiate(damageEffectPrefab, transform);
                         damageEffectPool.Add(select);
+                    }
+                }
+                break;
+            case PoolType.Slot:
+                {
+                    foreach (GameObject obj in slotPool)
+                    {
+                        if (!obj.activeSelf)
+                        {
+                            select = obj;
+                            break;
+                        }
+                    }
+                    if (!select)
+                    {
+                        select = Instantiate(inventorySlotPrefab, transform);
+                        slotPool.Add(select);
                     }
                 }
                 break;

@@ -121,22 +121,20 @@ public class SelectItemUI : MonoBehaviour
 
         foreach (var option in additionalOptions)
         {
-            string name = "";
-            name = option.Key.ToString();
-            string value = "";
-            value = option.Value.ToString();
+            string name = option.Key.ToString();
+            string value = option.Value.ToString();
             switch (option.Key)
             {
                 case AdditionalOptions.AttackSpeed:
-                    name = "AttackSpeed";
                     value = string.Format(option.Value * 100f + "%");
                     break;
                 case AdditionalOptions.MoveSpeed:
-                    name = "MoveSpeed";
                     value = string.Format((option.Value * 100f).ToString("F0"));
                     break;
                 case AdditionalOptions.CriticalChance:
-                    name = "CriticalChance";
+                    value = string.Format(option.Value * 100f + "%");
+                    break;
+                case AdditionalOptions.CriticalHitDamage:
                     value = string.Format(option.Value * 100f + "%");
                     break;
                 default:
@@ -145,7 +143,7 @@ public class SelectItemUI : MonoBehaviour
                     break;
             }
             Text additionalOptionText = Instantiate(addtionalOptionTextPrefab, addtionalPanel.transform);
-            additionalOptionText.text = string.Format("¢º " + name + " : " + value);
+            additionalOptionText.text = string.Format("¢º " + name + " +" + value);
             itemAddtionalOption.Add(additionalOptionText);
         }
     }
