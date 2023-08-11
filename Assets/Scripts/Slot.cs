@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class Slot : MonoBehaviour, IPointerUpHandler
 {
     public int slotNum;
-    public Item item;
+    public Item item = null;
     public Image itemIcon;
 
     public void UpdateSlotUI()

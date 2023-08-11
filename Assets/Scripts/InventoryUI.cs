@@ -24,6 +24,7 @@ public class InventoryUI : MenuUI
         }
         inventory.onSlotCountChange += SlotChange;
         inventory.onChangeItem += RedrawSlotUI;
+        RedrawSlotUI();
         menuPanel.SetActive(activeMenu);
         InputSystem.Instance.OnInventoryMenu += KeyInputAtiveMenu;
     }

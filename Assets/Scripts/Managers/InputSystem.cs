@@ -55,8 +55,8 @@ public class InputSystem : Singleton<InputSystem>
     }
     private void GetMenuKeyDown()
     {
-        if (Input.GetKeyDown(KeySetting.keys[KeyAction.Inventory])) OnInventoryMenu?.Invoke();
-        else if (Input.GetKeyDown(KeySetting.keys[KeyAction.Status])) OnStatusMenu?.Invoke();
-        else if (Input.GetKeyDown(KeySetting.keys[KeyAction.Skill])) OnSkillMenu?.Invoke();
+        if (Input.GetKeyDown(KeySetting.keys[KeyAction.InventoryMenu])) OnInventoryMenu?.Invoke();
+        else if (Input.GetKeyDown(KeySetting.keys[KeyAction.StatusMenu])) OnStatusMenu?.Invoke();
+        else if (Input.GetKeyDown(KeySetting.keys[KeyAction.SkillMenu])) OnSkillMenu?.Invoke();
     }
 }

@@ -20,10 +20,13 @@ public class DevScene : MonoBehaviour
         GameObject player = Instantiate(playerPrefab);
 
         GameManager.Instance.DevScene(player);
+
         player.GetComponent<PlayerSkills>().InitUI();
         gageBarUI.InitGageBarUI();
         levelText.InitLevelText();
         ingameBarUI.InstantiatePlayerPoiseUI();
         virtualCam.SetFollow(player.transform);
+
+        
     }
 }

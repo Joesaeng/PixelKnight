@@ -122,56 +122,14 @@ public class SelectItemUI : MonoBehaviour
         foreach (var option in additionalOptions)
         {
             string name = "";
+            name = option.Key.ToString();
             string value = "";
+            value = option.Value.ToString();
             switch (option.Key)
             {
-                case AdditionalOptions.Vitality:
-                    name = "Vitality";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.Endurance:
-                    name = "Endurance";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.Strength:
-                    name = "Strength";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.Dexterity:
-                    name = "Dexterity";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.Luck:
-                    name = "Luck";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.MaxHp:
-                    name = "MaxHp";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.MaxStamina:
-                    name = "MaxStamina";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.Stagger:
-                    name = "Stagger";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.Poise:
-                    name = "Poise";
-                    value = option.Value.ToString("F0");
-                    break;
                 case AdditionalOptions.AttackSpeed:
                     name = "AttackSpeed";
                     value = string.Format(option.Value * 100f + "%");
-                    break;
-                case AdditionalOptions.Evade:
-                    name = "Evade";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.HitRate:
-                    name = "HitRate";
-                    value = option.Value.ToString("F0");
                     break;
                 case AdditionalOptions.MoveSpeed:
                     name = "MoveSpeed";
@@ -181,32 +139,13 @@ public class SelectItemUI : MonoBehaviour
                     name = "CriticalChance";
                     value = string.Format(option.Value * 100f + "%");
                     break;
-                case AdditionalOptions.CriticalHitDamage:
-                    name = "CriticalHitDamage";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.IncreasedItemFindingChance:
-                    name = "IncreasedItemFindingChance";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.HpRegen:
-                    name = "HpRegen";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.StaminaRegen:
-                    name = "StaminaRegen";
-                    value = option.Value.ToString("F0");
-                    break;
-                case AdditionalOptions.PoiseRegen:
-                    name = "PoiseRegen";
-                    value = option.Value.ToString("F0");
-                    break;
                 default:
-                    Debug.LogError("PlayerStatus_ApplyEquip_AddtionalOptions");
+                    name = option.Key.ToString();
+                    value = option.Value.ToString();
                     break;
             }
             Text additionalOptionText = Instantiate(addtionalOptionTextPrefab, addtionalPanel.transform);
-            additionalOptionText.text = string.Format(name + ":" + value);
+            additionalOptionText.text = string.Format("¢º " + name + " : " + value);
             itemAddtionalOption.Add(additionalOptionText);
         }
     }

@@ -10,6 +10,7 @@ TagManager:
   - EnemyAttackRange
   - PlayerAttackRange
   - PlayerSkillRange
+  - OptionUI
   layers:
   - Default
   - TransparentFX

@@ -16,6 +16,7 @@ public class OnOffAllUI : MonoBehaviour
         {
             for(int i = 0; i < menuUIList.Length;++i)
             {
+                if (menuUIList[i].menuPanel.CompareTag("OptionUI")) continue;
                 if (menuUIList[i].activeMenu)
                     menuUIList[i].ActiveMenu();
             }

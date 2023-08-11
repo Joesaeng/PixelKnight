@@ -16,7 +16,7 @@ MonoBehaviour:
   skillName: 1
   skillNameString: Judgement
   skillIcon: {fileID: 21300000, guid: 20f71c57ab198e542a6802cc46731d68, type: 3}
-  goldCost: 200
+  goldCost: 0
   skillSpeed: 2
   animationLength: 0.58
   damageRatio: 2
