@@ -371,6 +371,7 @@ MonoBehaviour:
   fieldEquipPrefab: {fileID: 5632884475815189593, guid: 02e18d48e82637848a41643d4138541b, type: 3}
   damageEffectPrefab: {fileID: 3229302182622491195, guid: 2f312f07378245740839cbce602470c7, type: 3}
   skillPrefab: {fileID: 7748063532548825478, guid: dbd7e6a336457e742abdde18961a5d16, type: 3}
+  inventorySlotPrefab: {fileID: 9039763848055696913, guid: 1a368298c8b63a546b93ae1f5dd45bcb, type: 3}
 --- !u!1 &1678958526
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,3 +455,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   selectPlayerData: {fileID: 0}
+  curGold: 0

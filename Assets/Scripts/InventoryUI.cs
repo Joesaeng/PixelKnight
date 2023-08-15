@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class InventoryUI : MenuUI
 {
     Inventory inventory;
-
+    public GameObject discardUIPanel;
     public List<Slot> slots;
     public EquipmentSlotUI[] equipmentSlots;
     public Transform slotHolder;
@@ -46,8 +46,11 @@ public class InventoryUI : MenuUI
     {
         activeMenu = !activeMenu;
         menuPanel.SetActive(activeMenu);
-        if (SelectItemUI.Instance.selectItemPanel.activeSelf)
-            SelectItemUI.Instance.selectItemPanel.SetActive(false);
+        GameObject selectItemUI = SelectItemUI.Instance.gameObject;
+        if (selectItemUI && selectItemUI.activeSelf)
+            selectItemUI.SetActive(false);
+        if (discardUIPanel && discardUIPanel.activeSelf)
+            discardUIPanel.SetActive(false);
     }
     public override void KeyInputAtiveMenu()
     {

@@ -51,7 +51,10 @@ public class Inventory : MonoBehaviour
     {
         SlotCnt = 20;
     }
-
+    public List<Item> GetItems()
+    {
+        return items;
+    }
     public bool AddItem(Item item)
     {
         if(items.Count < SlotCnt)

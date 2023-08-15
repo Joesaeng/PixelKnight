@@ -23,7 +23,7 @@ public class Spawner : MonoBehaviour
     {
         foreach (SpawnPoint point in enemySpawnPoints)
         {
-            SpawnEnemy(point);
+            SpawnEnemy(point,point.enemyID);
         }
 
     }
@@ -56,12 +56,12 @@ public class Spawner : MonoBehaviour
         }
     }
  
-    public void SpawnEnemy(SpawnPoint point)
+    public void SpawnEnemy(SpawnPoint point,int enemyID)
     {
         GameObject enemy = PoolManager.Instance.Get(PoolType.Enemy);
+        enemy.GetComponent<EnemyStatus>().SetData(enemyID);
         enemy.transform.position = point.transform.position;
         enemy.transform.SetParent(point.transform);
-        enemy.GetComponent<EnemyStatus>().SetData();
         point.SetEnemy(enemy.GetComponent<Enemy>());
         OnEnemySpawn?.Invoke(enemy);
     }

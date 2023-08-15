@@ -6,6 +6,7 @@ public class SpawnPoint : MonoBehaviour
 {
     Spawner spawner;
     Enemy enemy;
+    public int enemyID;
     private void Start()
     {
         spawner = GetComponentInParent<Spawner>();
@@ -22,6 +23,6 @@ public class SpawnPoint : MonoBehaviour
     }
     void Respawn()
     {
-        spawner.SpawnEnemy(this);
+        spawner.SpawnEnemy(this,enemyID);
     }
 }

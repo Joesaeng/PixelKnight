@@ -7,11 +7,11 @@ using System;
 public class EnemyStatus : MonoBehaviour
 {
     public Transform effectPoint;
-    EnemyData data;
-    public int enemyID;
+    Enemy enemy;
     private string charName;
     public float expReward;
     public int goldReward;
+    public int enemyID;
 
     public float maxHp;
     public float maxPoise;
@@ -35,15 +35,14 @@ public class EnemyStatus : MonoBehaviour
 
     private void Awake()
     {
-        data = DataManager.Instance.GetEnemyData(enemyID);
+        enemy = GetComponent<Enemy>();
     }
     private void OnEnable()
     {
-        SetData();
-        init = true;
     }
-    public void SetData()
+    public void SetData(int _enemyID)
     {
+        EnemyData data = DataManager.Instance.GetEnemyData(_enemyID);
         this.charName   = data.charName;
         this.expReward = data.expReward;
         this.goldReward = data.goldReward;
@@ -59,6 +58,7 @@ public class EnemyStatus : MonoBehaviour
         this.curHp = maxHp;
         this.curPoise = maxPoise;
         
+        enemy.SetData(_enemyID);
     }
     public void ModifyHp(float value)
     {

@@ -152,10 +152,9 @@ public class Player : MonoBehaviour
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
             return;
         }
-        if (isAttacking && isGround)
+        if (isAttacking && (isGround || isSlope))
         {
-            if (isGround)
-                rigid.velocity = new Vector2(0f, rigid.velocity.y);
+            rigid.velocity = new Vector2(0f, rigid.velocity.y);
             return;
         }
     }

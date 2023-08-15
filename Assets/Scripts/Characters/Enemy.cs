@@ -41,19 +41,23 @@ public class Enemy : MonoBehaviour
     private void OnEnable()
     {
         initPosition = transform.position;
-        moveSpeed = enemyStatus.moveSpeed;
+        //moveSpeed = enemyStatus.moveSpeed;
         nextMove = 0;
         target = null;
         isHit = false;
         isDead = false;
         isAttacking = false;
         //enemyStatus.SetData();
-        anim.runtimeAnimatorController = animCon[enemyStatus.enemyID];
+        //anim.runtimeAnimatorController = animCon[enemyStatus.enemyID];
         anim.SetBool("isDead", isDead);
         Invoke("Think", 5);
         enemyStatus.OnEnemyDead += EnemyDead;
     }
-
+    public void SetData(int enemyID)
+    {
+        anim.runtimeAnimatorController = animCon[enemyID];
+        moveSpeed = enemyStatus.moveSpeed;
+    }
     void FixedUpdate()
     {
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("Hit") || isDead || isAttacking)
