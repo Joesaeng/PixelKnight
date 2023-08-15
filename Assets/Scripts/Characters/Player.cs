@@ -28,6 +28,9 @@ public class Player : MonoBehaviour
     private WaitForSeconds WFSattackDelay;
 
     private int floorLayer;
+    private int floorLayer_;
+    private int playerLayer;
+    private int jumpingLayer;
     Vector3 moveDir;
     Vector3 xFlipScale;
     int xFlip;
@@ -61,6 +64,9 @@ public class Player : MonoBehaviour
         myCollider = GetComponent<Collider2D>();
 
         floorLayer = LayerMask.GetMask("Floor");
+        floorLayer_ = LayerMask.NameToLayer("Floor");
+        playerLayer = LayerMask.NameToLayer("Player");
+        jumpingLayer = LayerMask.NameToLayer("Jumping");
         xFlipScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
         xFlip = 1;
 
@@ -147,6 +153,10 @@ public class Player : MonoBehaviour
     {
         Move();
         Jump();
+        if (rigid.velocity.y > 0)
+            Physics2D.IgnoreLayerCollision(playerLayer, floorLayer_, true);
+        else
+            Physics2D.IgnoreLayerCollision(playerLayer, floorLayer_, false);
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
         {
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
@@ -197,7 +207,8 @@ public class Player : MonoBehaviour
 
     private bool IsCheckGrounded()
     {
-        return Physics2D.BoxCast(myCollider.bounds.center, myCollider.bounds.size, 0f, Vector2.down, 0.01f, floorLayer);
+        bool isGround = Physics2D.BoxCast(myCollider.bounds.center, myCollider.bounds.size, 0f, Vector2.down, 0.01f, floorLayer);
+        return isGround;
     }
     private void IsCheckSlope(RaycastHit2D hit)
     {

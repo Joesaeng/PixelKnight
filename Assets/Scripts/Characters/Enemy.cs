@@ -92,9 +92,9 @@ public class Enemy : MonoBehaviour
     {
         nextMove = rigid.position.x - target.position.x >= 0f ? -1 : 1;
         Vector2 dir = target.position - rigid.position;
-        RaycastHit2D ray = Physics2D.Raycast(rigid.position, dir, 0.7f, LayerMask.GetMask("Player"));
+        RaycastHit2D ray = Physics2D.Raycast(rigid.position, dir, 0.7f, LayerMask.GetMask("PlayerHit"));
 
-        if (!isAttacking && ray.collider != null && ray.collider.CompareTag("Player"))
+        if (!isAttacking && ray.collider != null && ray.collider.CompareTag("PlayerHit"))
         {
             StartCoroutine(CoAttack());
         }

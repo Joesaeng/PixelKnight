@@ -11,6 +11,7 @@ TagManager:
   - PlayerAttackRange
   - PlayerSkillRange
   - OptionUI
+  - PlayerHit
   layers:
   - Default
   - TransparentFX
@@ -21,13 +22,13 @@ TagManager:
   - 
   - Player
   - Enemy
-  - 
+  - Jumping
   - Floor
   - FieldItem
   - PlayerAttack
   - EnemyAttack
   - FieldItemColl
-  - 
+  - PlayerHit
   - 
   - 
   - 
