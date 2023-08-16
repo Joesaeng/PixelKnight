@@ -15,6 +15,7 @@ public class SkillData : ScriptableObject
     public SkillName skillName;
     public string skillNameString;
     public Sprite skillIcon;
+    public float skillCoolTime;
     public int goldCost;
     public float skillSpeed;
     public float animationLength;

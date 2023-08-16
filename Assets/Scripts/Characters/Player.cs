@@ -139,14 +139,14 @@ public class Player : MonoBehaviour
         KeyAction key = InputSystem.Instance.GetSkillKeyDown();
         if (key == KeyAction.KeyCount) return;
         if (skills.GetData(key - KeyAction.Skill_1) == null) return;
-        if (playerStatus.UseStamina(skills.GetData(key - KeyAction.Skill_1).staminaUsage))
-        {
-            if (skills.UseSkill(key - KeyAction.Skill_1))
+        if (skills.CanUseSkill(key - KeyAction.Skill_1))
+            if (playerStatus.UseStamina(skills.GetData(key - KeyAction.Skill_1).staminaUsage))
             {
-                StartCoroutine(CoSkill(skills.GetData(key - KeyAction.Skill_1).skillName));
-
+                if (skills.UseSkill(key - KeyAction.Skill_1))
+                {
+                    StartCoroutine(CoSkill(skills.GetData(key - KeyAction.Skill_1).skillName));
+                }
             }
-        }
 
     }
     private void FixedUpdate()

@@ -16,6 +16,7 @@ MonoBehaviour:
   skillName: 0
   skillNameString: Dash
   skillIcon: {fileID: 21300000, guid: 4162437e5e328ae4187c6ba6babb7f85, type: 3}
+  skillCoolTime: 3
   goldCost: 0
   skillSpeed: 3
   animationLength: 0.33

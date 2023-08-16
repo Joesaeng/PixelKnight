@@ -17,6 +17,12 @@ public class UsedSkillSlot : MonoBehaviour , IPointerUpHandler
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        if (!GameManager.Instance.player.skills.CanChangeSkill())
+        {
+            FindAnyObjectByType<CenterPopupText>().SetPopupText
+                ("스킬 쿨타임 중에는 변경할 수 없습니다.");
+            return;
+        }
         SetSkillData(skillUI.GetSelectSkillData());
         OnUsedSkill?.Invoke(this);
     }

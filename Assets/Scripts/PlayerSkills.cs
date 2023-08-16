@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerSkills : MonoBehaviour
 {
     Dictionary<int, SkillData> skillDatas = new Dictionary<int, SkillData>();
+    List<float> skillCoolTimes = new List<float>();
     Player player;
     SkillUI skillUI;
     public Collider2D judgementRange;
@@ -32,12 +33,51 @@ public class PlayerSkills : MonoBehaviour
             default:
                 break;
         }
-
+        if(isUse) skillCoolTimes[index] += skillDatas[index].skillCoolTime;
         return isUse;
     }
     private void Awake()
     {
         player = GetComponent<Player>();
+        float[] t = { 0f, 0f, 0f, 0f };
+        skillCoolTimes.AddRange(t);
+    }
+    private void Update()
+    {
+        CoolTimeUpdate();
+    }
+    void CoolTimeUpdate()
+    {
+        for(int i = 0; i < skillCoolTimes.Count; ++i)
+        {
+            if (skillDatas.ContainsKey(i) && skillCoolTimes[i] > 0f)
+                skillCoolTimes[i] -= Time.deltaTime;
+        }
+    }
+    public float GetCurCoolTime(int index)
+    {
+        return skillCoolTimes[index];
+    }
+    public float GetCoolTime(int index)
+    {
+        return skillDatas[index].skillCoolTime;
+    }
+    public bool CanChangeSkill()
+    {
+        bool b = true;
+        for(int i = 0; i < skillCoolTimes.Count; ++i)
+        {
+            if (skillCoolTimes[i] > 0f)
+                b = false;
+        }
+        return b;
+    }
+    public bool CanUseSkill(int index)
+    {
+        bool can = false;
+        if (skillCoolTimes[index] <= 0f)
+            can = true;
+        return can;
     }
     public void InitUI()
     {
@@ -50,6 +90,7 @@ public class PlayerSkills : MonoBehaviour
     }
     public void EnableSkill(int index, SkillData data)
     {
+        if (data == null) return;
         skillDatas.Add(index, data);
         if (data && data.skillName == SkillName.Judgement)
         {
@@ -59,6 +100,8 @@ public class PlayerSkills : MonoBehaviour
     void SetUsedSkill(UsedSkills skills)
     {
         skillDatas = new Dictionary<int, SkillData>();
+        float[] t = { 0f, 0f, 0f, 0f };
+        skillCoolTimes.AddRange(t);
         EnableSkill(0, skills.skill_1);
         EnableSkill(1, skills.skill_2);
         EnableSkill(2, skills.skill_3);
@@ -66,6 +109,8 @@ public class PlayerSkills : MonoBehaviour
     }
     public SkillData GetData(int index)
     {
-        return skillDatas[index];
+        if(skillDatas.ContainsKey(index))
+            return skillDatas[index];
+        return null;
     }
 }
