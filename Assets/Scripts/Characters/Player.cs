@@ -30,7 +30,6 @@ public class Player : MonoBehaviour
     private int floorLayer;
     private int floorLayer_;
     private int playerLayer;
-    private int jumpingLayer;
     Vector3 moveDir;
     Vector3 xFlipScale;
     int xFlip;
@@ -44,7 +43,7 @@ public class Player : MonoBehaviour
 
     public float attackDelay;
     private bool isAttacking = false;
-    private bool isGround = true;
+    public bool isGround = true;
     private bool isStun = false;
     private bool isDead = false;
     private bool isSkill = false;
@@ -66,7 +65,6 @@ public class Player : MonoBehaviour
         floorLayer = LayerMask.GetMask("Floor");
         floorLayer_ = LayerMask.NameToLayer("Floor");
         playerLayer = LayerMask.NameToLayer("Player");
-        jumpingLayer = LayerMask.NameToLayer("Jumping");
         xFlipScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
         xFlip = 1;
 
@@ -105,7 +103,7 @@ public class Player : MonoBehaviour
         if (isDead) return;
         GetKey();
         moveDir = new Vector3(horizontal, 0, 0); // 스프라이트의 Xflip값을 위한 방향값
-        isGround = IsCheckGrounded();
+        
         RaycastHit2D hit = Physics2D.Raycast(chkPos.position, Vector2.down, slopeDistance, floorLayer);
         RaycastHit2D fronthit = Physics2D.Raycast(frontChk.position, Vector2.down, 0.4f, floorLayer);
 
@@ -153,10 +151,17 @@ public class Player : MonoBehaviour
     {
         Move();
         Jump();
-        if (rigid.velocity.y > 0)
-            Physics2D.IgnoreLayerCollision(playerLayer, floorLayer_, true);
-        else
+        isGround = IsCheckGrounded();
+        if (isGround &&  rigid.velocity.y <=0.1f)
+        {
             Physics2D.IgnoreLayerCollision(playerLayer, floorLayer_, false);
+            rigid.gravityScale = 0f;
+        }
+        else
+        {
+            Physics2D.IgnoreLayerCollision(playerLayer, floorLayer_, true);
+            rigid.gravityScale = 2f;
+        }
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
         {
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
@@ -204,10 +209,9 @@ public class Player : MonoBehaviour
         }
 
     }
-
     private bool IsCheckGrounded()
     {
-        bool isGround = Physics2D.BoxCast(myCollider.bounds.center, myCollider.bounds.size, 0f, Vector2.down, 0.01f, floorLayer);
+        bool isGround = Physics2D.BoxCast(chkPos.position, new Vector2(myCollider.bounds.size.x,0.1f), 0f, Vector2.down, 0.01f, floorLayer);
         return isGround;
     }
     private void IsCheckSlope(RaycastHit2D hit)
@@ -225,11 +229,12 @@ public class Player : MonoBehaviour
     }
     void Animation()
     {
-        xFlip = moveDir.x > 0 ? 1 : -1;
+        if(!isAttacking)
+            xFlip = moveDir.x > 0 ? 1 : -1;
         xFlipScale.x = xFlip;
         if (moveDir.x != 0)
             transform.localScale = xFlipScale;
-        if (isGround)
+        if (isGround && rigid.velocity.y <= 0.1f)
         {
             animator.SetBool("isGround", true);
             animator.SetFloat("isMove", moveDir.magnitude); // 이동 애니메이션
@@ -305,11 +310,13 @@ public class Player : MonoBehaviour
     {
         return judgementtargets;
     }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("EnemyAttackRange") && !isDead)
-            playerStatus.CalculatedHit(collision.GetComponentInParent<EnemyStatus>());
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.CompareTag("EnemyAttackRange") && !isDead)
+    //    {
+    //        playerStatus.CalculatedHit(collision.GetComponentInParent<EnemyStatus>());
+    //    }
+    //}
     public void PlayerStun()
     {
         StartCoroutine(CoStun());
