@@ -27,8 +27,9 @@ public class Player : MonoBehaviour
     public float attackSpeed = 1.0f;// 공격 속도
     private WaitForSeconds WFSattackDelay;
 
-    private int floorLayer;
-    private int floorLayer_;
+    private int groundChkLayer;
+    private int airGroundChkLayer;
+    private int airFloorLayer;
     private int playerLayer;
     Vector3 moveDir;
     Vector3 xFlipScale;
@@ -62,8 +63,9 @@ public class Player : MonoBehaviour
         skills = GetComponent<PlayerSkills>();
         myCollider = GetComponent<Collider2D>();
 
-        floorLayer = LayerMask.GetMask("Floor");
-        floorLayer_ = LayerMask.NameToLayer("Floor");
+        groundChkLayer = LayerMask.GetMask("Floor");
+        airGroundChkLayer = LayerMask.GetMask("AirFloor");
+        airFloorLayer = LayerMask.NameToLayer("AirFloor");
         playerLayer = LayerMask.NameToLayer("Player");
         xFlipScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
         xFlip = 1;
@@ -104,8 +106,8 @@ public class Player : MonoBehaviour
         GetKey();
         moveDir = new Vector3(horizontal, 0, 0); // 스프라이트의 Xflip값을 위한 방향값
         
-        RaycastHit2D hit = Physics2D.Raycast(chkPos.position, Vector2.down, slopeDistance, floorLayer);
-        RaycastHit2D fronthit = Physics2D.Raycast(frontChk.position, Vector2.down, 0.4f, floorLayer);
+        RaycastHit2D hit = Physics2D.Raycast(chkPos.position, Vector2.down, slopeDistance, groundChkLayer);
+        RaycastHit2D fronthit = Physics2D.Raycast(frontChk.position, Vector2.down, 0.4f, groundChkLayer);
 
         if (hit || fronthit)
         {
@@ -154,12 +156,12 @@ public class Player : MonoBehaviour
         isGround = IsCheckGrounded();
         if (isGround &&  rigid.velocity.y <=0.1f)
         {
-            Physics2D.IgnoreLayerCollision(playerLayer, floorLayer_, false);
+            Physics2D.IgnoreLayerCollision(playerLayer, airFloorLayer, false);
             rigid.gravityScale = 0f;
         }
         else
         {
-            Physics2D.IgnoreLayerCollision(playerLayer, floorLayer_, true);
+            Physics2D.IgnoreLayerCollision(playerLayer, airFloorLayer, true);
             rigid.gravityScale = 2f;
         }
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
@@ -211,7 +213,10 @@ public class Player : MonoBehaviour
     }
     private bool IsCheckGrounded()
     {
-        bool isGround = Physics2D.BoxCast(chkPos.position, new Vector2(myCollider.bounds.size.x,0.1f), 0f, Vector2.down, 0.01f, floorLayer);
+        bool isGround = false;
+        if (Physics2D.BoxCast(chkPos.position, new Vector2(myCollider.bounds.size.x, 0.1f), 0f, Vector2.down, 0.01f, groundChkLayer)
+            || Physics2D.BoxCast(chkPos.position, new Vector2(myCollider.bounds.size.x, 0.1f), 0f, Vector2.down, 0.01f, airGroundChkLayer))
+            isGround = true;
         return isGround;
     }
     private void IsCheckSlope(RaycastHit2D hit)
@@ -224,7 +229,6 @@ public class Player : MonoBehaviour
                 isSlope = true;
             else
                 isSlope = false;
-            Debug.DrawLine(hit.point, hit.point + slopePerp, Color.green);
         }
     }
     void Animation()
@@ -263,7 +267,11 @@ public class Player : MonoBehaviour
         {
             case SkillName.Dash: // Dash
                 {
-                    Vector2 nextPosition = rigid.position + new Vector2(skillData.range * transform.localScale.x, 0f);
+                    Vector2 nextPosition;
+                    var ray = Physics2D.Raycast(rigid.position, Vector2.right * transform.localScale.x, skillData.range, groundChkLayer);
+                    if (!ray) nextPosition = rigid.position + new Vector2(skillData.range * transform.localScale.x, 0f);
+                    else nextPosition = new Vector2(ray.point.x - (0.2f * transform.localScale.x),rigid.position.y);
+                    
                     transform.position = nextPosition;
                     yield return new WaitForSeconds(skillData.animationLength * 0.66f);
                     break;
