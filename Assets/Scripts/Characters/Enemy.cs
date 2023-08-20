@@ -117,9 +117,17 @@ public class Enemy : MonoBehaviour
         Debug.DrawRay(frontVec, Vector3.down, new Color(0, 1, 0));
         RaycastHit2D rayHit = Physics2D.Raycast(frontVec, Vector3.down, 1, LayerMask.GetMask("Floor"));
         if (rayHit.collider == null)
+            rayHit = Physics2D.Raycast(frontVec, Vector3.down, 1, LayerMask.GetMask("AirFloor"));
+        if (rayHit.collider == null && target == null)
         {
             nextMove *= -1;
             CancelInvoke();
+            Invoke("Think", 5);
+        }
+        else if(rayHit.collider == null && target != null)
+        {
+            target = null;
+            enemyStatus.ResetHpPoise();
             Invoke("Think", 5);
         }
     }

@@ -60,6 +60,11 @@ public class EnemyStatus : MonoBehaviour
         
         enemy.SetData(_enemyID);
     }
+    public void ResetHpPoise()
+    {
+        this.curHp = maxHp;
+        this.curPoise = maxPoise;
+    }    
     public void ModifyHp(float value)
     {
         curHp += value;

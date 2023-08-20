@@ -46,7 +46,7 @@ public class InventoryUI : MenuUI
     {
         activeMenu = !activeMenu;
         menuPanel.SetActive(activeMenu);
-        GameObject selectItemUI = SelectItemUI.Instance.gameObject;
+        GameObject selectItemUI = SelectItemUI.Instance.selectItemPanel;
         if (selectItemUI && selectItemUI.activeSelf)
             selectItemUI.SetActive(false);
         if (discardUIPanel && discardUIPanel.activeSelf)

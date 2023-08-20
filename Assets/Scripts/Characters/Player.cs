@@ -236,7 +236,7 @@ public class Player : MonoBehaviour
         if(!isAttacking)
             xFlip = moveDir.x > 0 ? 1 : -1;
         xFlipScale.x = xFlip;
-        if (moveDir.x != 0)
+        if (moveDir.x != 0 && !isAttacking)
             transform.localScale = xFlipScale;
         if (isGround && rigid.velocity.y <= 0.1f)
         {

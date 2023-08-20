@@ -33,7 +33,7 @@ public class PlayerSkills : MonoBehaviour
             default:
                 break;
         }
-        if(isUse) skillCoolTimes[index] += skillDatas[index].skillCoolTime;
+        if(isUse) SetCurCoolTime(index,GetCoolTime(index));
         return isUse;
     }
     private void Awake()
@@ -53,6 +53,10 @@ public class PlayerSkills : MonoBehaviour
             if (skillDatas.ContainsKey(i) && skillCoolTimes[i] > 0f)
                 skillCoolTimes[i] -= Time.deltaTime;
         }
+    }
+    public void SetCurCoolTime(int index,float value)
+    {
+        skillCoolTimes[index] += value;
     }
     public float GetCurCoolTime(int index)
     {

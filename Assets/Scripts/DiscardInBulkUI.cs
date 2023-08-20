@@ -20,6 +20,8 @@ public class DiscardInBulkUI : MonoBehaviour
     public void ActiveUI()
     {
         uiPanel.SetActive(true);
+        if (SelectItemUI.Instance.selectItemPanel.activeSelf)
+            SelectItemUI.Instance.selectItemPanel.SetActive(false);
     }
     public void Discard()
     {
