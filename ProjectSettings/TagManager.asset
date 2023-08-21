@@ -12,6 +12,7 @@ TagManager:
   - PlayerSkillRange
   - OptionUI
   - PlayerHit
+  - Ladder
   layers:
   - Default
   - TransparentFX
@@ -31,7 +32,7 @@ TagManager:
   - PlayerHit
   - AirFloor
   - CameraConfiner
-  - 
+  - Ladder
   - 
   - 
   - 

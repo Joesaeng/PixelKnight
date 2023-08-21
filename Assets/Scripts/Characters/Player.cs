@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     Rigidbody2D rigid;
     Animator animator;
     Collider2D myCollider;
+    Collider2D ladderCollider;
     public Transform chkPos;
     public Transform frontChk;
     public PlayerStatus playerStatus;
@@ -38,18 +39,21 @@ public class Player : MonoBehaviour
     public float jumpForce;
     public float horizontal;
     public float vertical;
+    public int jumpCount;
 
     public float jumpStamina = 5f;
     public float attackStamina = 8f;
 
     public float attackDelay;
     private bool isAttacking = false;
-    public bool isGround = true;
+    private bool isGround = true;
     private bool isStun = false;
     private bool isDead = false;
     private bool isSkill = false;
     private bool isSlope = false;
     private bool isJump = false;
+    public bool canUseLadder = false;
+    private bool isLadder = false;
 
     public float slopeDistance;
     public float slopeAngle;
@@ -74,10 +78,24 @@ public class Player : MonoBehaviour
         isGround = true;
         isStun = false;
         isDead = false;
+        jumpCount = 1;
 
         playerStatus.OnStatsCalculated += UpdatePlayerStats;
         playerStatus.OnPlayerDead += PlayerDead;
         playerStatus.OnPlayerHit += PlayerStun;
+    }
+    private void OnEnable()
+    {
+        isAttacking = false;
+        isGround = true;
+        isStun = false;
+        isDead = false;
+        isSkill = false;
+        isSlope = false;
+        isJump = false;
+        canUseLadder = false;
+        isLadder = false;
+        jumpCount = 1;
     }
 
     private void UpdatePlayerStats()
@@ -105,7 +123,7 @@ public class Player : MonoBehaviour
         if (isDead) return;
         GetKey();
         moveDir = new Vector3(horizontal, 0, 0); // 스프라이트의 Xflip값을 위한 방향값
-        
+
         RaycastHit2D hit = Physics2D.Raycast(chkPos.position, Vector2.down, slopeDistance, groundChkLayer);
         RaycastHit2D fronthit = Physics2D.Raycast(frontChk.position, Vector2.down, 0.4f, groundChkLayer);
 
@@ -151,13 +169,12 @@ public class Player : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Move();
-        Jump();
         isGround = IsCheckGrounded();
-        if (isGround &&  rigid.velocity.y <=0.1f)
+        if (isGround && rigid.velocity.y <= 0.1f)
         {
             Physics2D.IgnoreLayerCollision(playerLayer, airFloorLayer, false);
             rigid.gravityScale = 0f;
+            jumpCount = 1;
         }
         else
         {
@@ -174,6 +191,29 @@ public class Player : MonoBehaviour
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
             return;
         }
+        if(canUseLadder && !isLadder)
+        {
+            if(vertical != 0)
+            {
+                isLadder = true;
+                animator.SetBool("isLadder", true);
+                jumpCount = 1;
+                rigid.position = new Vector2(ladderCollider.transform.position.x, rigid.position.y);
+                rigid.velocity = Vector2.zero;
+            }
+        }
+        if (isLadder)
+        {
+            rigid.gravityScale = 0f;
+            MoveLadder();
+        }
+        else
+        {
+            rigid.gravityScale = 2f;
+            Move();
+            animator.SetBool("isLadder", false);
+        }
+        Jump();
     }
     private void LateUpdate()
     {
@@ -197,16 +237,40 @@ public class Player : MonoBehaviour
             rigid.velocity = new Vector2(horizontal * moveSpeed, rigid.velocity.y);
         }
     }
+    void MoveLadder()
+    {
+        rigid.velocity = new Vector2(rigid.velocity.x, vertical * moveSpeed);
+
+    }
     void Jump()
     {
         if (rigid.velocity.y <= 0f) isJump = false;
-        if (!isAttacking && !isStun && isGround && !isJump && Input.GetKeyDown(KeySetting.keys[KeyAction.Jump]))
+        if (jumpCount > 0 && !isAttacking && !isStun && !isJump && Input.GetKeyDown(KeySetting.keys[KeyAction.Jump]))
         {
-            if (playerStatus.UseStamina(jumpStamina))
+            if(isLadder)
             {
-                rigid.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-                animator.SetBool("isGround", false);
-                isJump = true;
+                if (horizontal == 0) return;
+                else
+                {
+                    if (playerStatus.UseStamina(jumpStamina))
+                    {
+                        isLadder = false;
+                        rigid.AddForce(new Vector2(horizontal,0.5f) * jumpForce, ForceMode2D.Impulse);
+                        animator.SetBool("isGround", false);
+                        isJump = true;
+                        jumpCount--;
+                    }
+                }
+            }
+            else
+            {
+                if (playerStatus.UseStamina(jumpStamina))
+                {
+                    rigid.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                    animator.SetBool("isGround", false);
+                    isJump = true;
+                    jumpCount--;
+                }
             }
         }
 
@@ -217,6 +281,7 @@ public class Player : MonoBehaviour
         if (Physics2D.BoxCast(chkPos.position, new Vector2(myCollider.bounds.size.x, 0.1f), 0f, Vector2.down, 0.01f, groundChkLayer)
             || Physics2D.BoxCast(chkPos.position, new Vector2(myCollider.bounds.size.x, 0.1f), 0f, Vector2.down, 0.01f, airGroundChkLayer))
             isGround = true;
+        if (isLadder) isGround = false;
         return isGround;
     }
     private void IsCheckSlope(RaycastHit2D hit)
@@ -233,7 +298,7 @@ public class Player : MonoBehaviour
     }
     void Animation()
     {
-        if(!isAttacking)
+        if (!isAttacking)
             xFlip = moveDir.x > 0 ? 1 : -1;
         xFlipScale.x = xFlip;
         if (moveDir.x != 0 && !isAttacking)
@@ -245,6 +310,17 @@ public class Player : MonoBehaviour
         }
         else
             animator.SetBool("isGround", false);
+        if(isLadder)
+        {
+            if(rigid.velocity.y == 0)
+            {
+                animator.SetFloat("isLadderFloat", 0f);
+            }
+            else
+            {
+                animator.SetFloat("isLadderFloat", 1f);
+            }
+        }
     }
     IEnumerator CoAttack()
     {
@@ -270,8 +346,8 @@ public class Player : MonoBehaviour
                     Vector2 nextPosition;
                     var ray = Physics2D.Raycast(rigid.position, Vector2.right * transform.localScale.x, skillData.range, groundChkLayer);
                     if (!ray) nextPosition = rigid.position + new Vector2(skillData.range * transform.localScale.x, 0f);
-                    else nextPosition = new Vector2(ray.point.x - (0.2f * transform.localScale.x),rigid.position.y);
-                    
+                    else nextPosition = new Vector2(ray.point.x - (0.2f * transform.localScale.x), rigid.position.y);
+
                     transform.position = nextPosition;
                     yield return new WaitForSeconds(skillData.animationLength * 0.66f);
                     break;
@@ -318,13 +394,23 @@ public class Player : MonoBehaviour
     {
         return judgementtargets;
     }
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (collision.CompareTag("EnemyAttackRange") && !isDead)
-    //    {
-    //        playerStatus.CalculatedHit(collision.GetComponentInParent<EnemyStatus>());
-    //    }
-    //}
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ladder") && !isDead)
+        {
+            canUseLadder = true;
+            ladderCollider = collision.GetComponent<Collider2D>();
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ladder") && !isDead)
+        {
+            canUseLadder = false;
+            isLadder = false;
+            ladderCollider = null;
+        }
+    }
     public void PlayerStun()
     {
         StartCoroutine(CoStun());
