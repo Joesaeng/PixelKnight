@@ -6,23 +6,28 @@ public class DamageEffect : MonoBehaviour
 {
     public RuntimeAnimatorController[] effects;
     Animator animator;
+    float time;
+    float curTime = 0f;
     private void Awake()
     {
         animator = GetComponent<Animator>();
         animator.enabled = false;
+        
     }
     private void OnEnable()
     {
-        StartCoroutine(PlayEffect());
-    }
-    IEnumerator PlayEffect()
-    {
         animator.enabled = true;
-
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
-
-        animator.enabled = false;
-        gameObject.SetActive(false);
+        time = animator.GetCurrentAnimatorStateInfo(0).length;
+    }
+    private void Update()
+    {
+        if(curTime > time)
+        {
+            curTime = 0f;
+            animator.enabled = false;
+            gameObject.SetActive(false);
+        }
+        curTime += Time.deltaTime;
     }
     public void SetEffect(int index)
     {

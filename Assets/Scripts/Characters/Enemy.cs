@@ -67,7 +67,7 @@ public class Enemy : MonoBehaviour
         }
         if (target)
         {
-            CancelInvoke();
+            //CancelInvoke();
             Chase();
         }
         else
@@ -131,23 +131,20 @@ public class Enemy : MonoBehaviour
         isAttacking = false;
         Move();
     }
-    IEnumerator CoChaseTarget()
+    void ChaseTarget()
     {
-        if (target == null) StopCoroutine(CoChaseTarget());
+        if (target == null) return;
         else
         {
             targetPos = target.position;
             nextMove = rigid.position.x - targetPos.x >= 0f ? -1 : 1;
-            Debug.Log("chaseTarget");
         }
-        yield return new WaitForSeconds(1f);
-        StartCoroutine(CoChaseTarget());
+        Invoke("ChaseTarget", 1f);
     }
     void Move()
     {
         rigid.velocity = new Vector2(nextMove * moveSpeed, rigid.velocity.y);
         Vector2 frontVec = new Vector2(rigid.position.x + nextMove * 0.3f, rigid.position.y);
-        Debug.DrawRay(frontVec, Vector3.down, new Color(0, 1, 0));
         RaycastHit2D rayHit = Physics2D.Raycast(frontVec, Vector3.down, 1, LayerMask.GetMask("Floor"));
         if (rayHit.collider == null)
             rayHit = Physics2D.Raycast(frontVec, Vector3.down, 1, LayerMask.GetMask("AirFloor"));
@@ -178,7 +175,7 @@ public class Enemy : MonoBehaviour
         if (target != null) return;
         player = GameManager.Instance.player;
         target = player.GetComponent<Rigidbody2D>();
-        StartCoroutine(CoChaseTarget());
+        ChaseTarget();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {

@@ -228,6 +228,7 @@ public class Player : MonoBehaviour
     {
         rigid.constraints = horizontal == 0 ? RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation
             : RigidbodyConstraints2D.FreezeRotation;
+        if (IsDead) return;
         if (isSlope && isGround && !isJump)
         {
             rigid.velocity = slopePerp * moveSpeed * horizontal * -1;
@@ -451,6 +452,7 @@ public class Player : MonoBehaviour
     }
     void PlayerDead()
     {
+        rigid.velocity = Vector2.zero;
         isDead = true;
         StopAllCoroutines();
         StartCoroutine(PlayerDeadAnimPlay());
