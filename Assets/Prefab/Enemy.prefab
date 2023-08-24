@@ -227,7 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animCon:
   - {fileID: 9100000, guid: d13035a5b931f914fa817d9f06d36a26, type: 2}
-  isHit: 0
+  - {fileID: 22100000, guid: 4f5e4b49984aa494ebbf5958910f8100, type: 2}
   isAttacking: 0
   nextMove: 0
 --- !u!114 &-8066417278429094408

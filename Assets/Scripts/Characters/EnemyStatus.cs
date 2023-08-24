@@ -43,6 +43,7 @@ public class EnemyStatus : MonoBehaviour
     public void SetData(int _enemyID)
     {
         EnemyData data = DataManager.Instance.GetEnemyData(_enemyID);
+        this.enemyID = _enemyID;
         this.charName   = data.charName;
         this.expReward = data.expReward;
         this.goldReward = data.goldReward;

@@ -10,7 +10,8 @@ public enum PoolType
     FieldEquip,
     DamageEffect,
     Skill,
-    Slot
+    Slot,
+    Bullet
 }
 
 public class PoolManager : Singleton<PoolManager>
@@ -22,6 +23,7 @@ public class PoolManager : Singleton<PoolManager>
     public GameObject damageEffectPrefab;
     public GameObject skillPrefab;
     public GameObject inventorySlotPrefab;
+    public GameObject bulletPrefab;
     int poolSize = 2;
 
     List<GameObject> enemyPool;
@@ -31,6 +33,7 @@ public class PoolManager : Singleton<PoolManager>
     List<GameObject> damageEffectPool;
     List<GameObject> skillPool;
     List<GameObject> slotPool;
+    List<GameObject> bulletPool;
 
     private void Awake()
     {
@@ -41,6 +44,7 @@ public class PoolManager : Singleton<PoolManager>
         damageEffectPool = new List<GameObject>();
         skillPool = new List<GameObject>();
         slotPool = new List<GameObject>();
+        bulletPool = new List<GameObject>();
         for(int i = 0; i < poolSize; ++i)
         {
             GameObject newObj = Instantiate(enemyPrefab,transform);
@@ -82,6 +86,12 @@ public class PoolManager : Singleton<PoolManager>
             GameObject newObj = Instantiate(inventorySlotPrefab, transform);
             newObj.SetActive(false);
             slotPool.Add(newObj);
+        }
+        for (int i = 0; i < poolSize; ++i)
+        {
+            GameObject newObj = Instantiate(bulletPrefab, transform);
+            newObj.SetActive(false);
+            bulletPool.Add(newObj);
         }
 
     }
@@ -193,6 +203,12 @@ public class PoolManager : Singleton<PoolManager>
                     }
                 }
                 break;
+            case PoolType.Skill:
+                {
+                    Debug.LogError("스킬은 GetSkill()을 쓰셔야 합니다");
+                }
+                break;
+            
         }
         select.SetActive(false);
 
@@ -217,6 +233,27 @@ public class PoolManager : Singleton<PoolManager>
             skillPool.Add(select);
         }
         select.GetComponent<Skill>().SetData(name);
+
+        select.SetActive(false);
+        select.SetActive(true);
+        return select;
+    }
+    public GameObject GetBullet(int EnemyID)
+    {
+        GameObject select = null;
+        foreach (GameObject obj in bulletPool)
+        {
+            if (!obj.activeSelf)
+            {
+                select = obj;
+                break;
+            }
+        }
+        if (!select)
+        {
+            select = Instantiate(bulletPrefab, transform);
+            bulletPool.Add(select);
+        }
 
         select.SetActive(false);
         select.SetActive(true);

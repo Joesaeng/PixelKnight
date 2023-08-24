@@ -13,6 +13,7 @@ public class GameManager : Singleton<GameManager>
     public int curGold;
 
     public Action OnChangedGold;
+    public DevScene devScene;
     private void Start()
     {
         SceneManager.LoadScene(1);
@@ -23,11 +24,12 @@ public class GameManager : Singleton<GameManager>
         selectPlayerData = DataManager.Instance.playerDatas[val];
         SceneManager.LoadScene(2);
     }
-    public void DevScene(GameObject _player)
+    public void DevScene(GameObject _player,DevScene _devScene)
     {
         player = _player.GetComponent<Player>();
         player.playerStatus.InitSetStatus(selectPlayerData);
         player.playerStatus.OnPlayerDead += PlayerDead;
+        devScene = _devScene;
     }
     public void ModifyGold(int value)
     {

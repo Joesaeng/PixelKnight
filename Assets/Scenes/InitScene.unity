@@ -172,6 +172,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ebedbdc820e618243a352c323d84236d, type: 2}
   enemyDatas:
   - {fileID: 11400000, guid: e6ff825aa9b054b49b7fc630594f3fa0, type: 2}
+  - {fileID: 11400000, guid: bbd7729330862e143a1f7c1036677eea, type: 2}
   skillDatas:
   - {fileID: 11400000, guid: 4ddb3feb00daa1b43ac61451af85031a, type: 2}
   - {fileID: 11400000, guid: 784e460f10cb8fe49ad53cf7d83c1df8, type: 2}
@@ -372,6 +373,7 @@ MonoBehaviour:
   damageEffectPrefab: {fileID: 3229302182622491195, guid: 2f312f07378245740839cbce602470c7, type: 3}
   skillPrefab: {fileID: 7748063532548825478, guid: dbd7e6a336457e742abdde18961a5d16, type: 3}
   inventorySlotPrefab: {fileID: 9039763848055696913, guid: 1a368298c8b63a546b93ae1f5dd45bcb, type: 3}
+  bulletPrefab: {fileID: 2643693151636012600, guid: 05a04502484734e42bc2bc6e34a5a020, type: 3}
 --- !u!1 &1678958526
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,3 +458,4 @@ MonoBehaviour:
   player: {fileID: 0}
   selectPlayerData: {fileID: 0}
   curGold: 0
+  devScene: {fileID: 0}

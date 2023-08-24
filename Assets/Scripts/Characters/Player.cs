@@ -49,6 +49,8 @@ public class Player : MonoBehaviour
     private bool isGround = true;
     private bool isStun = false;
     private bool isDead = false;
+    public bool IsDead
+    {   get { return isDead; } }
     private bool isSkill = false;
     private bool isSlope = false;
     private bool isJump = false;

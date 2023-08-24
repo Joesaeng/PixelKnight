@@ -10,17 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c1dce94716bb2f4cab4071897754280, type: 3}
-  m_Name: Enemy_0
+  m_Name: GoblinAx
   m_EditorClassIdentifier: 
-  enemyID: 0
-  charName: Goblin
-  expReward: 10
-  goldReward: 15
-  maxHp: 150
+  enemyID: 1
+  attackType: 1
+  charName: GoblinAx
+  expReward: 15
+  goldReward: 25
+  attackRange: 5
+  maxHp: 180
   maxPoise: 0
-  damage: 30
-  defence: 3
-  stagger: 10
-  evade: 0
-  hitrate: 15
+  damage: 45
+  defence: 5
+  stagger: 15
+  evade: 5
+  hitrate: 20
   moveSpeed: 1
