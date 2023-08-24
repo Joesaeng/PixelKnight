@@ -47,10 +47,11 @@ public class Player : MonoBehaviour
     public float attackDelay;
     private bool isAttacking = false;
     private bool isGround = true;
+    private bool isAirGround = false;
     private bool isStun = false;
     private bool isDead = false;
     public bool IsDead
-    {   get { return isDead; } }
+    { get { return isDead; } }
     private bool isSkill = false;
     private bool isSlope = false;
     private bool isJump = false;
@@ -172,8 +173,9 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         isGround = IsCheckGrounded();
-        if (isGround && rigid.velocity.y <= 0.1f)
+        if ((isGround && rigid.velocity.y <= 0.1f))
         {
+            myCollider.enabled = true;
             Physics2D.IgnoreLayerCollision(playerLayer, airFloorLayer, false);
             rigid.gravityScale = 0f;
             jumpCount = 1;
@@ -193,9 +195,9 @@ public class Player : MonoBehaviour
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
             return;
         }
-        if(canUseLadder && !isLadder)
+        if (canUseLadder && !isLadder)
         {
-            if(vertical != 0)
+            if (vertical != 0)
             {
                 isLadder = true;
                 animator.SetBool("isLadder", true);
@@ -249,7 +251,7 @@ public class Player : MonoBehaviour
         if (rigid.velocity.y <= 0f) isJump = false;
         if (jumpCount > 0 && !isAttacking && !isStun && !isJump && Input.GetKeyDown(KeySetting.keys[KeyAction.Jump]))
         {
-            if(isLadder)
+            if (isLadder)
             {
                 if (horizontal == 0) return;
                 else
@@ -257,7 +259,7 @@ public class Player : MonoBehaviour
                     if (playerStatus.UseStamina(jumpStamina))
                     {
                         isLadder = false;
-                        rigid.AddForce(new Vector2(horizontal,0.5f) * jumpForce, ForceMode2D.Impulse);
+                        rigid.AddForce(new Vector2(horizontal, 0.5f) * jumpForce, ForceMode2D.Impulse);
                         animator.SetBool("isGround", false);
                         isJump = true;
                         jumpCount--;
@@ -266,7 +268,14 @@ public class Player : MonoBehaviour
             }
             else
             {
-                if (playerStatus.UseStamina(jumpStamina))
+                if (isAirGround && vertical == -1 && playerStatus.UseStamina(jumpStamina))
+                {
+                    StartCoroutine(CoDownJump());
+                    animator.SetBool("isGround", false);
+                    jumpCount--;
+
+                }
+                else if (playerStatus.UseStamina(jumpStamina))
                 {
                     rigid.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                     animator.SetBool("isGround", false);
@@ -277,12 +286,27 @@ public class Player : MonoBehaviour
         }
 
     }
+    IEnumerator CoDownJump()
+    {
+        myCollider.enabled = false;
+        isJump = true;
+        yield return new WaitForSeconds(0.2f);
+        myCollider.enabled = true;
+    }
     private bool IsCheckGrounded()
     {
         bool isGround = false;
-        if (Physics2D.BoxCast(chkPos.position, new Vector2(myCollider.bounds.size.x, 0.1f), 0f, Vector2.down, 0.01f, groundChkLayer)
-            || Physics2D.BoxCast(chkPos.position, new Vector2(myCollider.bounds.size.x, 0.1f), 0f, Vector2.down, 0.01f, airGroundChkLayer))
+        if (Physics2D.BoxCast(chkPos.position, new Vector2(myCollider.bounds.size.x, 0.1f), 0f, Vector2.down, 0.01f, groundChkLayer))
+        {
+            myCollider.enabled = true;
             isGround = true;
+            isAirGround = false;
+        }
+        if (Physics2D.BoxCast(chkPos.position, new Vector2(myCollider.bounds.size.x, 0.1f), 0f, Vector2.down, 0.01f, airGroundChkLayer))
+        {
+            isGround = true;
+            isAirGround = true;
+        }
         if (isLadder) isGround = false;
         return isGround;
     }
@@ -312,9 +336,9 @@ public class Player : MonoBehaviour
         }
         else
             animator.SetBool("isGround", false);
-        if(isLadder)
+        if (isLadder)
         {
-            if(rigid.velocity.y == 0)
+            if (rigid.velocity.y == 0)
             {
                 animator.SetFloat("isLadderFloat", 0f);
             }
