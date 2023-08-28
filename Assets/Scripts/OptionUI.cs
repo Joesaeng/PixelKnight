@@ -7,6 +7,7 @@ public class OptionUI : MenuUI
 {
     bool firstOpen = false;
     public GameObject notSetKey;
+    public GameObject exitCheck;
     public Text notSetKeyText;
     public Text descText;
     public override void KeyInputAtiveMenu(){}
@@ -15,6 +16,7 @@ public class OptionUI : MenuUI
         activeMenu = !activeMenu;
         menuPanel.SetActive(activeMenu);
         notSetKey.SetActive(false);
+        exitCheck.SetActive(false);
         SetDescText("");
         if (menuPanel.activeSelf) Time.timeScale = 0;
         else Time.timeScale = 1;
@@ -49,5 +51,13 @@ public class OptionUI : MenuUI
     void SetDescText(string descText)
     {
         this.descText.text = descText;
+    }
+    public void GameExitButton()
+    {
+        exitCheck.SetActive(true);
+    }
+    public void GameExit()
+    {
+        GameManager.Instance.GameExit();
     }
 }

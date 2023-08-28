@@ -27,7 +27,6 @@ public class EnemyStatus : MonoBehaviour
 
     public Action OnEnemyDead;
 
-    private bool init = false;
     public float CurHp
     {
         get => curHp;

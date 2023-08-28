@@ -67,7 +67,6 @@ public class Enemy : MonoBehaviour
         }
         if (target)
         {
-            //CancelInvoke();
             Chase();
         }
         else

@@ -7,6 +7,7 @@ public class GameManager : Singleton<GameManager>
 {
     [Header("# GameObject")]
     public Player player;
+    public PlayerStatus playerStatus;
     public PlayerData selectPlayerData;
 
     [Header("# preps")]
@@ -27,6 +28,7 @@ public class GameManager : Singleton<GameManager>
     public void DevScene(GameObject _player,DevScene _devScene)
     {
         player = _player.GetComponent<Player>();
+        playerStatus = _player.GetComponent<PlayerStatus>();
         player.playerStatus.InitSetStatus(selectPlayerData);
         player.playerStatus.OnPlayerDead += PlayerDead;
         devScene = _devScene;
@@ -44,8 +46,21 @@ public class GameManager : Singleton<GameManager>
     {
         // TODO
     }
+    public void GameExit()
+    {
+        Application.Quit();
+    }
+    public void GameSave()
+    {
+        // Player pos
+        // Player Status
+        // Equipment
+        // Inventory
+        // SKill
+    }
+    public void GameLoad()
+    {
 
-
-
+    }
 
 }

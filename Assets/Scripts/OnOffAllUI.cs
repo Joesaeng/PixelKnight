@@ -5,10 +5,12 @@ using UnityEngine;
 public class OnOffAllUI : MonoBehaviour
 {
     MenuUI[] menuUIList;
-    
+    MenuUI optionMenu;
+    private bool isOnMenu;
     private void Awake()
     {
         menuUIList = GetComponents<MenuUI>();
+        isOnMenu = false;
     }
     private void Update()
     {
@@ -16,10 +18,23 @@ public class OnOffAllUI : MonoBehaviour
         {
             for(int i = 0; i < menuUIList.Length;++i)
             {
-                if (menuUIList[i].menuPanel.CompareTag("OptionUI")) continue;
+                if (menuUIList[i].menuPanel.CompareTag("OptionUI"))
+                {
+                    optionMenu = menuUIList[i];
+                    continue;
+                }
                 if (menuUIList[i].activeMenu)
+                {
                     menuUIList[i].ActiveMenu();
+                    isOnMenu = true;
+                }
             }
+            if(!isOnMenu)
+            {
+                if (!optionMenu.activeMenu)
+                    optionMenu.ActiveMenu();
+            }
+            isOnMenu = false;
         }
     }
 }
