@@ -17,10 +17,17 @@ public class GameManager : Singleton<GameManager>
     public DevScene devScene;
     private void Start()
     {
-        SceneManager.LoadScene(1);
         ModifyGold(0);
     }
-    public void GameStart(int val)
+    public void NewGame()
+    {
+        SceneManager.LoadScene(1);
+    }
+    public void LoadGame()
+    {
+        SceneManager.LoadScene(2);
+    }
+    public void SelectCharacter(int val)
     {
         selectPlayerData = DataManager.Instance.playerDatas[val];
         SceneManager.LoadScene(2);
@@ -52,15 +59,11 @@ public class GameManager : Singleton<GameManager>
     }
     public void GameSave()
     {
-        // Player pos
-        // Player Status
-        // Equipment
-        // Inventory
-        // SKill
+        SaveDataManager.Instance.Save();
     }
     public void GameLoad()
     {
-
+        SaveDataManager.Instance.Load();
     }
 
 }

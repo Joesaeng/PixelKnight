@@ -10,6 +10,7 @@ public struct UsedSkills
     public SkillData skill_3;
     public SkillData skill_4;
 }
+
 public class SkillUI : MenuUI
 {
     public Transform descPanel;
@@ -18,7 +19,7 @@ public class SkillUI : MenuUI
     public UsedSkillSlot[] usedSkillSlots;
     public SkillData selectSkillData;
     public Action<UsedSkills> OnChangedUsedSkill;
-
+    public List<SkillName> enableSkills = new();
     private void Start()
     {
         menuPanel.SetActive(activeMenu);
@@ -27,6 +28,7 @@ public class SkillUI : MenuUI
         for (int i = 0; i < skillDescs.Length; ++i)
         {
             skillDescs[i].OnSelect += SelectSkill;
+            skillDescs[i].OnEnableSkill += EnableSkillData;
         }
         for (int i = 0; i < usedSkillSlots.Length; ++i)
         {
@@ -42,6 +44,14 @@ public class SkillUI : MenuUI
     public override void KeyInputAtiveMenu()
     {
         ActiveMenu();
+    }
+    void EnableSkillData(SkillName skillName)
+    {
+        enableSkills.Add(skillName);
+    }
+    public List<SkillName> GetEnableSkills()
+    {
+        return enableSkills;
     }
     void SelectSkill(SkillDescUI descUI)
     {

@@ -147,6 +147,30 @@ public class PlayerStatus : MonoBehaviour
             dPlayerDynamicStatus.Add(dynamicStatusName, 0);
         }
     }
+    public SaveData GetSaveStatus()
+    {
+        SaveData saveData = new();
+        saveData.level = playerLv;
+        saveData.curExp = dPlayerDynamicStatus[DynamicStatusName.CurExp];
+        saveData.remainingPoint = remainingPoint;
+        saveData.addedPoint = addedPoint;
+
+        saveData.initVit = initialPlayerData.vitality;
+        saveData.initEnd = initialPlayerData.endurance;
+        saveData.initStr = initialPlayerData.strength;
+        saveData.initDex = initialPlayerData.dexterity;
+        saveData.initLuk = initialPlayerData.luck;
+
+        saveData.AddedVit = dAddedAttribute[PlayerAttribute.Vitality];
+        saveData.AddedEnd = dAddedAttribute[PlayerAttribute.Endurance];
+        saveData.AddedStr = dAddedAttribute[PlayerAttribute.Strength];
+        saveData.AddedDex = dAddedAttribute[PlayerAttribute.Dexterity];
+        saveData.AddedLuk = dAddedAttribute[PlayerAttribute.Luck];
+
+        saveData.curHp = dPlayerDynamicStatus[DynamicStatusName.CurHp];
+
+        return saveData;
+    }
     private void Update()
     {
         RegeneratePoise();

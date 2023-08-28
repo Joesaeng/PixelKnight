@@ -60,4 +60,8 @@ public class OptionUI : MenuUI
     {
         GameManager.Instance.GameExit();
     }
+    public void SaveButton()
+    {
+        GameManager.Instance.GameSave();
+    }
 }

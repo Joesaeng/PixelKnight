@@ -6,6 +6,6 @@ public class SelectCharacter : MonoBehaviour
 {
     public void SelectCharacterButton(int val)
     {
-        GameManager.Instance.GameStart(val);
+        GameManager.Instance.SelectCharacter(val);
     }
 }

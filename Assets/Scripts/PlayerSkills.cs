@@ -8,6 +8,7 @@ public class PlayerSkills : MonoBehaviour
     List<float> skillCoolTimes = new List<float>();
     Player player;
     SkillUI skillUI;
+
     public Collider2D judgementRange;
     public bool UseSkill(int index)
     {
@@ -116,5 +117,10 @@ public class PlayerSkills : MonoBehaviour
         if(skillDatas.ContainsKey(index))
             return skillDatas[index];
         return null;
+    }
+
+    public List<SkillName> GetEnableSkills()
+    {
+        return skillUI.GetEnableSkills();
     }
 }

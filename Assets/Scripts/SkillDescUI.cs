@@ -21,6 +21,7 @@ public class SkillDescUI : MonoBehaviour, IPointerUpHandler
     Button selectButton;
     public SkillSelectData selectData;
     public Action<SkillDescUI> OnSelect;
+    public Action<SkillName> OnEnableSkill;
 
     [Header("Buy Skill")]
     public GameObject disableImage;
@@ -76,6 +77,7 @@ public class SkillDescUI : MonoBehaviour, IPointerUpHandler
             {
                 GameManager.Instance.ModifyGold(-skillData.goldCost);
                 canUse = true;
+                OnEnableSkill?.Invoke(skillData.skillName);
                 disableImage.SetActive(false);
             }
         }
