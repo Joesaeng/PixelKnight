@@ -23,13 +23,15 @@ public class GameManager : Singleton<GameManager>
     {
         SceneManager.LoadScene(1);
     }
-    public void LoadGame()
+    public void LoadGame(int charId)
     {
+        selectPlayerData = DataManager.Instance.playerDatas[charId];
         SceneManager.LoadScene(2);
     }
-    public void SelectCharacter(int val)
+    public void SelectCharacter(int charId)
     {
-        selectPlayerData = DataManager.Instance.playerDatas[val];
+        selectPlayerData = DataManager.Instance.playerDatas[charId];
+        SaveDataManager.Instance.saveData.charId = charId;
         SceneManager.LoadScene(2);
     }
     public void DevScene(GameObject _player,DevScene _devScene)
@@ -37,6 +39,9 @@ public class GameManager : Singleton<GameManager>
         player = _player.GetComponent<Player>();
         playerStatus = _player.GetComponent<PlayerStatus>();
         player.playerStatus.InitSetStatus(selectPlayerData);
+        Inventory.Instance.LoadItems();
+        playerStatus.equipment.LoadEquip();
+        player.skills.LoadEnableSkills();
         player.playerStatus.OnPlayerDead += PlayerDead;
         devScene = _devScene;
     }

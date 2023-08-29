@@ -76,11 +76,15 @@ public class SkillDescUI : MonoBehaviour, IPointerUpHandler
             if(GameManager.Instance.GetCurGold() >= skillData.goldCost)
             {
                 GameManager.Instance.ModifyGold(-skillData.goldCost);
-                canUse = true;
-                OnEnableSkill?.Invoke(skillData.skillName);
-                disableImage.SetActive(false);
+                EnableSkill();
             }
         }
+    }
+    public void EnableSkill()
+    {
+        canUse = true;
+        OnEnableSkill?.Invoke(skillData.skillName);
+        disableImage.SetActive(false);
     }
     public void SetSelect(bool b)
     {

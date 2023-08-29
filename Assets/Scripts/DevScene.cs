@@ -15,12 +15,10 @@ public class DevScene : MonoBehaviour
     public VirtualCam virtualCam;
     void Start()
     {
-        PlayerData playerData = GameManager.Instance.selectPlayerData;
-
         GameObject player = Instantiate(playerPrefab);
 
         GameManager.Instance.DevScene(player,this.GetComponent<DevScene>());
-
+        player.transform.localPosition = SaveDataManager.Instance.saveData.playerCurPos;
         player.GetComponent<PlayerSkills>().InitUI();
         gageBarUI.InitGageBarUI();
         levelText.InitLevelText();

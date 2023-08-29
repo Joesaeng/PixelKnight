@@ -150,8 +150,6 @@ public class Enemy : MonoBehaviour
         if (rayHit.collider == null && target == null)
         {
             nextMove *= -1;
-            CancelInvoke();
-            Invoke("Think", 5);
         }
         else if((rayHit.collider == null && target != null)|| Vector2.Distance(rigid.position,targetPos) >20f
             || (player != null && player.IsDead))

@@ -47,11 +47,28 @@ public class SkillUI : MenuUI
     }
     void EnableSkillData(SkillName skillName)
     {
+        if (enableSkills.Contains(skillName)) return;
         enableSkills.Add(skillName);
     }
     public List<SkillName> GetEnableSkills()
     {
         return enableSkills;
+    }
+    public void LoadEnableSkills()
+    {
+        enableSkills = GameManager.Instance.player.skills.enableSkills;
+        for (int i = 0; i < skillDescs.Length; ++i)
+        {
+            for(int j = 0; j < enableSkills.Count; ++j)
+            {
+                if(skillDescs[i].skillData != null &&
+                    skillDescs[i].skillData.skillName == enableSkills[j])
+                {
+                    skillDescs[i].EnableSkill();
+                    break;
+                }
+            }
+        }
     }
     void SelectSkill(SkillDescUI descUI)
     {

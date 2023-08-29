@@ -22,17 +22,13 @@ public class Item
     public string itemName; // 아이템 이름
     public Sprite itemImage;
     public string iconAddress;
-    public List<ItemEffect> efts = new List<ItemEffect>();
+    public ItemEffect eft;
     public ItemType itemType;
     public ItemLevel itemLevel; // 아이템 레벨
 
     public bool Use()
     {
-        bool isUsed = false;
-        foreach (ItemEffect effect in efts)
-        {
-            isUsed = effect.ExecuteRole();
-        }
+        bool isUsed = eft.ExecuteRole();
 
         return isUsed;
     }

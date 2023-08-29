@@ -6,17 +6,13 @@ public class SaveData
 {
     public string name;
     public int level;
+    public int charId;
     public float curExp;
     public int remainingPoint;
     public int addedPoint;
     public int curGold;
     public Vector2 playerCurPos = new();
 
-    public int initVit;
-    public int initEnd;
-    public int initStr;
-    public int initDex;
-    public int initLuk;
     public int AddedVit;
     public int AddedEnd;
     public int AddedStr;
@@ -26,7 +22,9 @@ public class SaveData
     public float curHp;
     public List<SkillName> skills = new();
     public List<Equip> curEquips = new();
+    public int inventorySlotCount;
     public List<Item> inventoryItems = new();
+    public List<Equip> inventoryEquips = new();
 }
 public class SaveDataManager : Singleton<SaveDataManager>
 {
@@ -34,9 +32,6 @@ public class SaveDataManager : Singleton<SaveDataManager>
     public string path;
     public int nowSlot;
 
-    public List<SkillName> skills = new();
-    public List<Equip> curEquips = new();
-    public List<Item> inventoryItems = new();
     private void Awake()
     {
         path = Application.persistentDataPath + "/save";
@@ -46,14 +41,16 @@ public class SaveDataManager : Singleton<SaveDataManager>
         if(GameManager.Instance.player != null)
         {
             Player savePlayer = GameManager.Instance.player;
-            saveData = savePlayer.playerStatus.GetSaveStatus();
+            saveData = savePlayer.playerStatus.SaveStatus();
             saveData.curGold = GameManager.Instance.curGold;
             saveData.playerCurPos = GameManager.Instance.player.transform.position;
             saveData.skills = savePlayer.skills.GetEnableSkills();
             saveData.curEquips.AddRange(savePlayer.playerStatus.equipment.GetCurEquip());
-            saveData.inventoryItems = Inventory.Instance.GetItems();
+            List<Item> items = Inventory.Instance.GetItems();
+            SaveInventoryItems(items);
+
+            saveData.inventorySlotCount = Inventory.Instance.SlotCnt;
         }
-        
 
         string data = JsonUtility.ToJson(saveData);
         File.WriteAllText(path + nowSlot.ToString(), data);
@@ -70,5 +67,19 @@ public class SaveDataManager : Singleton<SaveDataManager>
     {
         nowSlot = -1;
         saveData = new SaveData();
+    }
+    void SaveInventoryItems(List<Item> items)
+    {
+        for(int i = 0; i< items.Count; ++i)
+        {
+            if(items[i] is Equip equip)
+            {
+                saveData.inventoryEquips.Add(equip);
+            }
+            else
+            {
+                saveData.inventoryItems.Add(items[i]);
+            }
+        }
     }
 }

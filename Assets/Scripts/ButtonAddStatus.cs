@@ -12,7 +12,7 @@ public class ButtonAddStatus : MonoBehaviour, IPointerUpHandler
     public void OnPointerUp(PointerEventData eventData)
     {
         PlayerStatus playerStatus = GameManager.Instance.player.playerStatus;
-        if (playerStatus.RemainingPoint < 1) return;
+        if (playerStatus.remainingPoint < 1) return;
         playerStatus.ModifyAttribute(index, 1);
         playerStatus.ModifyRemainingPoint(-1);
     }

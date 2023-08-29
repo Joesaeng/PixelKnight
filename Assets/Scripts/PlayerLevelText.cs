@@ -14,6 +14,6 @@ public class PlayerLevelText : MonoBehaviour
     }
     void UpdateLvText()
     {
-        lvText.text = string.Format("Lv " + (GameManager.Instance.player.playerStatus.PlayerLv + 1));
+        lvText.text = string.Format("Lv " + (GameManager.Instance.player.playerStatus.playerLv + 1));
     }
 }

@@ -22,9 +22,17 @@ public class EquipmentSlotUI : MonoBehaviour, IPointerUpHandler
             Equipment.Instance.OnEquiped += HandleItemEquipped;
             Equipment.Instance.OnUnEquiped += HandleItemUnequipped;
             isEquipEventSunscribed = true;
+            LoadEquip();
         }
     }
-
+    void LoadEquip()
+    {
+        if (!Equipment.Instance.equippedItems.ContainsKey(slotType)) return;
+        Equip _equip = Equipment.Instance.equippedItems[slotType];
+        iconImage.sprite = _equip.itemImage;
+        equip = _equip;
+        iconImage.enabled = true;
+    }
 
     private void HandleItemEquipped(EquipSlot slot, Equip _equip)
     {
@@ -51,8 +59,10 @@ public class EquipmentSlotUI : MonoBehaviour, IPointerUpHandler
     }
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (equip == null)
+        if (!iconImage.enabled)
         {
+            iconImage.sprite = null;
+            equip = null;
             return;
         }
         Inventory.Instance.AddItem(equip);

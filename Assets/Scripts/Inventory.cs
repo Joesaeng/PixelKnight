@@ -44,7 +44,7 @@ public class Inventory : MonoBehaviour
         set
         {
             slotCnt = value;
-            onSlotCountChange.Invoke(slotCnt);
+            onSlotCountChange?.Invoke(slotCnt);
         }
     }
     void Start()
@@ -54,6 +54,27 @@ public class Inventory : MonoBehaviour
     public List<Item> GetItems()
     {
         return items;
+    }
+    public void LoadItems()
+    {
+        SlotCnt = SaveDataManager.Instance.saveData.inventorySlotCount;
+        onSlotCountChange?.Invoke(slotCnt);
+        List<Item> _items = SaveDataManager.Instance.saveData.inventoryItems;
+        List<Equip> equips = SaveDataManager.Instance.saveData.inventoryEquips;
+        for(int i = 0; i < _items.Count; ++i)
+        {
+            AddItem(_items[i]);
+        }
+        for (int i = 0; i < equips.Count; ++i)
+        {
+            if(equips[i] is Equip equip)
+            {
+                ItemEquipEft itemEquipEft = new();
+                equip.SetItemEffect(itemEquipEft);
+                AddItem(equip);
+            }
+            
+        }
     }
     public bool AddItem(Item item)
     {
@@ -68,7 +89,7 @@ public class Inventory : MonoBehaviour
                  items.Add(item);
             }
             if(onChangeItem != null)
-                onChangeItem.Invoke();
+                onChangeItem?.Invoke();
             return true;
         }
         return false;
@@ -77,6 +98,6 @@ public class Inventory : MonoBehaviour
     public void RemoveItem(int slotnum)
     {
         items.RemoveAt(slotnum);
-        onChangeItem.Invoke();
+        onChangeItem?.Invoke();
     }
 }

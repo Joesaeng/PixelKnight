@@ -61,7 +61,7 @@ public class SlotSelect : MonoBehaviour
         }
         else
         {
-            GameManager.Instance.LoadGame();
+            GameManager.Instance.LoadGame(SaveDataManager.Instance.saveData.charId);
         }
     }
 

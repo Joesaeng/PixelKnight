@@ -47,6 +47,19 @@ public class Equipment : MonoBehaviour
 
         return curEquips;
     }
+    public void LoadEquip()
+    {
+        List<Equip> curEquips = SaveDataManager.Instance.saveData.curEquips;
+        for(int i = 0; i < curEquips.Count; ++i)
+        {
+            if(curEquips[i] is Equip equip)
+            {
+                ItemEquipEft itemEquipEft = new();
+                equip.SetItemEffect(itemEquipEft);
+                EquipItem(equip.equipSlot, equip);
+            }
+        }
+    }
     public void EquipItem(EquipSlot slot, Equip item)
     {
         if (item == null) Debug.Log("item is null");

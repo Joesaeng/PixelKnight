@@ -78,22 +78,14 @@ public class PlayerStatus : MonoBehaviour
     public readonly float minCriticalHitDamage = 1.5f;
 
     #region 레벨 관련
-    private int playerLv = 0;
-    public float PlayerLv
-    {
-        get { return playerLv; }
-    }
+    public int playerLv = 0;
     private float expRequirement = 50;
     public float ExpRequirement
     {
         get { return expRequirement; }
     }
     private float expRequirementIncrese = 1.3f;
-    private int remainingPoint = 0;
-    public int RemainingPoint
-    {
-        get { return remainingPoint; }
-    }
+    public int remainingPoint = 0;
     public int addedPoint;                  // 현재까지 총 받은 포인트
     public Action OnLevelUp;
     #endregion
@@ -147,19 +139,14 @@ public class PlayerStatus : MonoBehaviour
             dPlayerDynamicStatus.Add(dynamicStatusName, 0);
         }
     }
-    public SaveData GetSaveStatus()
+    public SaveData SaveStatus()
     {
         SaveData saveData = new();
+        saveData.name = SaveDataManager.Instance.saveData.name;
         saveData.level = playerLv;
         saveData.curExp = dPlayerDynamicStatus[DynamicStatusName.CurExp];
         saveData.remainingPoint = remainingPoint;
         saveData.addedPoint = addedPoint;
-
-        saveData.initVit = initialPlayerData.vitality;
-        saveData.initEnd = initialPlayerData.endurance;
-        saveData.initStr = initialPlayerData.strength;
-        saveData.initDex = initialPlayerData.dexterity;
-        saveData.initLuk = initialPlayerData.luck;
 
         saveData.AddedVit = dAddedAttribute[PlayerAttribute.Vitality];
         saveData.AddedEnd = dAddedAttribute[PlayerAttribute.Endurance];
@@ -170,6 +157,22 @@ public class PlayerStatus : MonoBehaviour
         saveData.curHp = dPlayerDynamicStatus[DynamicStatusName.CurHp];
 
         return saveData;
+    }
+    public void LoadStatus()
+    {
+        SaveData loadData = SaveDataManager.Instance.saveData;
+
+        playerLv = loadData.level;
+        dPlayerDynamicStatus[DynamicStatusName.CurExp] = loadData.curExp;
+        dPlayerDynamicStatus[DynamicStatusName.CurHp] = loadData.curHp;
+        remainingPoint = loadData.remainingPoint;
+        addedPoint = loadData.addedPoint;
+
+        dAddedAttribute[PlayerAttribute.Vitality] = loadData.AddedVit;
+        dAddedAttribute[PlayerAttribute.Endurance] = loadData.AddedEnd;
+        dAddedAttribute[PlayerAttribute.Strength] = loadData.AddedStr;
+        dAddedAttribute[PlayerAttribute.Dexterity] = loadData.AddedDex;
+        dAddedAttribute[PlayerAttribute.Luck] = loadData.AddedLuk;
     }
     private void Update()
     {
@@ -185,8 +188,10 @@ public class PlayerStatus : MonoBehaviour
     public void InitSetStatus(PlayerData data) // 초기 스테이터스 설정
     {
         initialPlayerData = data;
+        LoadStatus();
         UpdateStatus();
-        dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp];
+        if(dPlayerDynamicStatus[DynamicStatusName.CurHp] == 0)
+            dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp];
         dPlayerDynamicStatus[DynamicStatusName.CurStamina] = dPlayerFixedStatus[FixedStatusName.MaxStamina];
         dPlayerDynamicStatus[DynamicStatusName.CurPoise] = dPlayerFixedStatus[FixedStatusName.Poise];
     }

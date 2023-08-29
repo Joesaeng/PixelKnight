@@ -9,6 +9,8 @@ public class PlayerSkills : MonoBehaviour
     Player player;
     SkillUI skillUI;
 
+    public List<SkillName> enableSkills = new();
+
     public Collider2D judgementRange;
     public bool UseSkill(int index)
     {
@@ -42,6 +44,10 @@ public class PlayerSkills : MonoBehaviour
         player = GetComponent<Player>();
         float[] t = { 0f, 0f, 0f, 0f };
         skillCoolTimes.AddRange(t);
+    }
+    public void LoadEnableSkills()
+    {
+        enableSkills = SaveDataManager.Instance.saveData.skills;
     }
     private void Update()
     {
@@ -88,6 +94,7 @@ public class PlayerSkills : MonoBehaviour
     {
         skillUI = FindObjectOfType<SkillUI>();
         skillUI.OnChangedUsedSkill += SetUsedSkill;
+        skillUI.LoadEnableSkills();
         UsedSkills nullSkills = new
             UsedSkills
         { skill_1 = null, skill_2 = null, skill_3 = null, skill_4 = null, };

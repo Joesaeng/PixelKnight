@@ -24,7 +24,7 @@ public class StatusValueUI : MonoBehaviour
     }
     void UpdateRemainingPoint()
     {
-        remaingPointText.text = string.Format(": " + playerStatus.RemainingPoint);
+        remaingPointText.text = string.Format(": " + playerStatus.remainingPoint);
     }
     public PlayerStatus GetPlayerStatus()
     {

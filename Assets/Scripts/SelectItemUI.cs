@@ -116,7 +116,7 @@ public class SelectItemUI : MonoBehaviour
         itemAddtionalOption.Clear();
         selectItemPanel.SetActive(false);
     }
-    void SetAddtionalOption(Dictionary<AdditionalOptions, float> additionalOptions)
+    void SetAddtionalOption(List<AdditionalOption> additionalOptions)
     {
 
         foreach (var option in additionalOptions)

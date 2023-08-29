@@ -62,6 +62,6 @@ public class OptionUI : MenuUI
     }
     public void SaveButton()
     {
-        GameManager.Instance.GameSave();
+        SaveDataManager.Instance.Save();
     }
 }
