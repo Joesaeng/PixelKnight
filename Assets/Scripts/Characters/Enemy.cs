@@ -17,16 +17,18 @@ public class Enemy : MonoBehaviour
 
     Vector2 initPosition;
 
-    Vector2 targetPos;
-
     bool isDead;
     public bool IsDead
-    { get { return isDead; } }    
+    { get { return isDead; } }
     public bool isAttacking;
     public WaitForSeconds attackDelay;
     public int nextMove;
     float moveSpeed;
     Vector3 xFlipScale;
+
+    public float thinkTime = 5f;
+    float curThinkTime;
+
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -34,20 +36,18 @@ public class Enemy : MonoBehaviour
         enemyStatus = GetComponent<EnemyStatus>();
         xFlipScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
         attackDelay = new WaitForSeconds(1.5f);
+        curThinkTime = 0f;
     }
 
     private void OnEnable()
     {
+        curThinkTime = 0f;
         initPosition = transform.position;
-        //moveSpeed = enemyStatus.moveSpeed;
         nextMove = 0;
         target = null;
         isDead = false;
         isAttacking = false;
-        //enemyStatus.SetData();
-        //anim.runtimeAnimatorController = animCon[enemyStatus.enemyID];
         anim.SetBool("isDead", isDead);
-        Invoke("Think", 5);
         enemyStatus.OnEnemyDead += EnemyDead;
     }
     public void SetData(int enemyID)
@@ -56,6 +56,10 @@ public class Enemy : MonoBehaviour
         moveSpeed = enemyStatus.moveSpeed;
         attackType = DataManager.Instance.GetEnemyData(enemyID).attackType;
         attackRange = DataManager.Instance.GetEnemyData(enemyID).attackRange;
+    }
+    private void Update()
+    {
+        curThinkTime += Time.deltaTime;
     }
     void FixedUpdate()
     {
@@ -67,18 +71,21 @@ public class Enemy : MonoBehaviour
         }
         if (target)
         {
+            nextMove = (target.position.x - rigid.position.x) > 0 ? 1 : -1;
             Chase();
         }
         else
         {
+            if (curThinkTime >= thinkTime)
+                Think();
             Move();
         }
-        anim.SetFloat("WalkSpeed", Mathf.Abs(rigid.velocity.x));
         if (rigid.velocity.y <= -50f) // 맵 밖으로 이탈했을때 강제로 사망 처리
             enemyStatus.ModifyHp(-10000000f);
     }
     private void LateUpdate()
     {
+        anim.SetFloat("WalkSpeed", Mathf.Abs(rigid.velocity.x));
         if (nextMove != 0)
         {
             xFlipScale.x = nextMove;
@@ -88,12 +95,11 @@ public class Enemy : MonoBehaviour
 
     void Chase()
     {
-        
         switch (attackType)
         {
             case EnemyAttackType.Meele:
                 {
-                    Vector2 dir = targetPos - rigid.position;
+                    Vector2 dir = target.position - rigid.position;
                     RaycastHit2D ray = Physics2D.Raycast(rigid.position, dir, 0.7f, LayerMask.GetMask("PlayerHit"));
 
                     if (!isAttacking && ray.collider != null && ray.collider.CompareTag("PlayerHit"))
@@ -108,8 +114,8 @@ public class Enemy : MonoBehaviour
                 break;
             case EnemyAttackType.Ranged:
                 {
-                    float dis = Vector2.Distance(targetPos, rigid.position);
-                    if(!isAttacking && dis <= attackRange)
+                    float dis = Vector2.Distance(target.position, rigid.position);
+                    if (!isAttacking && dis <= attackRange)
                     {
                         StartCoroutine(CoAttack());
                     }
@@ -120,7 +126,7 @@ public class Enemy : MonoBehaviour
                 }
                 break;
         }
-        
+
     }
     IEnumerator CoAttack()
     {
@@ -128,17 +134,6 @@ public class Enemy : MonoBehaviour
         anim.SetTrigger("isAttack");
         yield return attackDelay;
         isAttacking = false;
-        Move();
-    }
-    void ChaseTarget()
-    {
-        if (target == null) return;
-        else
-        {
-            targetPos = target.position;
-            nextMove = rigid.position.x - targetPos.x >= 0f ? -1 : 1;
-        }
-        Invoke("ChaseTarget", 1f);
     }
     void Move()
     {
@@ -151,28 +146,28 @@ public class Enemy : MonoBehaviour
         {
             nextMove *= -1;
         }
-        else if((rayHit.collider == null && target != null)|| Vector2.Distance(rigid.position,targetPos) >20f
-            || (player != null && player.IsDead))
+        else if ((rayHit.collider == null && target != null) || // 타겟을 쫓는 중에 더이상 진행할 수 없다면
+            (target != null && Vector2.Distance(rigid.position, target.position) > 20f) // 타겟과의 거리가 일정거리만큼 벌어졌다면
+            || (player != null && player.IsDead)) // 플레이어가 죽었을 때
         {
             target = null;
             player = null;
             enemyStatus.ResetHpPoise();
-            Invoke("Think", 5);
+            curThinkTime = 0f;
+            // 타겟
         }
     }
 
     void Think()
     {
         nextMove = Random.Range(-1, 2);
-
-        Invoke("Think", Random.Range(2f, 6f));
+        curThinkTime = 0f;
     }
     void SetTarget()
     {
         if (target != null) return;
         player = GameManager.Instance.player;
         target = player.GetComponent<Rigidbody2D>();
-        ChaseTarget();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -207,7 +202,7 @@ public class Enemy : MonoBehaviour
     {
         if (!isDead) Spawner.instance.ItemSpawn(transform.position);
         isDead = true;
-        CancelInvoke();
+        curThinkTime = 0f;
         StartCoroutine(EnemyDeadAnimPlay());
     }
     IEnumerator EnemyDeadAnimPlay()
@@ -243,11 +238,11 @@ public class Enemy : MonoBehaviour
                     Vector3 dir = (target.transform.position - transform.position).normalized;
                     GameObject bullet = PoolManager.Instance.GetBullet(enemyStatus.enemyID);
                     bullet.transform.position = transform.position;
-                    bullet.transform.rotation = Quaternion.FromToRotation(Vector3.up,dir);
-                    bullet.GetComponent<Bullet>().Init(dir,enemyStatus);
+                    bullet.transform.rotation = Quaternion.FromToRotation(Vector3.up, dir);
+                    bullet.GetComponent<Bullet>().Init(dir, enemyStatus);
                 }
                 break;
         }
-        
+
     }
 }

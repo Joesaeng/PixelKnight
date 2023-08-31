@@ -42,6 +42,7 @@ public class GameManager : Singleton<GameManager>
         Inventory.Instance.LoadItems();
         playerStatus.equipment.LoadEquip();
         player.skills.LoadEnableSkills();
+        ModifyGold(SaveDataManager.Instance.saveData.curGold);
         player.playerStatus.OnPlayerDead += PlayerDead;
         devScene = _devScene;
     }
