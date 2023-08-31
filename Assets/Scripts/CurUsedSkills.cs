@@ -10,7 +10,7 @@ public class CurUsedSkills : MonoBehaviour
     SkillUI skillUI;
     private void Awake()
     {
-        skillUI = GetComponentInParent<SkillUI>();
+        skillUI = GetComponent<SkillUI>();
         skillUI.OnChangedUsedSkill += ChangeCurSkills;
         for(int i = 0; i < hideImage.Length; ++i)
         {

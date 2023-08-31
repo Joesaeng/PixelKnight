@@ -39,19 +39,30 @@ public class Spawner : MonoBehaviour
     {
         //if(UnityEngine.Random.value <= 0.5f)
         {
-            Equip equip = new Equip();
+            GameObject obj;
             int randomIndex = UnityEngine.Random.Range(0, ItemDataBase.Instance.itemDB.Count);
-            equip.SetItemData(ItemDataBase.Instance.GetEquipData(randomIndex));
-            if (UnityEngine.Random.value <= 0.05f)
-                equip.LevelUpItem(ItemLevel.Unique);
-            else if (UnityEngine.Random.value <= 0.15f)
-                equip.LevelUpItem(ItemLevel.Rare);
-            else if (UnityEngine.Random.value <= 0.4f)
-                equip.LevelUpItem(ItemLevel.Advanced);
+            if (randomIndex < 5)
+            {
+                Equip equip = new Equip();
+                equip.SetItemData(ItemDataBase.Instance.GetEquipData(randomIndex));
+                if (UnityEngine.Random.value <= 0.05f)
+                    equip.LevelUpItem(ItemLevel.Unique);
+                else if (UnityEngine.Random.value <= 0.15f)
+                    equip.LevelUpItem(ItemLevel.Rare);
+                else if (UnityEngine.Random.value <= 0.4f)
+                    equip.LevelUpItem(ItemLevel.Advanced);
+                else
+                    equip.LevelUpItem(ItemLevel.Common);
+                obj = PoolManager.Instance.Get(PoolType.FieldEquip);
+                obj.GetComponent<FieldEquip>().SetEquip(equip);
+            }
             else
-                equip.LevelUpItem(ItemLevel.Common);
-            GameObject obj = PoolManager.Instance.Get(PoolType.FieldEquip);
-            obj.GetComponent<FieldEquip>().SetEquip(equip);
+            {
+                Consumable consum = ItemDataBase.Instance.GetConsumableData(randomIndex);
+                obj = PoolManager.Instance.Get(PoolType.FieldConsumable);
+                obj.GetComponent<FieldConsumable>().SetConsumable(consum);
+            }
+            
             obj.transform.position = pos;
         }
     }

@@ -8,6 +8,7 @@ public enum KeyAction
     Up, Down, Left, Right,
     MeleeAttack,
     Jump,
+    UseHpPotion,
     Skill_1,
     Skill_2,
     Skill_3,
@@ -31,7 +32,7 @@ public class KeyManager : Singleton<KeyManager>
     KeyCode[] defaultKeys = new KeyCode[]
     {
         KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.LeftArrow,KeyCode.RightArrow,
-        KeyCode.Z,KeyCode.C,
+        KeyCode.Z,KeyCode.C,KeyCode.R,
         KeyCode.Q,KeyCode.W,KeyCode.E,KeyCode.R,
         KeyCode.I,KeyCode.P,KeyCode.K
     };

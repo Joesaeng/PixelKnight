@@ -2,24 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FieldEquip : FieldItems
+public class FieldConsumable : FieldItems
 {
-    public Equip equip;
+    public Consumable consumable;
+
     public override void Awake()
     {
         base.Awake();
-        equip = new Equip();
+        consumable = new Consumable();
     }
-    public void SetEquip(Equip equip)
+
+    public void SetConsumable(Consumable consumable)
     {
-        this.equip = equip;
+        this.consumable = consumable;
         SetItem();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            if(Inventory.Instance.AddItem(equip))
+            if (Inventory.Instance.AddItem(consumable))
             {
                 DestroyItem();
             }
@@ -27,11 +29,12 @@ public class FieldEquip : FieldItems
     }
     public override void SetImage()
     {
-        image.sprite = equip.itemImage;
+        image.sprite = consumable.itemImage;
         StartCoroutine(FadeIn());
     }
-    public Equip GetItem()
+
+    public Consumable GetItem()
     {
-        return equip;
+        return consumable;
     }
 }

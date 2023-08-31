@@ -21,8 +21,8 @@ MonoBehaviour:
     m_Address: Equip
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: a856524988434274cb467bc8d71a80d8
-    m_Address: EquipSlotUI
+  - m_GUID: b526cb98708afc64f84e612c50f6b386
+    m_Address: Potions
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

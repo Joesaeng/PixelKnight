@@ -75,7 +75,6 @@ public class Equipment : MonoBehaviour
             // 해당 슬롯에 장비가 없는 경우, 새로 장착합니다.
             equippedItems.Add(slot, item);
         }
-        if (OnEquiped == null) Debug.Log("OnEquiped is null");
         OnEquiped?.Invoke(slot, item);
         OnChangeEquipment?.Invoke();
     }

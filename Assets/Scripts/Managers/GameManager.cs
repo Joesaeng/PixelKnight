@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
+
 public class GameManager : Singleton<GameManager>
 {
     [Header("# GameObject")]
@@ -15,9 +16,17 @@ public class GameManager : Singleton<GameManager>
 
     public Action OnChangedGold;
     public DevScene devScene;
+
+    public float hpPotionCooltime = 10f;
+    float curPotionCooltime;
     private void Start()
     {
         ModifyGold(0);
+    }
+    private void Update()
+    {
+        if (curPotionCooltime >= 0)
+            curPotionCooltime -= Time.deltaTime;
     }
     public void NewGame()
     {
@@ -54,6 +63,14 @@ public class GameManager : Singleton<GameManager>
     public int GetCurGold()
     {
         return curGold;
+    }
+    public void HpPotionUse()
+    {
+        curPotionCooltime = hpPotionCooltime;
+    }
+    public float GetHpPotionCooltime()
+    {
+        return Utils.Percent(curPotionCooltime, hpPotionCooltime);
     }
     void PlayerDead()
     {

@@ -6,6 +6,9 @@ using UnityEngine.UI;
 public class OptionUI : MenuUI
 {
     bool firstOpen = false;
+    
+    public GameObject[] selectPanel;
+
     public GameObject notSetKey;
     public GameObject exitCheck;
     public Text notSetKeyText;
@@ -43,6 +46,14 @@ public class OptionUI : MenuUI
             notSetKey.SetActive(true);
         }
         else ActiveMenu();
+    }
+    public void SelectMenu(int index)
+    {
+        for(int i = 0; i < selectPanel.Length;++i)
+        {
+            selectPanel[i].SetActive(false);
+        }
+        selectPanel[index].SetActive(true);
     }
     public void ExitNotSetKey()
     {

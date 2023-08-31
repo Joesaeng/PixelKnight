@@ -4,41 +4,53 @@ using UnityEngine;
 
 public class FieldItems : MonoBehaviour
 {
-    public Item item;
     public SpriteRenderer image;
+    public Rigidbody2D rigid;
+    public CircleCollider2D coll2d;
 
-    private void Awake()
+    public virtual void Awake()
     {
-        item = new Item();
+        rigid = GetComponent<Rigidbody2D>();
+        coll2d = GetComponent<CircleCollider2D>();
+        image = GetComponent<SpriteRenderer>();
     }
-    public void SetItem(Item _item)
+    public void SetItem()
     {
-        item = _item;
-        item.itemName = _item.itemName;
-        item.itemImage = _item.itemImage;
-        item.itemType = _item.itemType;
-        item.itemLevel = _item.itemLevel;
-        item.eft = _item.eft;
-        image.sprite = item.itemImage;
-        
+        Invoke("SetImage", 0.3f);
+        Invoke("OnCollider", 1.5f);
     }
+    public void OnEnable()
+    {
+        rigid.AddForce(Vector2.up * 6f, ForceMode2D.Impulse);
+    }
+    public virtual void SetImage() { }
+    public IEnumerator FadeIn()
+    {
+        float elapsedTime = 0f;
+        Color originalColor = image.color;
+        Color targetColor = new Color(originalColor.r, originalColor.g, originalColor.b, 1f); // 알파값을 1로 설정 (완전 불투명)
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.CompareTag("Player"))
+        while (elapsedTime < 0.5f)
         {
-            if (Inventory.Instance.AddItem(item))
-            {
-                DestroyItem();
-            }
+            float alpha = Mathf.Lerp(0f, 1f, elapsedTime / 0.5f);
+            image.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
+
+        image.color = targetColor; // 애니메이션이 끝나면 최종 알파값을 1로 설정
     }
-    public Item GetItem()
+
+    public void OnCollider()
     {
-        return item;
+        coll2d.enabled = true;
     }
+
     public void DestroyItem()
     {
-        Destroy(gameObject);
+        coll2d.enabled = false;
+        image.color = new Color(image.color.r, image.color.g, image.color.b, 0f);
+        transform.SetParent(PoolManager.Instance.transform);
+        gameObject.SetActive(false);
     }
 }

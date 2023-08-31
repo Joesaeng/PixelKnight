@@ -6,7 +6,7 @@ public enum PoolType
 {
     Enemy,
     EnemyHpUI,
-    FieldItem,
+    FieldConsumable,
     FieldEquip,
     DamageEffect,
     Skill,
@@ -18,8 +18,8 @@ public class PoolManager : Singleton<PoolManager>
 {
     public GameObject enemyPrefab;
     public GameObject enemyHpUIPrefab;
-    public GameObject fieldItemPrefab;
     public GameObject fieldEquipPrefab;
+    public GameObject fieldConsumablePrefab;
     public GameObject damageEffectPrefab;
     public GameObject skillPrefab;
     public GameObject inventorySlotPrefab;
@@ -28,8 +28,8 @@ public class PoolManager : Singleton<PoolManager>
 
     List<GameObject> enemyPool;
     List<GameObject> enemyHpUIPool;
-    List<GameObject> fieldItemPool;
     List<GameObject> fieldEquipPool;
+    List<GameObject> fieldConsumablePool;
     List<GameObject> damageEffectPool;
     List<GameObject> skillPool;
     List<GameObject> slotPool;
@@ -39,8 +39,8 @@ public class PoolManager : Singleton<PoolManager>
     {
         enemyPool = new List<GameObject>();
         enemyHpUIPool = new List<GameObject>();
-        fieldItemPool = new List<GameObject>();
         fieldEquipPool = new List<GameObject>();
+        fieldConsumablePool = new List<GameObject>();
         damageEffectPool = new List<GameObject>();
         skillPool = new List<GameObject>();
         slotPool = new List<GameObject>();
@@ -59,15 +59,15 @@ public class PoolManager : Singleton<PoolManager>
         }
         for (int i = 0; i < poolSize; ++i)
         {
-            GameObject newObj = Instantiate(fieldItemPrefab,transform);
-            newObj.SetActive(false);
-            fieldItemPool.Add(newObj);
-        }
-        for (int i = 0; i < poolSize; ++i)
-        {
             GameObject newObj = Instantiate(fieldEquipPrefab,transform);
             newObj.SetActive(false);
             fieldEquipPool.Add(newObj);
+        }
+        for (int i = 0; i < poolSize; ++i)
+        {
+            GameObject newObj = Instantiate(fieldConsumablePrefab, transform);
+            newObj.SetActive(false);
+            fieldConsumablePool.Add(newObj);
         }
         for (int i = 0; i < poolSize; ++i)
         {
@@ -152,20 +152,20 @@ public class PoolManager : Singleton<PoolManager>
                     }
                 }
                 break;
-            case PoolType.FieldItem:
+            case PoolType.FieldConsumable:
                 {
-                    foreach (GameObject item in fieldItemPool)
+                    foreach (GameObject equip in fieldConsumablePool)
                     {
-                        if (!item.activeSelf)
+                        if (!equip.activeSelf)
                         {
-                            select = item;
+                            select = equip;
                             break;
                         }
                     }
                     if (!select)
                     {
-                        select = Instantiate(fieldItemPrefab, transform);
-                        fieldItemPool.Add(select);
+                        select = Instantiate(fieldConsumablePrefab, transform);
+                        fieldConsumablePool.Add(select);
                     }
                 }
                 break;

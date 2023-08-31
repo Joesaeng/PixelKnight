@@ -8,9 +8,8 @@ public class ItemDataBase : Singleton<ItemDataBase>
 
     public List<Item> itemDB = new List<Item>();
 
-    public GameObject fieldItemPrefab;
+    public GameObject fieldConsumablePrefab;
     public GameObject fieldEquipPrefab;
-    public Vector2[] pos;
     
     
     private void Start()
@@ -29,12 +28,31 @@ public class ItemDataBase : Singleton<ItemDataBase>
             new Equip("Weapon", "Equip[Equip_16]", ItemType.Equipment, ItemLevel.Common, EquipSlot.Weapon, BaseOption.Damage, 15f),
             };
 
+        Consumable[] consumables =
+        {
+            new Consumable("HpPotion","Potions[potions_0]",ItemType.Consumable,ItemLevel.Unique,ConsumableType.HpRecovery,50f,0f)
+        };
 
         itemDB.AddRange(equips);
+        itemDB.AddRange(consumables);
     }
-    public Item GetItemData(int index)
+    public Consumable GetConsumableData(int index)
     {
-        return itemDB[index];
+        if (itemDB[index] is Consumable consumable)
+        {
+            return consumable;
+        }
+        else return null;
+    }
+    public Consumable FindAndGetConsumable(string itemname)
+    {
+        for(int i = 5; i < itemDB.Count; ++i)
+        {
+            if (itemDB[i].itemName == itemname)
+                if (itemDB[i] is Consumable consum)
+                    return consum;
+        }
+        return null;
     }
     public Equip GetEquipData(int index)
     {

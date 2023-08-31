@@ -79,12 +79,13 @@ public class PlayerStatus : MonoBehaviour
 
     #region 레벨 관련
     public int playerLv = 0;
-    private float expRequirement = 50;
+    private float expRequirement;
     public float ExpRequirement
     {
+        set => this.expRequirement = value;
         get { return expRequirement; }
     }
-    private float expRequirementIncrese = 1.3f;
+    private float expRequirementIncrese = 1.6f;
     public int remainingPoint = 0;
     public int addedPoint;                  // 현재까지 총 받은 포인트
     public Action OnLevelUp;
@@ -105,6 +106,7 @@ public class PlayerStatus : MonoBehaviour
         dAddedAttribute = new Dictionary<PlayerAttribute, int>();
         dPlayerFixedStatus = new Dictionary<FixedStatusName, float>();
         dPlayerDynamicStatus = new Dictionary<DynamicStatusName, float>();
+        expRequirement = 50f;
 
         // PlayerAttribute 개수 계산
         string[] playerAttributeNames = Enum.GetNames(typeof(PlayerAttribute));
@@ -145,6 +147,7 @@ public class PlayerStatus : MonoBehaviour
         saveData.name = SaveDataManager.Instance.saveData.name;
         saveData.level = playerLv;
         saveData.curExp = dPlayerDynamicStatus[DynamicStatusName.CurExp];
+        saveData.expReq = ExpRequirement;
         saveData.remainingPoint = remainingPoint;
         saveData.addedPoint = addedPoint;
 
@@ -165,9 +168,9 @@ public class PlayerStatus : MonoBehaviour
         playerLv = loadData.level;
         dPlayerDynamicStatus[DynamicStatusName.CurExp] = loadData.curExp;
         dPlayerDynamicStatus[DynamicStatusName.CurHp] = loadData.curHp;
+        ExpRequirement = loadData.expReq;
         remainingPoint = loadData.remainingPoint;
         addedPoint = loadData.addedPoint;
-
         dAddedAttribute[PlayerAttribute.Vitality] = loadData.AddedVit;
         dAddedAttribute[PlayerAttribute.Endurance] = loadData.AddedEnd;
         dAddedAttribute[PlayerAttribute.Strength] = loadData.AddedStr;
@@ -233,7 +236,8 @@ public class PlayerStatus : MonoBehaviour
         #region Attribute 값의 따른 Status 할당
         AttributeCalculate();
         #endregion
-        #region 현재 사용중인 스킬들의 추가 Status 할당
+        #region 현재 적용받고있는 버프들의 추가 Status 할당
+        ApplyBuffs();
         #endregion
         #region DynamicStatus가 FixedStatus를 넘어가는 경우를 배제
         DeleteOverStatus();
@@ -350,6 +354,10 @@ public class PlayerStatus : MonoBehaviour
             }
         }
     }
+    private void ApplyBuffs()
+    {
+
+    }
     private void DeleteOverStatus()
     {
         if (dPlayerDynamicStatus[DynamicStatusName.CurHp] > dPlayerFixedStatus[FixedStatusName.MaxHp])
@@ -359,6 +367,7 @@ public class PlayerStatus : MonoBehaviour
         if (dPlayerDynamicStatus[DynamicStatusName.CurPoise] > dPlayerFixedStatus[FixedStatusName.Poise])
             dPlayerDynamicStatus[DynamicStatusName.CurPoise] = dPlayerFixedStatus[FixedStatusName.Poise];
     }
+    #region 각종 리젠
     void RegenerateStamina()
     {
         float staminaRegenAmount = dPlayerFixedStatus[FixedStatusName.StaminaRegen] * Time.deltaTime;
@@ -378,6 +387,7 @@ public class PlayerStatus : MonoBehaviour
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp]; // 현재 HP를 MaxHp로
         else ModifyHp(dPlayerFixedStatus[FixedStatusName.HpRegen]);
     }
+    #endregion
     public void ModifyAttribute(PlayerAttribute key, int value)
     {
         dAddedAttribute[key] += value;
@@ -392,6 +402,10 @@ public class PlayerStatus : MonoBehaviour
         {
             OnPlayerDead?.Invoke();
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = 0f;
+        }
+        if (dPlayerDynamicStatus[DynamicStatusName.CurHp] > dPlayerFixedStatus[FixedStatusName.MaxHp])
+        {
+            dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp];
         }
     }
     public void ModifyStamina(float value)
@@ -414,6 +428,7 @@ public class PlayerStatus : MonoBehaviour
         {
             dPlayerDynamicStatus[DynamicStatusName.CurExp] -= expRequirement;
             expRequirement *= expRequirementIncrese;
+            print(expRequirement);
             LevelUp();
         }
     }
@@ -440,9 +455,12 @@ public class PlayerStatus : MonoBehaviour
             ModifyHp(-1f);
         }
         ModifyPoise(-enemyStatus.stagger);
-
     }
-    public bool CalculatedHit(EnemyStatus enemyStatus)
+    public void HpRecovery(float value)
+    {
+        ModifyHp(value);
+    }
+    public bool CalculatedHit(EnemyStatus enemyStatus) // 피격 계산
     {
         bool isHit = false;
         float hitRate = 0f;
@@ -472,7 +490,7 @@ public class PlayerStatus : MonoBehaviour
         }
         return isHit;
     }
-    public CalculatedDamage CalculateDamage()
+    public CalculatedDamage CalculateDamage() // 피격 데미지 계산
     {
         CalculatedDamage result;
         if (UnityEngine.Random.value < dPlayerFixedStatus[FixedStatusName.CriticalChance])
@@ -499,16 +517,6 @@ public class PlayerStatus : MonoBehaviour
 
         return isUse;
     }
-    /*
-     HP 수정 메서드
-     Player 사망
-     
-     Stamina 수정 메서드
-     Exp 수정 메서드
-     Poise 수정 메서드
-     DynamicStatus Update 메서드
-     LvUP 메서드
-     UI 연동
-     */
+    
 
 }

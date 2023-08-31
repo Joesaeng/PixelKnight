@@ -8,6 +8,7 @@ public class SaveData
     public int level;
     public int charId;
     public float curExp;
+    public float expReq = 50f;
     public int remainingPoint;
     public int addedPoint;
     public int curGold;
@@ -23,8 +24,21 @@ public class SaveData
     public List<SkillName> skills = new();
     public List<Equip> curEquips = new();
     public int inventorySlotCount;
-    public List<Item> inventoryItems = new();
+    public List<Consumable> inventoryConsumables = new();
     public List<Equip> inventoryEquips = new();
+    public List<SaveCountItem> countItem = new();
+}
+[System.Serializable]
+public class SaveCountItem
+{
+    public Item item;
+    public int count;
+    public SaveCountItem(Item item, int count)
+    {
+        this.item = item;
+        this.count = count;
+    }
+
 }
 public class SaveDataManager : Singleton<SaveDataManager>
 {
@@ -70,16 +84,18 @@ public class SaveDataManager : Singleton<SaveDataManager>
     }
     void SaveInventoryItems(List<Item> items)
     {
-        for(int i = 0; i< items.Count; ++i)
+        for(int i = 0; i< items.Count; ++i) // 저장 할 때, items의 0번부터 돌면서 저장한다.
         {
             if(items[i] is Equip equip)
             {
                 saveData.inventoryEquips.Add(equip);
             }
-            else
+            else if(items[i] is Consumable consumable)
             {
-                saveData.inventoryItems.Add(items[i]);
-            }
+                SaveCountItem count = new SaveCountItem(items[i],Inventory.Instance.CountItemSave(items[i]));
+                saveData.countItem.Add(count);                  // 고로 countItem의 인덱스 번호와
+                saveData.inventoryConsumables.Add(consumable);  // inventoryConsumables의 인덱스가
+            }                                                   // 가지고있는데 Item은 같다.
         }
     }
 }

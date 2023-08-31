@@ -45,6 +45,7 @@ public class SelectItemUI : MonoBehaviour
 
     public void SetItem(int _slotNum)
     {
+        useButton.gameObject.SetActive(true);
         foreach (var text in itemAddtionalOption)
         {
             Destroy(text.gameObject);
@@ -88,6 +89,13 @@ public class SelectItemUI : MonoBehaviour
             {
                 SetAddtionalOption(equip.additionalOptions);
             }
+        }
+        else if (item is Consumable consumable)
+        {
+            useButton.gameObject.SetActive(false);
+            baseOptionName = consumable.consumableType.ToString();
+            baseOptionValue = ((int)consumable.value).ToString();
+            itemBaseOption.text = string.Format(baseOptionName + " " + baseOptionValue);
         }
     }
     public void UseButton()

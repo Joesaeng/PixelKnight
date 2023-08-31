@@ -1657,19 +1657,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemDB: []
-  fieldItemPrefab: {fileID: 5632884475815189593, guid: e86c071ad12622a4f82b86125fe907ac, type: 3}
+  fieldConsumablePrefab: {fileID: 5632884475815189593, guid: c9e9a4ba3a24d084dbab83a4f2a7cde4, type: 3}
   fieldEquipPrefab: {fileID: 5632884475815189593, guid: 02e18d48e82637848a41643d4138541b, type: 3}
-  pos:
-  - {x: 1, y: 0}
-  - {x: 2, y: 0}
-  - {x: 3, y: 0}
-  - {x: 4, y: 0}
-  - {x: 5, y: 0}
-  - {x: -1, y: 0}
-  - {x: -2, y: 0}
-  - {x: -3, y: 0}
-  - {x: -4, y: 0}
-  - {x: -5, y: 0}
 --- !u!1 &1368111575
 GameObject:
   m_ObjectHideFlags: 0
@@ -1716,9 +1705,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   path: 
   nowSlot: 0
-  skills: 
-  curEquips: []
-  inventoryItems: []
 --- !u!1 &1544523321
 GameObject:
   m_ObjectHideFlags: 0
@@ -1912,8 +1898,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 1689453991114565368, guid: 9d3468e450fcb6c4683b556a2f546494, type: 3}
   enemyHpUIPrefab: {fileID: 6852935644268556838, guid: 6d57cf24e80b5be4dad5fe74c9444886, type: 3}
-  fieldItemPrefab: {fileID: 5632884475815189593, guid: e86c071ad12622a4f82b86125fe907ac, type: 3}
   fieldEquipPrefab: {fileID: 5632884475815189593, guid: 02e18d48e82637848a41643d4138541b, type: 3}
+  fieldConsumablePrefab: {fileID: 5632884475815189593, guid: c9e9a4ba3a24d084dbab83a4f2a7cde4, type: 3}
   damageEffectPrefab: {fileID: 3229302182622491195, guid: 2f312f07378245740839cbce602470c7, type: 3}
   skillPrefab: {fileID: 7748063532548825478, guid: dbd7e6a336457e742abdde18961a5d16, type: 3}
   inventorySlotPrefab: {fileID: 9039763848055696913, guid: 1a368298c8b63a546b93ae1f5dd45bcb, type: 3}

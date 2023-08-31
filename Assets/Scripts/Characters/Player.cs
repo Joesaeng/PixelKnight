@@ -153,7 +153,8 @@ public class Player : MonoBehaviour
         }
         horizontal = InputSystem.Instance.GetHorizontalInput();
         vertical = InputSystem.Instance.GetVerticalInput();
-
+        if (Input.GetKey(KeySetting.keys[KeyAction.UseHpPotion]))
+            UseHpPotion();
     }
     void GetSkillKeyDown()
     {
@@ -246,6 +247,15 @@ public class Player : MonoBehaviour
     {
         rigid.velocity = new Vector2(rigid.velocity.x, vertical * moveSpeed);
 
+    }
+    void UseHpPotion()
+    {
+        if (Inventory.Instance.GetHpPotion() != null)
+            if (GameManager.Instance.GetHpPotionCooltime() <= 0.01f)
+            {
+                Inventory.Instance.GetHpPotion().Use();
+                Inventory.Instance.UseHpPotion();
+            }
     }
     void Jump()
     {

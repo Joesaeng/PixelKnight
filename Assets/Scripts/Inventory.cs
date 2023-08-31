@@ -10,7 +10,7 @@ public class Inventory : MonoBehaviour
     {
         get
         {
-            if(instance == null)
+            if (instance == null)
             {
                 return null;
             }
@@ -19,7 +19,7 @@ public class Inventory : MonoBehaviour
     }
     private void Awake()
     {
-        if(instance != null)
+        if (instance != null)
         {
             Destroy(gameObject);
             return;
@@ -35,7 +35,19 @@ public class Inventory : MonoBehaviour
     public delegate void OnChangeItem();
     public OnChangeItem onChangeItem;
 
-    public List<Item> items = new List<Item>();   
+    public delegate void OnUpdateItemCount();
+    public OnUpdateItemCount onUpdateCount;
+
+    public delegate void OnCurPotionUI(Item item);
+    public OnCurPotionUI onCurPotionUI;
+
+    public delegate void OffCurPotionUI();
+    public OffCurPotionUI offCurPotionUI;
+
+    public List<Item> items = new List<Item>();
+    public Dictionary<Item, int> countItems = new();
+    bool haveHpPotion = false;
+    public int hpPotionSlot = -1;
 
     private int slotCnt;
     public int SlotCnt
@@ -55,48 +67,138 @@ public class Inventory : MonoBehaviour
     {
         return items;
     }
+    public int CountItemSave(Item item)
+    {
+        if (countItems.ContainsKey(item))
+            return countItems[item];
+        return 0;
+    }
     public void LoadItems()
     {
-        SlotCnt = SaveDataManager.Instance.saveData.inventorySlotCount;
+        SaveData saveData = SaveDataManager.Instance.saveData;
+        SlotCnt = saveData.inventorySlotCount;
         onSlotCountChange?.Invoke(slotCnt);
-        List<Item> _items = SaveDataManager.Instance.saveData.inventoryItems;
-        List<Equip> equips = SaveDataManager.Instance.saveData.inventoryEquips;
-        for(int i = 0; i < _items.Count; ++i)
+        List<Consumable> consums = saveData.inventoryConsumables;
+        List<Equip> equips = saveData.inventoryEquips;
+        for (int i = 0; i < consums.Count; ++i)
         {
-            AddItem(_items[i]);
+            if (consums[i] is Consumable consum)
+            {
+                Consumable newcon = ItemDataBase.Instance.FindAndGetConsumable(consum.itemName);
+                int count = saveData.countItem[i].count;
+                if (consum.consumableType == ConsumableType.HpRecovery)
+                    hpPotionSlot = i;
+                for (int j = 0; j < count; ++j)
+                    AddItem(newcon);
+            }
         }
         for (int i = 0; i < equips.Count; ++i)
         {
-            if(equips[i] is Equip equip)
+            if (equips[i] is Equip equip)
             {
                 ItemEquipEft itemEquipEft = new();
                 equip.SetItemEffect(itemEquipEft);
                 AddItem(equip);
             }
-            
+
         }
     }
     public bool AddItem(Item item)
     {
-        if(items.Count < SlotCnt)
+        bool isAdd = false;
+        if (item is Equip equip)
         {
-            if(item is Equip equip)
+            if (items.Count < SlotCnt)
             {
                 items.Add(equip);
+                isAdd = true;
             }
-            else
-            {
-                 items.Add(item);
-            }
-            if(onChangeItem != null)
-                onChangeItem?.Invoke();
+        }
+        else if (item is Consumable consumable)
+        {
+            isAdd = AddConsumable(consumable);
+            if(isAdd)onUpdateCount?.Invoke();
+        }
+        if (onChangeItem != null && isAdd)
+            onChangeItem?.Invoke();
+        return isAdd;
+    }
+    bool AddConsumable(Consumable consum)
+    {
+        if (HaveGetItem(consum))
+        {
+            countItems[consum]++;
             return true;
         }
-        return false;
+        else
+        {
+            if(items.Count < SlotCnt)
+            {
+                countItems.Add(consum, 1);
+                items.Add(consum);
+                if (consum.consumableType == ConsumableType.HpRecovery)
+                {
+                    haveHpPotion = true;
+                    onCurPotionUI?.Invoke(consum);
+                }
+                return true;
+            }
+            return false;
+        }
+    }
+    public void UseConsumable(int slotnum)
+    {
+        if (countItems[items[slotnum]] > 1)
+            countItems[items[slotnum]]--;
+        else
+        {
+            RemoveItem(slotnum);
+        }
+        onUpdateCount?.Invoke();
+    }
+    public Item GetHpPotion()
+    {
+        if (haveHpPotion)
+        {
+            return items[hpPotionSlot];
+        }
+        return null;
+    }
+    public void UseHpPotion()
+    {
+        if (countItems[items[hpPotionSlot]] > 1)
+            countItems[items[hpPotionSlot]]--;
+        else
+        {
+            RemoveItem(hpPotionSlot);
+        }
+        onUpdateCount?.Invoke();
     }
 
+    bool HaveGetItem(Item item)
+    {
+        bool isHave = false;
+        if (items.Contains(item))
+        {
+            isHave = true;
+        }
+        return isHave;
+    }
     public void RemoveItem(int slotnum)
     {
+        if (countItems.ContainsKey(items[slotnum]))
+        {
+            if (items[slotnum] is Consumable con)
+            {
+                if (con.consumableType == ConsumableType.HpRecovery)
+                {
+                    haveHpPotion = false;
+                    hpPotionSlot = -1;
+                    offCurPotionUI?.Invoke();
+                }
+            }
+            countItems.Remove(items[slotnum]);
+        }
         items.RemoveAt(slotnum);
         onChangeItem?.Invoke();
     }

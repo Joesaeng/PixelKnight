@@ -68,11 +68,11 @@ GameObject:
   m_Component:
   - component: {fileID: 5632884475815189572}
   - component: {fileID: 5632884475815189575}
+  - component: {fileID: 6537864131974462021}
   - component: {fileID: 5632884475815189574}
-  - component: {fileID: -690622857148933997}
   - component: {fileID: 8079513987447431367}
   m_Layer: 11
-  m_Name: FieldEquip
+  m_Name: FieldConsumable
   m_TagString: FieldEquip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,6 +146,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6537864131974462021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5632884475815189593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 210b175dd8988ec4091f532592a17151, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 5632884475815189575}
+  rigid: {fileID: 8079513987447431367}
+  coll2d: {fileID: 5632884475815189574}
+  consumable:
+    itemName: 
+    itemImage: {fileID: 0}
+    iconAddress: 
+    itemType: 0
+    itemLevel: 0
+    consumableType: 0
+    value: 0
+    duration: 0
 --- !u!58 &5632884475815189574
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -162,31 +186,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &-690622857148933997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5632884475815189593}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46402213f10cf09448370eaae3d43663, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  image: {fileID: 5632884475815189575}
-  rigid: {fileID: 8079513987447431367}
-  coll2d: {fileID: 5632884475815189574}
-  equip:
-    itemName: 
-    itemImage: {fileID: 0}
-    iconAddress: 
-    itemType: 0
-    itemLevel: 0
-    equipSlot: 0
-    baseOption: 0
-    additionalOptions: []
-    baseOptionValue: 0
 --- !u!50 &8079513987447431367
 Rigidbody2D:
   serializedVersion: 4
