@@ -32,6 +32,7 @@ public class OptionUI : MenuUI
     }
     public void ExitOptionUI()
     {
+        SetDescText("");
         notSetKeyText.text = string.Empty;
         KeyManager.Instance.SetChangeKey(KeyAction.KeyCount);
         for(int i = 0; i < (int)KeyAction.KeyCount; ++i)
@@ -49,7 +50,8 @@ public class OptionUI : MenuUI
     }
     public void SelectMenu(int index)
     {
-        for(int i = 0; i < selectPanel.Length;++i)
+        SetDescText("");
+        for (int i = 0; i < selectPanel.Length;++i)
         {
             selectPanel[i].SetActive(false);
         }

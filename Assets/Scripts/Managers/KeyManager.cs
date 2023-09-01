@@ -64,7 +64,7 @@ public class KeyManager : Singleton<KeyManager>
     public void SetChangeKey(KeyAction keyAction)
     {
         if(keyAction != KeyAction.KeyCount)
-            OnDescText?.Invoke("< " + keyAction.ToString() + " > 변경할 키를 입력해 주세요");
+            OnDescText?.Invoke("< " + keyAction.ToString() + " > \n변경할 키를 입력해 주세요");
         changeKey = keyAction;
     }
     public void KeyChange(KeyAction keyAction,KeyCode keyCode)
@@ -80,7 +80,7 @@ public class KeyManager : Singleton<KeyManager>
         {
             if (KeySetting.keys[(KeyAction)i] == keyCode)
             {
-                OnDescText?.Invoke("다른 키에 설정되어 있는 키를 입력하셨습니다.");
+                OnDescText?.Invoke("다른 키에 설정되어 있는 키를 \n입력하셨습니다.");
                 return;
             }
         }

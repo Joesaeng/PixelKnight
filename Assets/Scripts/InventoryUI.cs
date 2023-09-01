@@ -25,18 +25,32 @@ public class InventoryUI : MenuUI
         }
         inventory.onSlotCountChange += SlotChange;
         inventory.onChangeItem += RedrawSlotUI;
+        SlotChange(inventory.SlotCnt);
         RedrawSlotUI();
         menuPanel.SetActive(activeMenu);
         InputSystem.Instance.OnInventoryMenu += KeyInputAtiveMenu;
     }
 
-    private void SlotChange(int val)
+    private void SlotChange(int val) // val == 인벤토리의 활성화된 슬롯의 개수
     {
-        for (int i = 0; i < slots.Count; ++i)
+        if(slots.Count < val) // Load 인벤토리 데이터를 위한 조건문
+        {
+            while(slots.Count < val) // 현재 인벤토리UI의 슬롯의 개수가 인벤토리의 활성화된 슬롯의 개수보다 작다면
+                                     // 슬롯을 생성해서 인벤토리 UI에 추가한다.
+            {
+                GameObject newSlot = PoolManager.Instance.Get(PoolType.Slot);
+                newSlot.transform.SetParent(slotHolder);
+                newSlot.transform.localScale = new Vector3(1f, 1f, 1f);
+                slots.Add(newSlot.GetComponent<Slot>());
+            }
+        }
+        for (int i = 0; i < slots.Count; ++i) // 현재 슬롯의 개수만큼 돌면서
         {
             slots[i].slotNum = i;
-            if (i < inventory.SlotCnt)
+            if (i < val) // 인벤토리의 활성화된 슬롯의 개수만큼 슬롯의 버튼을 활성화시킴
+            {
                 slots[i].GetComponent<Button>().interactable = true;
+            }
             else
                 slots[i].GetComponent<Button>().interactable = false;
         }

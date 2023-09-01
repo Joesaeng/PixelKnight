@@ -49,7 +49,7 @@ public class Inventory : MonoBehaviour
     bool haveHpPotion = false;
     public int hpPotionSlot = -1;
 
-    private int slotCnt;
+    public int slotCnt;
     public int SlotCnt
     {
         get => slotCnt;
@@ -61,7 +61,7 @@ public class Inventory : MonoBehaviour
     }
     void Start()
     {
-        SlotCnt = 20;
+        if (slotCnt < 20) SlotCnt = 20;
     }
     public List<Item> GetItems()
     {

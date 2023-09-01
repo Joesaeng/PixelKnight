@@ -100,6 +100,7 @@ public class Equip : Item
     public void SetItemData(Equip equip)
     {
         this.itemName = equip.itemName;
+        this.iconAddress = equip.iconAddress;
         LoadEquipResourcesAsync(equip.iconAddress);
         ItemEquipEft itemEquipEft = new();
         SetItemEffect(itemEquipEft);

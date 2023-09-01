@@ -2516,15 +2516,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Pixel \nKNIGHT"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4f1cf60048716ee47b502bd8ff838728, type: 2}
-  m_sharedMaterial: {fileID: 3229678056530409098, guid: 4f1cf60048716ee47b502bd8ff838728, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b6c615b75e919eb4a8fd817bdbd2196e, type: 2}
+  m_sharedMaterial: {fileID: 6378039929077854668, guid: b6c615b75e919eb4a8fd817bdbd2196e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4282568959
-  m_fontColor: {r: 1, g: 0.81732255, b: 0.25943398, a: 1}
+    rgba: 4292868095
+  m_fontColor: {r: 1, g: 0.96832883, b: 0.8726415, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2547,7 +2547,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 33
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -2640,6 +2640,7 @@ MonoBehaviour:
   selectPlayerData: {fileID: 0}
   curGold: 0
   devScene: {fileID: 0}
+  hpPotionCooltime: 10
 --- !u!1 &1930665418
 GameObject:
   m_ObjectHideFlags: 0
