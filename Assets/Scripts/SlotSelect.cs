@@ -15,18 +15,27 @@ public class SlotSelect : MonoBehaviour
     private void Start()
     {
         create.SetActive(false);
-        for(int i = 0; i < 3; ++i)
+        for (int i = 0; i < 3; ++i)
         {
-            if(File.Exists(SaveDataManager.Instance.path + $"{i}"))
+            if (File.Exists(SaveDataManager.Instance.path + $"{i}"))
             {
                 savefile[i] = true;
                 SaveDataManager.Instance.nowSlot = i;
                 SaveDataManager.Instance.Load();
-                slotTexts[i].text = SaveDataManager.Instance.saveData.name;
+                SaveData saveData = SaveDataManager.Instance.saveData;
+
+                string username = saveData.name;
+                string level = (saveData.level + 1).ToString();
+                int ptH = saveData.hour;
+                int ptM = saveData.minute;
+                string time = string.Format("{0:D2}:{1:D2}", ptH, ptM);
+                slotTexts[i].text = "USERNAME : " + username
+                    + "\nLV : " + level
+                    + "\nPLAY TIME : " + time;
             }
             else
             {
-                slotTexts[i].text = "비어 있음";
+                slotTexts[i].text = "NEW GAME";
             }
         }
         SaveDataManager.Instance.DataClear();
@@ -34,8 +43,8 @@ public class SlotSelect : MonoBehaviour
     public void Slot(int num)
     {
         SaveDataManager.Instance.nowSlot = num;
-        
-        if(savefile[num])
+
+        if (savefile[num])
         {
             SaveDataManager.Instance.Load();
             GoGame();
@@ -45,24 +54,29 @@ public class SlotSelect : MonoBehaviour
             OnCreate();
         }
 
-        
+
     }
     public void OnCreate()
     {
-        create.gameObject.SetActive(true);
+        create.SetActive(true);
     }
     public void GoGame()
     {
-        if(!savefile[SaveDataManager.Instance.nowSlot])
+        if (!savefile[SaveDataManager.Instance.nowSlot])
         {
-            SaveDataManager.Instance.saveData.name = newPlayerName.text;
-            SaveDataManager.Instance.Save();
+            string username = newPlayerName.text.Trim();
+            if (string.IsNullOrEmpty(username))
+            {
+                return;
+            }
+            SaveDataManager.Instance.saveData.name = username;
             GameManager.Instance.NewGame();
         }
         else
         {
             GameManager.Instance.LoadGame(SaveDataManager.Instance.saveData.charId);
         }
+
     }
 
 }

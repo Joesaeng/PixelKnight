@@ -25,7 +25,7 @@ public static class KeySetting
 }
 public class KeyManager : Singleton<KeyManager>
 {
-    KeyChangeButton[] keyChangeButtons;
+    UI_KeyChangeButton[] keyChangeButtons;
     public Action OnUpdateKeyChangeButtonText;
     public Action<string> OnDescText;
     KeyAction changeKey = KeyAction.KeyCount;
@@ -43,10 +43,10 @@ public class KeyManager : Singleton<KeyManager>
             KeySetting.keys.Add((KeyAction)i, defaultKeys[i]);
         }
     }
-    public void InitKeyChangeButtons(OptionUI ui)
+    public void InitKeyChangeButtons(UI_Option ui)
     {
-        keyChangeButtons = ui.GetComponentsInChildren<KeyChangeButton>();
-        foreach (KeyChangeButton t in keyChangeButtons)
+        keyChangeButtons = ui.GetComponentsInChildren<UI_KeyChangeButton>();
+        foreach (UI_KeyChangeButton t in keyChangeButtons)
         {
             t.SetKeyCodeText(KeySetting.keys[t.GetKeyAction()]);
             t.Init();

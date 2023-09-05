@@ -6,11 +6,9 @@ public class DevScene : MonoBehaviour
 {
     public GameObject playerPrefab;
     [SerializeField]
-    PlayerLevelText levelText;
+    UI_PlayerInfo playerInfo;
     [SerializeField]
-    PlayerGageBarUI gageBarUI;
-    [SerializeField]
-    IngameBarUI ingameBarUI;
+    UI_CharacterHeadBarPosUpdate charHeadBarPos;
     [SerializeField]
     public VirtualCam virtualCam;
     void Start()
@@ -20,9 +18,8 @@ public class DevScene : MonoBehaviour
         GameManager.Instance.DevScene(player,this.GetComponent<DevScene>());
         player.transform.localPosition = SaveDataManager.Instance.saveData.playerCurPos;
         player.GetComponent<PlayerSkills>().InitUI();
-        gageBarUI.InitGageBarUI();
-        levelText.InitLevelText();
-        ingameBarUI.InstantiatePlayerPoiseUI();
+        playerInfo.InitPlayerInfo();
+        charHeadBarPos.InitPlayerPoiseBar();
         virtualCam.SetFollow(player.transform);
     }
 }

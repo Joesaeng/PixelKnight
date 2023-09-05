@@ -7,7 +7,7 @@ public class PlayerSkills : MonoBehaviour
     Dictionary<int, SkillData> skillDatas = new Dictionary<int, SkillData>();
     List<float> skillCoolTimes = new List<float>();
     Player player;
-    SkillUI skillUI;
+    UI_SkillMenu skillUI;
 
     public List<SkillName> enableSkills = new();
 
@@ -42,6 +42,7 @@ public class PlayerSkills : MonoBehaviour
     private void Awake()
     {
         player = GetComponent<Player>();
+        FindAnyObjectByType<UI_CurUsedSkills>().Init(this);
         float[] t = { 0f, 0f, 0f, 0f };
         skillCoolTimes.AddRange(t);
     }
@@ -92,7 +93,7 @@ public class PlayerSkills : MonoBehaviour
     }
     public void InitUI()
     {
-        skillUI = FindObjectOfType<SkillUI>();
+        skillUI = FindObjectOfType<UI_SkillMenu>();
         skillUI.OnChangedUsedSkill += SetUsedSkill;
         skillUI.LoadEnableSkills();
         UsedSkills nullSkills = new

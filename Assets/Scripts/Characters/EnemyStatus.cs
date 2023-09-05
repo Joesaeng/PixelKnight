@@ -173,6 +173,6 @@ public class EnemyStatus : MonoBehaviour
     }
     public void SetHPUI(GameObject hpUI)
     {
-        hpUI.GetComponent<BarValueUI>().InitEnmeyUI(this);
+        hpUI.GetComponent<UI_CharacterHeadBarValue>().InitEnemyStatus(this);
     }
 }

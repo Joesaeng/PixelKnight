@@ -7,6 +7,8 @@ public class SaveData
     public string name;
     public int level;
     public int charId;
+    public int hour = 0;
+    public int minute = 0;
     public float curExp;
     public float expReq = 50f;
     public int remainingPoint;
@@ -65,9 +67,14 @@ public class SaveDataManager : Singleton<SaveDataManager>
 
             saveData.inventorySlotCount = Inventory.Instance.SlotCnt;
         }
-
+        saveData.hour = GameManager.Instance.GetPlayTime().hour;
+        saveData.minute = GameManager.Instance.GetPlayTime().minute;
+        
         string data = JsonUtility.ToJson(saveData);
         File.WriteAllText(path + nowSlot.ToString(), data);
+
+        FindAnyObjectByType<UI_CenterPopupText>()?.SetPopupText
+                ("저장이 완료되었습니다.");
     }
 
     public void Load()

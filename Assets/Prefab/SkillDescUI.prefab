@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 7586382244609712915}
   - component: {fileID: 7586382244609712912}
   - component: {fileID: 7586382244609712913}
-  - component: {fileID: 2554402701913478893}
+  - component: {fileID: 7969463724362262055}
   - component: {fileID: 2554402701913478892}
   - component: {fileID: 3010710048607489213}
   m_Layer: 5
@@ -295,7 +295,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2554402701913478893
+--- !u!114 &7969463724362262055
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -304,10 +304,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7586382244609712916}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cb8f4178f931ff4290febe8f794eb6a, type: 3}
+  m_Script: {fileID: 11500000, guid: d1d753e371ffce24f9686c3a302652e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillData: {fileID: 11400000, guid: 4ddb3feb00daa1b43ac61451af85031a, type: 2}
+  skillData: {fileID: 0}
   skillIcon: {fileID: 7586382245189618233}
   skillName: {fileID: 7586382246227497068}
   skillDesc: {fileID: 7586382244917014850}
