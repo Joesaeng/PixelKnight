@@ -76,6 +76,6 @@ public class UI_Option : UI_WindowMenu
     }
     public void SaveButton()
     {
-        SaveDataManager.Instance.Save();
+        GameManager.Instance.GameSave();
     }
 }

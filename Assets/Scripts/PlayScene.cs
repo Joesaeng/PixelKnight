@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DevScene : MonoBehaviour
+public class PlayScene : MonoBehaviour
 {
+    public string curSceneName;
     public GameObject playerPrefab;
     [SerializeField]
     UI_PlayerInfo playerInfo;
@@ -11,15 +12,23 @@ public class DevScene : MonoBehaviour
     UI_CharacterHeadBarPosUpdate charHeadBarPos;
     [SerializeField]
     public VirtualCam virtualCam;
+    [SerializeField]
+    Transform startPos;
     void Start()
     {
         GameObject player = Instantiate(playerPrefab);
 
-        GameManager.Instance.DevScene(player,this.GetComponent<DevScene>());
-        player.transform.localPosition = SaveDataManager.Instance.saveData.playerCurPos;
+        if (GameManager.Instance.PlayScene(player, curSceneName))
+            player.transform.localPosition = SaveDataManager.Instance.saveData.playerCurPos;
+        else
+            player.transform.localPosition = startPos.transform.position;
         player.GetComponent<PlayerSkills>().InitUI();
         playerInfo.InitPlayerInfo();
         charHeadBarPos.InitPlayerPoiseBar();
         virtualCam.SetFollow(player.transform);
+    }
+    private void OnDisable()
+    {
+        GameManager.Instance.GameSaveForSceneChange();
     }
 }

@@ -5,24 +5,19 @@ using UnityEngine;
 public class SpawnPoint : MonoBehaviour
 {
     Spawner spawner;
-    Enemy enemy;
     public int enemyID;
     private void Start()
     {
         spawner = GetComponentInParent<Spawner>();
     }
-    public void SetEnemy(Enemy _enemy)
+    public void EnemyDead()
     {
-        enemy = _enemy;
-        enemy.GetComponent<EnemyStatus>().OnEnemyDead += EnemyDead;
+        Debug.Log("EnemyEead_Spawnpoint");
+        StartCoroutine(Respawn());
     }
-    void EnemyDead()
+    IEnumerator Respawn()
     {
-        Invoke("Respawn", 5f);
-        enemy.GetComponent<EnemyStatus>().OnEnemyDead -= EnemyDead;
-    }
-    void Respawn()
-    {
+        yield return new WaitForSeconds(10);
         spawner.SpawnEnemy(this,enemyID);
     }
 }

@@ -21,7 +21,7 @@ public class SlotSelect : MonoBehaviour
             {
                 savefile[i] = true;
                 SaveDataManager.Instance.nowSlot = i;
-                SaveDataManager.Instance.Load();
+                SaveDataManager.Instance.LoadFromJson();
                 SaveData saveData = SaveDataManager.Instance.saveData;
 
                 string username = saveData.name;
@@ -46,7 +46,7 @@ public class SlotSelect : MonoBehaviour
 
         if (savefile[num])
         {
-            SaveDataManager.Instance.Load();
+            SaveDataManager.Instance.LoadFromJson();
             GoGame();
         }
         else

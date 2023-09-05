@@ -203,6 +203,7 @@ public class Enemy : MonoBehaviour
         if (!isDead) Spawner.instance.ItemSpawn(transform.position);
         isDead = true;
         curThinkTime = 0f;
+        GetComponentInParent<SpawnPoint>()?.EnemyDead();
         StartCoroutine(EnemyDeadAnimPlay());
     }
     IEnumerator EnemyDeadAnimPlay()

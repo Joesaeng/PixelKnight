@@ -22,7 +22,9 @@ public class FieldItems : MonoBehaviour
     public void OnEnable()
     {
         rigid.AddForce(Vector2.up * 6f, ForceMode2D.Impulse);
+        Invoke("DestroyItem", 30f);
     }
+    
     public virtual void SetImage() { }
     public IEnumerator FadeIn()
     {

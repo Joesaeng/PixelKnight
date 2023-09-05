@@ -24,6 +24,10 @@ public class UI_KeyChangeButton : MonoBehaviour, IPointerUpHandler
         UpdateText();
         KeyManager.Instance.OnUpdateKeyChangeButtonText += UpdateText;
     }
+    private void Start()
+    {
+        UpdateText();
+    }
     public void UpdateText()
     {
         text.text = "<< " + keyAction.ToString() + " >> == << " + KeySetting.keys[keyAction].ToString() + " >>";

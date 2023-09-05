@@ -8,6 +8,7 @@ public class PlayTime
 {
     public int hour;
     public int minute;
+    public float second;
 }
 
 public class GameManager : Singleton<GameManager>
@@ -21,7 +22,7 @@ public class GameManager : Singleton<GameManager>
     public int curGold;
 
     public Action OnChangedGold;
-    public DevScene devScene;
+    public string curScene;
 
     public float hpPotionCooltime = 10f;
     float curPotionCooltime;
@@ -29,6 +30,8 @@ public class GameManager : Singleton<GameManager>
     private float playTime = 0f;
     private int playTimeMinute = 0;
     private int playTimeHour = 0;
+
+    private bool firstScene = true;
     private void Start()
     {
         ModifyGold(0);
@@ -57,25 +60,40 @@ public class GameManager : Singleton<GameManager>
     public void LoadGame(int charId)
     {
         selectPlayerData = DataManager.Instance.playerDatas[charId];
-        SceneManager.LoadScene(2);
+        LoadingSceneController.LoadScene(SaveDataManager.Instance.saveData.curSceneName);
     }
     public void SelectCharacter(int charId)
     {
         selectPlayerData = DataManager.Instance.playerDatas[charId];
         SaveDataManager.Instance.saveData.charId = charId;
-        SceneManager.LoadScene(2);
+        LoadingSceneController.LoadScene("Dev");
     }
-    public void DevScene(GameObject _player,DevScene _devScene)
+    public bool PlayScene(GameObject _player, string curSceneName)
     {
         player = _player.GetComponent<Player>();
         playerStatus = _player.GetComponent<PlayerStatus>();
-        player.playerStatus.InitSetStatus(selectPlayerData);
+        LoadPlayerData();
+        ModifyGold(SaveDataManager.Instance.saveData.curGold);
+        LoadPlayTime();
+        player.playerStatus.OnPlayerDead += PlayerDead;
+        curScene = curSceneName;
+        if (firstScene)
+        {
+            firstScene = false;
+            return true;
+        }
+        else return firstScene;
+    }
+    public void LoadPlayerData()
+    {
+        playerStatus.InitSetStatus(selectPlayerData);
         Inventory.Instance.LoadItems();
         playerStatus.equipment.LoadEquip();
         player.skills.LoadEnableSkills();
-        ModifyGold(SaveDataManager.Instance.saveData.curGold);
-        player.playerStatus.OnPlayerDead += PlayerDead;
-        devScene = _devScene;
+    }
+    public void NextScene(string sceneName)
+    {
+        LoadingSceneController.LoadScene(sceneName);
     }
     public void ModifyGold(int value)
     {
@@ -102,9 +120,17 @@ public class GameManager : Singleton<GameManager>
     public PlayTime GetPlayTime()
     {
         PlayTime pt = new PlayTime();
+        pt.second = playTime;
         pt.hour = playTimeHour;
         pt.minute = playTimeMinute;
         return pt;
+    }
+    void LoadPlayTime()
+    {
+        SaveData data = SaveDataManager.Instance.saveData;
+        playTime = data.second;
+        playTimeMinute = data.minute;
+        playTimeHour = data.hour;
     }
     public void GameExit()
     {
@@ -113,10 +139,15 @@ public class GameManager : Singleton<GameManager>
     public void GameSave()
     {
         SaveDataManager.Instance.Save();
+        SaveDataManager.Instance.SaveToJson();
+    }
+    public void GameSaveForSceneChange()
+    {
+        SaveDataManager.Instance.Save();
     }
     public void GameLoad()
     {
-        SaveDataManager.Instance.Load();
+        SaveDataManager.Instance.LoadFromJson();
     }
 
 }

@@ -25,7 +25,6 @@ public class Inventory : MonoBehaviour
             return;
         }
         instance = this;
-        DontDestroyOnLoad(this.gameObject);
     }
     #endregion
 

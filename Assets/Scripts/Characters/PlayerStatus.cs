@@ -428,7 +428,6 @@ public class PlayerStatus : MonoBehaviour
         {
             dPlayerDynamicStatus[DynamicStatusName.CurExp] -= expRequirement;
             expRequirement *= expRequirementIncrese;
-            print(expRequirement);
             LevelUp();
         }
     }

@@ -73,7 +73,6 @@ public class Spawner : MonoBehaviour
         enemy.GetComponent<EnemyStatus>().SetData(enemyID);
         enemy.transform.position = point.transform.position;
         enemy.transform.SetParent(point.transform);
-        point.SetEnemy(enemy.GetComponent<Enemy>());
         OnEnemySpawn?.Invoke(enemy);
     }
 }

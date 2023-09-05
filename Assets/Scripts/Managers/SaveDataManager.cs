@@ -5,10 +5,12 @@ using System.IO;
 public class SaveData
 {
     public string name;
+    public string curSceneName;
     public int level;
     public int charId;
     public int hour = 0;
     public int minute = 0;
+    public float second = 0f;
     public float curExp;
     public float expReq = 50f;
     public int remainingPoint;
@@ -69,15 +71,16 @@ public class SaveDataManager : Singleton<SaveDataManager>
         }
         saveData.hour = GameManager.Instance.GetPlayTime().hour;
         saveData.minute = GameManager.Instance.GetPlayTime().minute;
-        
-        string data = JsonUtility.ToJson(saveData);
-        File.WriteAllText(path + nowSlot.ToString(), data);
-
+        saveData.second = GameManager.Instance.GetPlayTime().second;
+        saveData.curSceneName = GameManager.Instance.curScene.ToString();
+    }
+    public void SaveToJson()
+    {
+        File.WriteAllText(path + nowSlot.ToString(), JsonUtility.ToJson(saveData));
         FindAnyObjectByType<UI_CenterPopupText>()?.SetPopupText
                 ("저장이 완료되었습니다.");
     }
-
-    public void Load()
+    public void LoadFromJson()
     {
         string jsonData = File.ReadAllText(path + nowSlot.ToString());
         saveData = JsonUtility.FromJson<SaveData>(jsonData);

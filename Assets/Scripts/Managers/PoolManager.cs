@@ -35,6 +35,7 @@ public class PoolManager : Singleton<PoolManager>
     List<GameObject> slotPool;
     List<GameObject> bulletPool;
 
+    List<List<GameObject>> allObjectPoolList;
     private void Awake()
     {
         enemyPool = new List<GameObject>();
@@ -45,6 +46,13 @@ public class PoolManager : Singleton<PoolManager>
         skillPool = new List<GameObject>();
         slotPool = new List<GameObject>();
         bulletPool = new List<GameObject>();
+
+        List<GameObject>[] allPool =
+            {enemyPool,enemyHpUIPool,fieldEquipPool,fieldConsumablePool
+        ,damageEffectPool,skillPool,slotPool,bulletPool};
+
+        allObjectPoolList = new List<List<GameObject>>();
+        allObjectPoolList.AddRange(allPool);
         for(int i = 0; i < poolSize; ++i)
         {
             GameObject newObj = Instantiate(enemyPrefab,transform);
@@ -258,5 +266,17 @@ public class PoolManager : Singleton<PoolManager>
         select.SetActive(false);
         select.SetActive(true);
         return select;
+    }
+    public void ReturnAllObj()
+    {
+        foreach(var pool in allObjectPoolList)
+        {
+            foreach(var obj in pool)
+            {
+                if (obj.transform.parent != transform.parent)
+                    obj.transform.SetParent(transform);
+                obj.SetActive(false);
+            }
+        }
     }
 }
