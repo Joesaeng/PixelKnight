@@ -27,8 +27,4 @@ public class PlayScene : MonoBehaviour
         charHeadBarPos.InitPlayerPoiseBar();
         virtualCam.SetFollow(player.transform);
     }
-    private void OnDisable()
-    {
-        GameManager.Instance.GameSaveForSceneChange();
-    }
 }

@@ -30,7 +30,10 @@ public class UI_Inventory : UI_WindowMenu
         menuPanel.SetActive(activeMenu);
         InputSystem.Instance.OnInventoryMenu += KeyInputAtiveMenu;
     }
-
+    private void OnDestroy()
+    {
+        InputSystem.Instance.OnInventoryMenu -= KeyInputAtiveMenu; 
+    }
     private void SlotChange(int val) // val == 인벤토리의 활성화된 슬롯의 개수
     {
         if(slots.Count < val) // Load 인벤토리 데이터를 위한 조건문

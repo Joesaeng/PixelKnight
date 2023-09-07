@@ -21,8 +21,20 @@ public class FieldItems : MonoBehaviour
     }
     public void OnEnable()
     {
+        StopCoroutine(OverTimeDestroy());
         rigid.AddForce(Vector2.up * 6f, ForceMode2D.Impulse);
-        Invoke("DestroyItem", 30f);
+        StartCoroutine(OverTimeDestroy());
+    }
+    IEnumerator OverTimeDestroy()
+    {
+        yield return null;
+        float curtime = 0f;
+        while(curtime < 15f)
+        {
+            curtime += Time.deltaTime;
+            yield return null;
+        }
+        DestroyItem();
     }
     
     public virtual void SetImage() { }
@@ -50,6 +62,7 @@ public class FieldItems : MonoBehaviour
 
     public void DestroyItem()
     {
+        StopCoroutine(OverTimeDestroy());
         coll2d.enabled = false;
         image.color = new Color(image.color.r, image.color.g, image.color.b, 0f);
         transform.SetParent(PoolManager.Instance.transform);

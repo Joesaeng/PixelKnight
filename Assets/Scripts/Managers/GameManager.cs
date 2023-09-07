@@ -35,6 +35,7 @@ public class GameManager : Singleton<GameManager>
     private void Start()
     {
         ModifyGold(0);
+        SceneManager.LoadScene("TitleScene");
     }
     private void Update()
     {
@@ -55,7 +56,7 @@ public class GameManager : Singleton<GameManager>
     }
     public void NewGame()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("SelectCharacter");
     }
     public void LoadGame(int charId)
     {
@@ -65,7 +66,7 @@ public class GameManager : Singleton<GameManager>
     public void SelectCharacter(int charId)
     {
         selectPlayerData = DataManager.Instance.playerDatas[charId];
-        SaveDataManager.Instance.saveData.charId = charId;
+        SaveDataManager.Instance.tempSaveData.charId = charId;
         LoadingSceneController.LoadScene("Dev");
     }
     public bool PlayScene(GameObject _player, string curSceneName)
@@ -114,7 +115,12 @@ public class GameManager : Singleton<GameManager>
     }
     void PlayerDead()
     {
-        // TODO
+        firstScene = true;
+        UI_DeadText.instance.ActiveDeadText();
+    }
+    public void DeadTextAfterLoading()
+    {
+        FakeLoading.instance.StartFakeLoding(2f, "TitleScene");
     }
     
     public PlayTime GetPlayTime()
@@ -138,14 +144,15 @@ public class GameManager : Singleton<GameManager>
     }
     public void GameSave()
     {
+        SaveDataManager.Instance.SaveTempData();
         SaveDataManager.Instance.Save();
         SaveDataManager.Instance.SaveToJson();
     }
     public void GameSaveForSceneChange()
     {
-        SaveDataManager.Instance.Save();
+        SaveDataManager.Instance.SaveTempData();
     }
-    public void GameLoad()
+    public void GameDataLoad()
     {
         SaveDataManager.Instance.LoadFromJson();
     }

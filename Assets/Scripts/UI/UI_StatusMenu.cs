@@ -13,6 +13,10 @@ public class UI_StatusMenu : UI_WindowMenu
         statusValueUI = menuPanel.transform.GetChild(1).transform.GetChild(2).GetComponent<UI_StatusValueText>();
         InputSystem.Instance.OnStatusMenu += KeyInputAtiveMenu;
     }
+    private void OnDestroy()
+    {
+        InputSystem.Instance.OnStatusMenu -= KeyInputAtiveMenu;
+    }
     public override void KeyInputAtiveMenu()
     {
         ActiveMenu();

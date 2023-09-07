@@ -36,7 +36,7 @@ public class PoolManager : Singleton<PoolManager>
     List<GameObject> bulletPool;
 
     List<List<GameObject>> allObjectPoolList;
-    private void Awake()
+    private void Start()
     {
         enemyPool = new List<GameObject>();
         enemyHpUIPool = new List<GameObject>();

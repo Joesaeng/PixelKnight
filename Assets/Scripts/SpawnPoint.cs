@@ -12,7 +12,6 @@ public class SpawnPoint : MonoBehaviour
     }
     public void EnemyDead()
     {
-        Debug.Log("EnemyEead_Spawnpoint");
         StartCoroutine(Respawn());
     }
     IEnumerator Respawn()

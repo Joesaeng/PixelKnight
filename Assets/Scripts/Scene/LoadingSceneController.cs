@@ -11,8 +11,6 @@ public class LoadingSceneController : MonoBehaviour
     Image progressBar;
     public static void LoadScene(string sceneName)
     {
-        if (PoolManager.Instance != null)
-            PoolManager.Instance.ReturnAllObj();
         nextScene = sceneName;
         SceneManager.LoadScene("LoadingScene");
     }
@@ -30,7 +28,7 @@ public class LoadingSceneController : MonoBehaviour
         {
             yield return null;
 
-            if(op.progress < 0.9f)
+            if(op.progress >= 0.5f && op.progress < 0.9f)
             {
                 progressBar.fillAmount = op.progress;
             }

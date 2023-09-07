@@ -36,6 +36,10 @@ public class UI_SkillMenu : UI_WindowMenu
         }
         InputSystem.Instance.OnSkillMenu += KeyInputAtiveMenu;
     }
+    private void OnDestroy()
+    {
+        InputSystem.Instance.OnSkillMenu -= KeyInputAtiveMenu;
+    }
     public override void ActiveMenu()
     {
         activeMenu = !activeMenu;

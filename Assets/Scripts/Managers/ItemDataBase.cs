@@ -6,7 +6,7 @@ using UnityEngine;
 public class ItemDataBase : Singleton<ItemDataBase>
 {
 
-    public List<Item> itemDB = new List<Item>();
+    public List<Item> itemDB;
 
     public GameObject fieldConsumablePrefab;
     public GameObject fieldEquipPrefab;
@@ -14,6 +14,7 @@ public class ItemDataBase : Singleton<ItemDataBase>
     
     private void Start()
     {
+        itemDB = new List<Item>();
         SetItemDataBase();
     }
 

@@ -144,7 +144,7 @@ public class PlayerStatus : MonoBehaviour
     public SaveData SaveStatus()
     {
         SaveData saveData = new();
-        saveData.name = SaveDataManager.Instance.saveData.name;
+        saveData.name = SaveDataManager.Instance.tempSaveData.name;
         saveData.level = playerLv;
         saveData.curExp = dPlayerDynamicStatus[DynamicStatusName.CurExp];
         saveData.expReq = ExpRequirement;

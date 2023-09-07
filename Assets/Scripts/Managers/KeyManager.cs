@@ -36,7 +36,7 @@ public class KeyManager : Singleton<KeyManager>
         KeyCode.Q,KeyCode.W,KeyCode.E,KeyCode.R,
         KeyCode.I,KeyCode.P,KeyCode.K
     };
-    private void Awake()
+    private void Start()
     {
         for(int i = 0; i < (int)KeyAction.KeyCount; ++i)
         {
