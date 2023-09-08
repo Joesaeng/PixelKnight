@@ -7,6 +7,7 @@ public class DataManager : Singleton<DataManager>
     public PlayerData[] playerDatas;
     public EnemyData[] enemyDatas;
     public SkillData[] skillDatas;
+    public BulletData[] bulletDatas;
     public PlayerData GetPlayerData(int id)
     {
         return playerDatas[id];
@@ -19,4 +20,9 @@ public class DataManager : Singleton<DataManager>
     {
         return skillDatas[(int)name];
     }
+    public BulletData GetBulletData(BulletName bulletName)
+    {
+        return bulletDatas[(int)bulletName];
+    }
+
 }

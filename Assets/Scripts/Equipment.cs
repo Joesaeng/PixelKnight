@@ -6,6 +6,7 @@ using System.Linq;
 
 public class Equipment : MonoBehaviour
 {
+    // 플레이어의 현재 장비를 담당하는 클래스입니다.
     #region SINGLETON
     private static Equipment instance;
     public static Equipment Instance
@@ -34,12 +35,15 @@ public class Equipment : MonoBehaviour
 
     public delegate void DelegateEquiped(EquipSlot slot,Equip equip);
     public event DelegateEquiped OnEquiped;
+    // 장비가 장착될때 호출되는 이벤트
 
     public delegate void DelegateUnEquiped(EquipSlot slot);
     public event DelegateUnEquiped OnUnEquiped;
+    // 장비가 해제될때 호출되는 이벤트
 
     public delegate void ChangeEquipment();
     public event ChangeEquipment OnChangeEquipment;
+    // 장착이든 해제든 현재 장비가 변경될 때 호출되는 이벤트
 
     public Equip[] GetCurEquip()
     {
@@ -49,6 +53,7 @@ public class Equipment : MonoBehaviour
     }
     public void LoadEquip()
     {
+        // 저장된 데이터에서 현재 장비를 긁어옵니다.
         List<Equip> curEquips = SaveDataManager.Instance.saveData.curEquips;
         for(int i = 0; i < curEquips.Count; ++i)
         {

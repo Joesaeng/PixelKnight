@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PlayerSkills : MonoBehaviour
 {
-    Dictionary<int, SkillData> skillDatas = new Dictionary<int, SkillData>();
+    // 플레이어 오브젝트에 컴포넌트로 부착되는 스킬 클래스 입니다.
+
+    // 현재 사용중인 스킬들의 데이터
+    Dictionary<int, SkillData> curUsedSkills = new Dictionary<int, SkillData>();
     List<float> skillCoolTimes = new List<float>();
     Player player;
     UI_SkillMenu skillUI;
@@ -12,14 +15,15 @@ public class PlayerSkills : MonoBehaviour
     public List<SkillName> enableSkills = new();
 
     public Collider2D judgementRange;
-    public bool UseSkill(int index)
+    public bool UseSkill(int index) 
+        // 스킬 키 입력시 Player에서 호출하는 메서드입니다.
     {
         bool isUse = false;
 
-        switch (skillDatas[index].skillName)
+        switch (curUsedSkills[index].skillName)
         {
             case SkillName.Dash: // Dash
-                GameObject skill = PoolManager.Instance.GetSkill(skillDatas[index].skillName);
+                GameObject skill = PoolManager.Instance.GetSkill(curUsedSkills[index].skillName);
                 skill.transform.position = transform.position;
                 skill.transform.localScale = transform.localScale;
                 isUse = true;
@@ -28,7 +32,7 @@ public class PlayerSkills : MonoBehaviour
                 foreach (var target in player.GetJudgetTarget())
                 {
                     if (target.GetComponent<Enemy>().IsDead) continue;
-                    GameObject judge = PoolManager.Instance.GetSkill(skillDatas[index].skillName);
+                    GameObject judge = PoolManager.Instance.GetSkill(curUsedSkills[index].skillName);
                     judge.transform.position = target.transform.position;
                 }
                 isUse = true;
@@ -58,7 +62,7 @@ public class PlayerSkills : MonoBehaviour
     {
         for(int i = 0; i < skillCoolTimes.Count; ++i)
         {
-            if (skillDatas.ContainsKey(i) && skillCoolTimes[i] > 0f)
+            if (curUsedSkills.ContainsKey(i) && skillCoolTimes[i] > 0f)
                 skillCoolTimes[i] -= Time.deltaTime;
         }
     }
@@ -72,7 +76,7 @@ public class PlayerSkills : MonoBehaviour
     }
     public float GetCoolTime(int index)
     {
-        return skillDatas[index].skillCoolTime;
+        return curUsedSkills[index].skillCoolTime;
     }
     public bool CanChangeSkill()
     {
@@ -104,7 +108,7 @@ public class PlayerSkills : MonoBehaviour
     public void EnableSkill(int index, SkillData data)
     {
         if (data == null) return;
-        skillDatas.Add(index, data);
+        curUsedSkills.Add(index, data);
         if (data && data.skillName == SkillName.Judgement)
         {
             judgementRange.enabled = true;
@@ -112,7 +116,8 @@ public class PlayerSkills : MonoBehaviour
     }
     void SetUsedSkill(UsedSkills skills)
     {
-        skillDatas = new Dictionary<int, SkillData>();
+        judgementRange.enabled = false;
+        curUsedSkills = new Dictionary<int, SkillData>();
         float[] t = { 0f, 0f, 0f, 0f };
         skillCoolTimes.AddRange(t);
         EnableSkill(0, skills.skill_1);
@@ -122,8 +127,8 @@ public class PlayerSkills : MonoBehaviour
     }
     public SkillData GetData(int index)
     {
-        if(skillDatas.ContainsKey(index))
-            return skillDatas[index];
+        if(curUsedSkills.ContainsKey(index))
+            return curUsedSkills[index];
         return null;
     }
 

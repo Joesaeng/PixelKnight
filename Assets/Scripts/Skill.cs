@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Skill : MonoBehaviour
 {
+    // 풀매니저에 있는 스킬 프리펩에 붙는 컴포넌트입니다.
     public GameObject[] skills;
     public SkillData data;
     GameObject curSkill;

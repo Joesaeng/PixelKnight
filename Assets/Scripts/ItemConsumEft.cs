@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ItemConsumEft : ItemEffect
 {
+    // 소모성 아이템의 사용효과의 클래스입니다.
     public Consumable consumable;
     public void SetConsumableInfo(Consumable Consumable)
     {

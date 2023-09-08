@@ -18,6 +18,7 @@ public class EnemyData : ScriptableObject
     public float expReward;
     public int goldReward;
     public float attackRange;
+    public BulletName bulletName;
 
     [Header("Basic Status")]
     public float attackDelay;

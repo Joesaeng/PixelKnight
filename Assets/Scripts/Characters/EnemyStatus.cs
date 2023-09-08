@@ -6,6 +6,9 @@ using System;
 
 public class EnemyStatus : MonoBehaviour
 {
+    /*
+     * Enemy의 전반적인 스테이터스를 담당하는 클래스입니다.
+     */
     public Transform effectPoint;
     Enemy enemy;
     private string charName;
@@ -22,12 +25,14 @@ public class EnemyStatus : MonoBehaviour
     public float evade;
     public float hitrate;
     public float moveSpeed;
+    public BulletName bulletName;
 
     private float curHp;
     private float curPoise;
 
     public Action OnEnemyDead;
 
+    Spawner spawner;
     public float CurHp
     {
         get => curHp;
@@ -37,10 +42,12 @@ public class EnemyStatus : MonoBehaviour
     {
         enemy = GetComponent<Enemy>();
     }
-    private void OnEnable()
+    private void Start()
     {
+        spawner = Spawner.instance;
     }
-    public void SetData(int _enemyID)
+    public void SetData(int _enemyID) 
+        // PoolManager에서 Enemy를 꺼낼때 호출되어 세팅합니다.
     {
         EnemyData data = DataManager.Instance.GetEnemyData(_enemyID);
         this.enemyID = _enemyID;
@@ -56,6 +63,7 @@ public class EnemyStatus : MonoBehaviour
         this.evade      = data.evade;
         this.hitrate    = data.hitrate;
         this.moveSpeed  = data.moveSpeed;
+        this.bulletName = data.bulletName;
 
         this.curHp = maxHp;
         this.curPoise = maxPoise;
@@ -83,69 +91,37 @@ public class EnemyStatus : MonoBehaviour
         curPoise += value;
     }
     public bool CalculatedHit(PlayerStatus playerStatus)
+        // 피격을 계산하는 메서드입니다.
     {
-        bool isHit = false;
-        float hitRate = 0f;
         CalculatedDamage caldmg = playerStatus.CalculateDamage();
-        bool isCritical = caldmg.option == DamageOption.Critical ? true : false;
-        float hitDiff = playerStatus.dPlayerFixedStatus[FixedStatusName.HitRate] - evade;
-        if (hitDiff > 25)
-        {
-            isHit = true;
-            if (isCritical)
-            {
-                Spawner.instance.ShowDamageEffect(0).transform.SetPositionAndRotation
-                (effectPoint.position,Quaternion.identity);
-            }
-            Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
-                (transform.position, Quaternion.identity);
-            TakeDamage(caldmg.damage);
-        }
-        else if (hitDiff > 0)
-        {
-            hitRate = hitDiff * 0.04f;
-        }
-
-        if(UnityEngine.Random.value < hitRate)
-        {
-            isHit = true;
-            TakeDamage(caldmg.damage);
-            if (isCritical)
-            {
-                Spawner.instance.ShowDamageEffect(0).transform.SetPositionAndRotation
-                (effectPoint.position, Quaternion.identity);
-            }
-            Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
-                (transform.position, Quaternion.identity);
-        }
-        if (!isHit)
-        {
-            Spawner.instance.ShowDamageEffect(1).transform.SetPositionAndRotation
-            (effectPoint.position, Quaternion.identity);
-        }
-        
-        return isHit;
+        float hitDiff = playerStatus.GetHitDiff(evade);
+        return FinalCalculatedHit(caldmg.damage, hitDiff, caldmg.option == DamageOption.Critical ? true : false);
     }
     public bool CalculatedHit(PlayerStatus playerStatus, SkillData skillData)
+        // 스킬 피격을 계산하는 메서드입니다.
+    {
+        CalculatedDamage caldmg = playerStatus.CalculateDamage();
+        float hitDiff = playerStatus.GetHitDiff(evade);
+        return FinalCalculatedHit(caldmg.damage * skillData.damageRatio, hitDiff,caldmg.option == DamageOption.Critical ? true : false);
+    }
+    public bool FinalCalculatedHit(float damage, float hitDiff, bool isCritical)
     {
         bool isHit = false;
         float hitRate = 0f;
-        CalculatedDamage caldmg = playerStatus.CalculateDamage();
-        bool isCritical = caldmg.option == DamageOption.Critical ? true : false;
-        float hitDiff = playerStatus.dPlayerFixedStatus[FixedStatusName.HitRate] - evade;
+
         if (hitDiff > 25)
         {
             isHit = true;
-            if (isCritical)
+            if (isCritical) // 크리티컬여부로 크리티컬 이펙트가 표시될지 안될지 판단합니다.
             {
-                Spawner.instance.ShowDamageEffect(0).transform.SetPositionAndRotation
+                spawner.ShowDamageEffect(0).transform.SetPositionAndRotation
                 (effectPoint.position, Quaternion.identity);
             }
-            Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
+            spawner.ShowDamageEffect(2).transform.SetPositionAndRotation
                 (transform.position, Quaternion.identity);
-            TakeDamage(caldmg.damage * skillData.damageRatio);
+            TakeDamage(damage);
         }
-        else if (hitDiff > 0)
+        else if (hitDiff > 0) // 명중률을 계산합니다.
         {
             hitRate = hitDiff * 0.04f;
         }
@@ -153,18 +129,18 @@ public class EnemyStatus : MonoBehaviour
         if (UnityEngine.Random.value < hitRate)
         {
             isHit = true;
-            TakeDamage(caldmg.damage * skillData.damageRatio);
+            TakeDamage(damage);
             if (isCritical)
             {
-                Spawner.instance.ShowDamageEffect(0).transform.SetPositionAndRotation
+                spawner.ShowDamageEffect(0).transform.SetPositionAndRotation
                 (effectPoint.position, Quaternion.identity);
             }
-            Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
+            spawner.ShowDamageEffect(2).transform.SetPositionAndRotation
                 (transform.position, Quaternion.identity);
         }
         if (!isHit)
         {
-            Spawner.instance.ShowDamageEffect(1).transform.SetPositionAndRotation
+            spawner.ShowDamageEffect(1).transform.SetPositionAndRotation
             (effectPoint.position, Quaternion.identity);
         }
         return isHit;

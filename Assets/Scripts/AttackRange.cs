@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AttackRange : MonoBehaviour
 {
+    // 플레이어의 기본공격 범위 콜라이더 클래스입니다.
     Player player;
     public int index;
     private void Awake()

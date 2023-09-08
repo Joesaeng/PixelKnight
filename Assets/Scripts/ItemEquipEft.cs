@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ItemEquipEft : ItemEffect
 {
+    // 장비아이템의 장착을 위한 클래스입니다.
     public Equip equip;
     public void SetEquipInfo(Equip _equip)
     {

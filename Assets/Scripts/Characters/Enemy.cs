@@ -12,12 +12,13 @@ public class Enemy : MonoBehaviour
     private Animator anim;
     private EnemyStatus enemyStatus;
 
-    // 공격 타겟
+    // 공격 관련
     private Rigidbody2D target;
     private Rigidbody2D attackTarget; // Enemy의 공격범위 내에 Player가 있다면 Player를 담는 변수입니다.
     private Player player;
     private EnemyAttackType attackType;
     private float attackRange;
+    private BulletName bulletName;
     
     [SerializeField]
     RuntimeAnimatorController[] animCon;
@@ -60,6 +61,7 @@ public class Enemy : MonoBehaviour
     public void SetData(int enemyID)
     {
         anim.runtimeAnimatorController = animCon[enemyID];
+        bulletName = enemyStatus.bulletName;
         attackDelay = new WaitForSeconds(enemyStatus.attackDelay);
         moveSpeed = enemyStatus.moveSpeed;
         attackType = DataManager.Instance.GetEnemyData(enemyID).attackType;
@@ -258,7 +260,7 @@ public class Enemy : MonoBehaviour
                     GameObject bullet = PoolManager.Instance.GetBullet(enemyStatus.enemyID);
                     bullet.transform.SetLocalPositionAndRotation(transform.position, Quaternion.FromToRotation(Vector3.up, dir));
                     // 생성된 Bullet 오브젝트에 현재 Enemy의 스테이터스 정보를 전달합니다.
-                    bullet.GetComponent<Bullet>().Init(dir, enemyStatus);
+                    bullet.GetComponent<Bullet>().Init(dir, enemyStatus, bulletName);
                 }
                 break;
         }

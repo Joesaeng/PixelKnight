@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using System.IO;
 public class SlotSelect : MonoBehaviour
 {
+    // Title씬에서 세이브된 데이터를 로드할때 사용하는 클래스입니다.
     public GameObject create;
     public GameObject selectSlot;
     public Text[] slotTexts;

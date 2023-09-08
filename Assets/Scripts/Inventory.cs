@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
+    // 플레이어의 인벤토리 클래스입니다.
     #region SINGLETON
     private static Inventory instance;
     public static Inventory Instance

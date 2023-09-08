@@ -7,17 +7,24 @@ public class Bullet : MonoBehaviour
     EnemyStatus enemyStatus;
     Rigidbody2D rigid;
     SpriteRenderer spriteR;
-    float time = 3f;
-    float speed = 4f;
+    BulletData bulletData;
+    float time;
+    float speed;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
         spriteR = GetComponent<SpriteRenderer>();
     }
-    public void Init(Vector3 dir,EnemyStatus _enemyStatus)
+    public void SetBulletData(BulletName bulletName)
     {
+        bulletData = DataManager.Instance.GetBulletData(bulletName);
+    }
+    public void Init(Vector3 dir,EnemyStatus _enemyStatus, BulletName bulletName)
+    {
+        SetBulletData(bulletName);
         enemyStatus = _enemyStatus;
-        time = 3f;
+        time = bulletData.durTime;
+        speed = bulletData.speed;
         spriteR.flipX = dir.x < 0 ? true : false;
         rigid.velocity = dir * speed;
     }

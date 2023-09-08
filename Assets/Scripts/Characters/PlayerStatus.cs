@@ -43,7 +43,7 @@ public enum DamageOption
     Critical,
     Normal,
 }
-public struct CalculatedDamage
+public class CalculatedDamage
 {
     public DamageOption option;
     public float damage;
@@ -85,10 +85,11 @@ public class PlayerStatus : MonoBehaviour
         set => this.expRequirement = value;
         get { return expRequirement; }
     }
-    private float expRequirementIncrese = 1.6f;
+    private float expRequirementIncrese = 1.6f; // 레벨업 당 경험치필요량 증가량
     public int remainingPoint = 0;
-    public int addedPoint;                  // 현재까지 총 받은 포인트
+    public int addedPoint;                      // 현재까지 총 받은 포인트
     public Action OnLevelUp;
+
     #endregion
     #endregion
 
@@ -491,7 +492,7 @@ public class PlayerStatus : MonoBehaviour
     }
     public CalculatedDamage CalculateDamage() // 피격 데미지 계산
     {
-        CalculatedDamage result;
+        CalculatedDamage result = new();
         if (UnityEngine.Random.value < dPlayerFixedStatus[FixedStatusName.CriticalChance])
         {
             result.option = DamageOption.Critical;
@@ -517,5 +518,8 @@ public class PlayerStatus : MonoBehaviour
         return isUse;
     }
     
-
+    public float GetHitDiff(float evade)
+    {
+        return dPlayerFixedStatus[FixedStatusName.HitRate] - evade;
+    }
 }
