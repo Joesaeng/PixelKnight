@@ -1,2 +1,3 @@
-# pixAmurai
-pixAmurai
+# PixelKnight
+픽셀나이트라는 제목의 게임을 만들고 있습니다.
+포트폴리오와 공부를 겸하여 개발중입니다.
