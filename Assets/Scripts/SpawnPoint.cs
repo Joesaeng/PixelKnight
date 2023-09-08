@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class SpawnPoint : MonoBehaviour
 {
+    // Spawner가 Enemy를 스폰할 때 사용되는 클래스입니다.
     Spawner spawner;
+
     public int enemyID;
     private void Start()
     {

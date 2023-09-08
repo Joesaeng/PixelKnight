@@ -5,6 +5,7 @@ using System;
 
 public class Spawner : MonoBehaviour
 {
+    // 풀매니저에서 Enemy, Skill, FieldItem 등을 스폰하는 클래스입니다.
     public static Spawner instance;
 
     public SpawnPoint[] enemySpawnPoints;

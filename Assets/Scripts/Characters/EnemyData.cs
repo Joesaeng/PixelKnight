@@ -20,6 +20,7 @@ public class EnemyData : ScriptableObject
     public float attackRange;
 
     [Header("Basic Status")]
+    public float attackDelay;
     public float maxHp;
     public float maxPoise;
     public float damage;

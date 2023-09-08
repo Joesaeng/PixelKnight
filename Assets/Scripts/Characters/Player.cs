@@ -478,7 +478,7 @@ public class Player : MonoBehaviour
         {
             foreach (var target in targets)
             {
-                target.GetComponent<Enemy>().Hit(playerStatus);
+                target.GetComponent<Enemy>().MeeleAttackHit(playerStatus);
             }
         }
     }

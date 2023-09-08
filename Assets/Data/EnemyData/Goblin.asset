@@ -17,7 +17,8 @@ MonoBehaviour:
   charName: Goblin
   expReward: 10
   goldReward: 15
-  attackRange: 1
+  attackRange: 0.7
+  attackDelay: 2
   maxHp: 150
   maxPoise: 0
   damage: 30

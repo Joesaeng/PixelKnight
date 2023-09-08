@@ -13,6 +13,7 @@ public class EnemyStatus : MonoBehaviour
     public int goldReward;
     public int enemyID;
 
+    public float attackDelay;
     public float maxHp;
     public float maxPoise;
     public float damage;
@@ -46,6 +47,7 @@ public class EnemyStatus : MonoBehaviour
         this.charName   = data.charName;
         this.expReward = data.expReward;
         this.goldReward = data.goldReward;
+        this.attackDelay = data.attackDelay;
         this.maxHp      = data.maxHp;
         this.maxPoise   = data.maxPoise;
         this.damage     = data.damage;

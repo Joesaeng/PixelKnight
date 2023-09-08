@@ -18,6 +18,7 @@ MonoBehaviour:
   expReward: 15
   goldReward: 25
   attackRange: 5
+  attackDelay: 3
   maxHp: 180
   maxPoise: 0
   damage: 45
