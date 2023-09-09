@@ -39,8 +39,7 @@ public class Bullet : MonoBehaviour
         if (collision.CompareTag("PlayerHit"))
         {
             Player player = collision.GetComponentInParent<Player>();
-            if (player.IsDead == true) return;
-            player.playerStatus.CalculatedHit(enemyStatus);
+            player.Hit(enemyStatus);
             gameObject.SetActive(false);
         }
     }

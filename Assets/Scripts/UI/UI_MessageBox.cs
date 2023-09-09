@@ -28,7 +28,7 @@ public class UI_MessageBox : MonoBehaviour
     {
         if(messageBox.activeSelf)
         {
-            if(Input.anyKeyDown)
+            if(Input.GetKeyDown(KeyCode.Space))
             {
                 boxText.text = string.Empty;
                 messageBox.SetActive(false);

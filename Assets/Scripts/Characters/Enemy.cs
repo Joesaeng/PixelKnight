@@ -250,7 +250,7 @@ public class Enemy : MonoBehaviour
                 if (attackTarget != null)
                 {
                     // 타겟이 공격범위 안에 있을 때 타겟의 피격 메서드를 실행합니다.
-                    attackTarget.GetComponent<PlayerStatus>().CalculatedHit(enemyStatus);
+                    attackTarget.GetComponent<Player>().Hit(enemyStatus);
                 }
                 break;
             case EnemyAttackType.Ranged:

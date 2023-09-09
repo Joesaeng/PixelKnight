@@ -21,13 +21,6 @@ public class UI_DeadText : MonoBehaviour
         text.color = new Color(197 / 255f, 14 / 255f, 14 / 255f, 0f);
         deadText.SetActive(false);
     }
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            ActiveDeadText();
-        }
-    }
     public void ActiveDeadText()
     {
         deadText.SetActive(true);

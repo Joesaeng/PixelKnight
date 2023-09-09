@@ -500,6 +500,11 @@ public class Player : MonoBehaviour
             ladderCollider = null;
         }
     }
+    public bool Hit(EnemyStatus enemyStatus)
+    {
+        if (IsDead) return false;
+        return playerStatus.CalculatedHit(enemyStatus);
+    }
 
     // PlayerStun 함수: 플레이어가 스턴 상태가 되었을 때 호출되는 함수
     public void PlayerStun()
