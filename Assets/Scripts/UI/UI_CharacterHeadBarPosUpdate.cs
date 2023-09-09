@@ -5,6 +5,12 @@ using UnityEngine;
 public class UI_CharacterHeadBarPosUpdate : MonoBehaviour
 {
     // 캐릭터 머리를 따라다니는 Bar의 위치를 갱신하는 스크립트입니다.
+    public static UI_CharacterHeadBarPosUpdate instance;
+    private void Awake()
+    {
+        instance = this;
+    }
+
     List<Transform> objectList = new List<Transform>();
     List<GameObject> barList = new List<GameObject>();
 
@@ -16,6 +22,7 @@ public class UI_CharacterHeadBarPosUpdate : MonoBehaviour
     {
         cam = Camera.main;
         // Enemy의 스폰을 담당하는 Spawner의 이벤트를 구독합니다.
+        InitPlayerPoiseBar();
         Spawner.instance.OnEnemySpawn += InitEnemyHpBar;
     }
     public void InitEnemyHpBar(GameObject enemy)

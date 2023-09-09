@@ -4,6 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 public class UI_PlayerInfo : MonoBehaviour
 {
+    public static UI_PlayerInfo instance;
+    private void Awake()
+    {
+        instance = this;
+    }
     [SerializeField]
     private Slider sliderHp;
     [SerializeField]
@@ -21,6 +26,10 @@ public class UI_PlayerInfo : MonoBehaviour
     void UpdateLvText()
     {
         lvText.text = string.Format("Lv " + (GameManager.Instance.player.playerStatus.playerLv + 1));
+    }
+    private void Start()
+    {
+        InitPlayerInfo();
     }
     public void InitPlayerInfo()
     {

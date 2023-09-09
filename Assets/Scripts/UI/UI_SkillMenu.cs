@@ -13,6 +13,11 @@ public struct UsedSkills
 
 public class UI_SkillMenu : UI_WindowMenu
 {
+    public static UI_SkillMenu instance;
+    private void Awake()
+    {
+        instance = this;
+    }
     public Transform descPanel;
     public Transform usedPanel;
     public UI_SkillDesc[] skillDescs;
@@ -35,6 +40,7 @@ public class UI_SkillMenu : UI_WindowMenu
             usedSkillSlots[i].OnChangeUsedSkill += SetUsedSkill;
         }
         InputSystem.Instance.OnSkillMenu += KeyInputAtiveMenu;
+        GameManager.Instance.player.GetComponent<PlayerSkills>().InitUI(this);
     }
     private void OnDestroy()
     {

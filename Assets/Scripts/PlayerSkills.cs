@@ -43,7 +43,7 @@ public class PlayerSkills : MonoBehaviour
         if(isUse) SetCurCoolTime(index,GetCoolTime(index));
         return isUse;
     }
-    private void Awake()
+    private void Start()
     {
         player = GetComponent<Player>();
         FindAnyObjectByType<UI_CurUsedSkills>().Init(this);
@@ -95,9 +95,9 @@ public class PlayerSkills : MonoBehaviour
             can = true;
         return can;
     }
-    public void InitUI()
+    public void InitUI(UI_SkillMenu uI_SkillMenu)
     {
-        skillUI = FindObjectOfType<UI_SkillMenu>();
+        skillUI = uI_SkillMenu;
         skillUI.OnChangedUsedSkill += SetUsedSkill;
         skillUI.LoadEnableSkills();
         UsedSkills nullSkills = new

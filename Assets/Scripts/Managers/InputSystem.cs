@@ -11,6 +11,10 @@ public class InputSystem : Singleton<InputSystem>
     public Action OnInventoryMenu;
     public Action OnStatusMenu;
     public Action OnSkillMenu;
+    private void OnApplicationQuit()
+    {
+        Destroy(this);
+    }
     private void Update()
     {
         SetHorizontalInput();

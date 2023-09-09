@@ -1,20 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayScene : MonoBehaviour
 {
     public string curSceneName;
     public GameObject playerPrefab;
     [SerializeField]
-    UI_PlayerInfo playerInfo;
-    [SerializeField]
-    UI_CharacterHeadBarPosUpdate charHeadBarPos;
-    [SerializeField]
     public VirtualCam virtualCam;
     [SerializeField]
     Transform startPos;
-    void Start()
+    void Awake()
     {
         GameObject player = Instantiate(playerPrefab);
 
@@ -22,9 +19,6 @@ public class PlayScene : MonoBehaviour
             player.transform.localPosition = SaveDataManager.Instance.saveData.playerCurPos;
         else
             player.transform.localPosition = startPos.transform.position;
-        player.GetComponent<PlayerSkills>().InitUI();
-        playerInfo.InitPlayerInfo();
-        charHeadBarPos.InitPlayerPoiseBar();
         virtualCam.SetFollow(player.transform);
     }
 }

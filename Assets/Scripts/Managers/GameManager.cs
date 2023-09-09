@@ -61,13 +61,13 @@ public class GameManager : Singleton<GameManager>
     public void LoadGame(int charId)
     {
         selectPlayerData = DataManager.Instance.playerDatas[charId];
-        LoadingSceneController.LoadScene(SaveDataManager.Instance.saveData.curSceneName);
+        LoadingSceneController.LoadScene(SaveDataManager.Instance.saveData.curSceneName,true);
     }
     public void SelectCharacter(int charId)
     {
         selectPlayerData = DataManager.Instance.playerDatas[charId];
         SaveDataManager.Instance.tempSaveData.charId = charId;
-        LoadingSceneController.LoadScene("Dev");
+        LoadingSceneController.LoadScene("Dev",true);
     }
     public bool PlayScene(GameObject _player, string curSceneName)
     {
@@ -91,10 +91,6 @@ public class GameManager : Singleton<GameManager>
         Inventory.Instance.LoadItems();
         playerStatus.equipment.LoadEquip();
         player.skills.LoadEnableSkills();
-    }
-    public void NextScene(string sceneName)
-    {
-        LoadingSceneController.LoadScene(sceneName);
     }
     public void ModifyGold(int value)
     {
@@ -120,7 +116,7 @@ public class GameManager : Singleton<GameManager>
     }
     public void DeadTextAfterLoading()
     {
-        FakeLoading.instance.StartFakeLoding(2f, "TitleScene");
+        FakeLoading.instance.StartFakeLoding(2f, "TitleScene",false);
     }
     
     public PlayTime GetPlayTime()

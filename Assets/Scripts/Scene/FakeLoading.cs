@@ -18,14 +18,14 @@ public class FakeLoading : MonoBehaviour
     {
         fakeLoadingUI.SetActive(false);
     }
-    public void StartFakeLoding(float time, string nextSceneName)
+    public void StartFakeLoding(float time, string nextSceneName,bool playScene)
     {
         fakeLoadingUI.SetActive(true);
         if (PoolManager.Instance != null)
             PoolManager.Instance.ReturnAllObj();
-        StartCoroutine(CoFakeLoading(time, nextSceneName));
+        StartCoroutine(CoFakeLoading(time, nextSceneName,playScene));
     }
-    IEnumerator CoFakeLoading(float time, string nextSceneName)
+    IEnumerator CoFakeLoading(float time, string nextSceneName,bool playScene)
     {
         float curtime = 0f;
         yield return null;
@@ -36,6 +36,6 @@ public class FakeLoading : MonoBehaviour
             progressBar.fillAmount = curtime / time;
             yield return null;
         }
-        LoadingSceneController.LoadScene(nextSceneName);
+        LoadingSceneController.LoadScene(nextSceneName, playScene);
     }
 }
