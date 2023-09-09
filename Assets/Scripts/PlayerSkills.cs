@@ -46,7 +46,6 @@ public class PlayerSkills : MonoBehaviour
     private void Start()
     {
         player = GetComponent<Player>();
-        FindAnyObjectByType<UI_CurUsedSkills>().Init(this);
         float[] t = { 0f, 0f, 0f, 0f };
         skillCoolTimes.AddRange(t);
     }

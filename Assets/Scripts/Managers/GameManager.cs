@@ -116,9 +116,12 @@ public class GameManager : Singleton<GameManager>
     }
     public void DeadTextAfterLoading()
     {
-        FakeLoading.instance.StartFakeLoding(2f, "TitleScene",false);
+        GoToTitleScene();
     }
-    
+    public void GoToTitleScene()
+    {
+        FakeLoading.instance.StartFakeLoding(1f, "TitleScene", false);
+    }
     public PlayTime GetPlayTime()
     {
         PlayTime pt = new PlayTime();

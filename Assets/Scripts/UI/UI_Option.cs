@@ -78,4 +78,9 @@ public class UI_Option : UI_WindowMenu
     {
         GameManager.Instance.GameSave();
     }
+    public void GoToTitleScene()
+    {
+        Time.timeScale = 1;
+        GameManager.Instance.GoToTitleScene();
+    }
 }

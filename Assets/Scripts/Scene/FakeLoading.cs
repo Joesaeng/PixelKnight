@@ -30,7 +30,7 @@ public class FakeLoading : MonoBehaviour
         float curtime = 0f;
         yield return null;
 
-        while(progressBar.fillAmount <0.5f)
+        while(progressBar.fillAmount < 0.5f)
         {
             curtime += Time.deltaTime;
             progressBar.fillAmount = curtime / time;

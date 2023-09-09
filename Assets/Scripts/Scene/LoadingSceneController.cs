@@ -15,6 +15,7 @@ public class LoadingSceneController : MonoBehaviour
         nextScene = sceneName;
         playScene = _playScene;
         SceneManager.LoadScene("LoadingScene");
+        
     }
     private void Start()
     {
@@ -24,14 +25,12 @@ public class LoadingSceneController : MonoBehaviour
     {
         AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);
         op.allowSceneActivation = false;
-        
-        
         float time = 0f;
-        while(!op.isDone)
+        while (!op.isDone)
         {
             yield return null;
-
-            if(op.progress >= 0.5f && op.progress < 0.9f)
+            
+            if (op.progress >= 0.5f && op.progress < 0.9f)
             {
                 progressBar.fillAmount = op.progress;
             }
@@ -39,11 +38,13 @@ public class LoadingSceneController : MonoBehaviour
             {
                 time += Time.unscaledDeltaTime;
                 progressBar.fillAmount = Mathf.Lerp(0.9f, 1f, time);
-                if(progressBar.fillAmount >= 1f)
+                if (progressBar.fillAmount >= 1f)
                 {
-                    op.allowSceneActivation = true;
                     if (playScene)
+                    {
                         SceneManager.LoadScene("UI_SceneAdditiveOnly", LoadSceneMode.Additive);
+                    }
+                    op.allowSceneActivation = true;
                     yield break;
                 }
             }

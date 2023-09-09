@@ -19,6 +19,10 @@ public class UI_CurUsedSkills : MonoBehaviour
             hideImage[i].enabled = false;
         }
     }
+    private void Start()
+    {
+        Init(GameManager.Instance.player.GetComponent<PlayerSkills>());
+    }
     public void Init(PlayerSkills playerSkills)
     {
         this.playerSkills = playerSkills;

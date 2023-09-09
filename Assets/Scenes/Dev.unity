@@ -8765,7 +8765,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &643311059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11290,8 +11290,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   curSceneName: Dev
   playerPrefab: {fileID: 3497617318878869567, guid: bb597593267c3a94c8529acb11e84dd2, type: 3}
-  playerInfo: {fileID: 0}
-  charHeadBarPos: {fileID: 0}
   virtualCam: {fileID: 874378296}
   startPos: {fileID: 499697224}
 --- !u!4 &1364997144
