@@ -19,12 +19,14 @@ public class Consumable : Item
 
     public Consumable()
     { }
-    public Consumable(string _name, string _iconAddress, ItemType _type, ItemLevel _level,
+    public Consumable(string _name, /*string _iconAddress,*/string imagename, ItemType _type, ItemLevel _level,
         ConsumableType type, float value, float duration)
     {
         this.itemName = _name;
-        this.iconAddress = _iconAddress;
-        LoadEquipResourcesAsync(iconAddress);
+        this.imageName = imagename;
+        this.itemImage = DataManager.Instance.GetImage(imageName);
+        //this.iconAddress = _iconAddress;
+        //LoadEquipResourcesAsync(iconAddress);
         ItemConsumEft itemConsumEft = new();
         SetItemEffect(itemConsumEft);
         this.itemType = _type;
@@ -53,8 +55,10 @@ public class Consumable : Item
     public Consumable (Consumable other)
     {
         this.itemName = other.itemName;
-        this.iconAddress = other.iconAddress;
-        this.itemImage = other.itemImage;
+        this.imageName = other.imageName;
+        this.itemImage = DataManager.Instance.GetImage(imageName);
+        //this.iconAddress = other.iconAddress;
+        //this.itemImage = other.itemImage;
         ItemConsumEft itemConsumEft = new();
         SetItemEffect(itemConsumEft);
         this.itemType = other.itemType;

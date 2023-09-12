@@ -21,7 +21,8 @@ public class Item
 {
     public string itemName; // 아이템 이름
     public Sprite itemImage;
-    public string iconAddress;
+    //public string iconAddress;
+    public string imageName;
     public ItemEffect eft; // 아이템의 사용 효과
     public ItemType itemType;
     public ItemLevel itemLevel; // 아이템 레벨

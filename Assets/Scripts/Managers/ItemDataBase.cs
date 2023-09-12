@@ -22,16 +22,16 @@ public class ItemDataBase : Singleton<ItemDataBase>
     {
         Equip[] equips = 
             {
-            new Equip("Head", "Equip[Equip_0]", ItemType.Equipment, ItemLevel.Common, EquipSlot.Head, BaseOption.Defence, 3f),
-            new Equip("Body", "Equip[Equip_4]", ItemType.Equipment, ItemLevel.Common, EquipSlot.Body, BaseOption.Defence, 5f),
-            new Equip("Hands", "Equip[Equip_8]", ItemType.Equipment, ItemLevel.Common, EquipSlot.Hands, BaseOption.Defence, 2f),
-            new Equip("Foots", "Equip[Equip_12]", ItemType.Equipment, ItemLevel.Common, EquipSlot.Foots, BaseOption.Defence, 2f),
-            new Equip("Weapon", "Equip[Equip_16]", ItemType.Equipment, ItemLevel.Common, EquipSlot.Weapon, BaseOption.Damage, 15f),
+            new Equip("Head", "Equip_0", ItemType.Equipment, ItemLevel.Common, EquipSlot.Head, BaseOption.Defence, 3f),
+            new Equip("Body", "Equip_4", ItemType.Equipment, ItemLevel.Common, EquipSlot.Body, BaseOption.Defence, 5f),
+            new Equip("Hands", "Equip_8", ItemType.Equipment, ItemLevel.Common, EquipSlot.Hands, BaseOption.Defence, 2f),
+            new Equip("Foots", "Equip_12", ItemType.Equipment, ItemLevel.Common, EquipSlot.Foots, BaseOption.Defence, 2f),
+            new Equip("Weapon", "Equip_16", ItemType.Equipment, ItemLevel.Common, EquipSlot.Weapon, BaseOption.Damage, 15f),
             };
 
         Consumable[] consumables =
         {
-            new Consumable("HpPotion","Potions[potions_0]",ItemType.Consumable,ItemLevel.Unique,ConsumableType.HpRecovery,50f,0f)
+            new Consumable("HpPotion","potions_0",ItemType.Consumable,ItemLevel.Unique,ConsumableType.HpRecovery,50f,0f)
         };
 
         itemDB.AddRange(equips);

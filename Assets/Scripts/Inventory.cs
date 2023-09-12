@@ -96,9 +96,10 @@ public class Inventory : MonoBehaviour
         {
             if (equips[i] is Equip equip)
             {
+                Equip newequ = new Equip(equip);
                 ItemEquipEft itemEquipEft = new();
-                equip.SetItemEffect(itemEquipEft);
-                AddItem(equip);
+                newequ.SetItemEffect(itemEquipEft);
+                AddItem(newequ);
             }
 
         }

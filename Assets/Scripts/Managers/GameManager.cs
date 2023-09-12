@@ -71,6 +71,7 @@ public class GameManager : Singleton<GameManager>
     }
     public bool PlayScene(GameObject _player, string curSceneName)
     {
+        ModifyGold(0);
         player = _player.GetComponent<Player>();
         playerStatus = _player.GetComponent<PlayerStatus>();
         LoadPlayerData();
@@ -150,6 +151,7 @@ public class GameManager : Singleton<GameManager>
     public void GameSaveForSceneChange()
     {
         SaveDataManager.Instance.SaveTempData();
+        SaveDataManager.Instance.Save();
     }
     public void GameDataLoad()
     {

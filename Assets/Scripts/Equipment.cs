@@ -59,9 +59,10 @@ public class Equipment : MonoBehaviour
         {
             if(curEquips[i] is Equip equip)
             {
+                Equip newequ = new Equip(equip);
                 ItemEquipEft itemEquipEft = new();
-                equip.SetItemEffect(itemEquipEft);
-                EquipItem(equip.equipSlot, equip);
+                newequ.SetItemEffect(itemEquipEft);
+                EquipItem(newequ.equipSlot, newequ);
             }
         }
     }
