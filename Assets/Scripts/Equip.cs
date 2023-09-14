@@ -75,6 +75,7 @@ public class Equip : Item
         ItemEquipEft itemEquipEft = new();
         SetItemEffect(itemEquipEft);
         this.itemType = other.itemType;
+        this.itemLevel = other.itemLevel;
         this.equipSlot = other.equipSlot;
         this.baseOption = other.baseOption;
         this.baseOptionValue = other.baseOptionValue;
@@ -97,6 +98,28 @@ public class Equip : Item
         this.baseOption = _baseOption;
         this.baseOptionValue = _baseOptionValue;
     }
+    public void SetItemData(Equip equip)
+    {
+        this.itemName = equip.itemName;
+        this.imageName = equip.imageName;
+        this.itemImage = DataManager.Instance.GetImage(imageName);
+        //this.iconAddress = equip.iconAddress;
+        //LoadEquipResourcesAsync(equip.iconAddress);
+        ItemEquipEft itemEquipEft = new();
+        SetItemEffect(itemEquipEft);
+        this.itemType = equip.itemType;
+        this.itemLevel = equip.itemLevel;
+        this.equipSlot = equip.equipSlot;
+        this.baseOption = equip.baseOption;
+        this.baseOptionValue = equip.baseOptionValue;
+        if (equip.additionalOptions.Count > 0)
+        {
+            foreach (var option in equip.additionalOptions)
+            {
+                additionalOptions.Add(option);
+            }
+        }
+    }
 
     public void LoadEquipResourcesAsync(string _iconAddress)
     {
@@ -114,28 +137,6 @@ public class Equip : Item
             this.eft = equipEft;
         }
     }
-    public void SetItemData(Equip equip)
-    {
-        this.itemName = equip.itemName;
-        this.imageName = equip.imageName;
-        this.itemImage = DataManager.Instance.GetImage(imageName);
-        //this.iconAddress = equip.iconAddress;
-        //LoadEquipResourcesAsync(equip.iconAddress);
-        ItemEquipEft itemEquipEft = new();
-        SetItemEffect(itemEquipEft);
-        this.itemType = equip.itemType;
-        this.itemLevel = equip.itemLevel;
-        this.equipSlot = equip.equipSlot;
-        this.baseOption = equip.baseOption;
-        this.baseOptionValue = equip.baseOptionValue;
-        if(equip.additionalOptions.Count>0)
-        {
-            foreach(var option in equip.additionalOptions)
-            {
-                additionalOptions.Add(option);
-            }
-        }
-    }
     public void LevelUpItem(ItemLevel level)
     {
         string levelString = level.ToString();
@@ -150,7 +151,6 @@ public class Equip : Item
                     case EquipSlot.Weapon:
                         //LoadEquipResourcesAsync("Equip[Equip_17]");
                         this.itemImage = DataManager.Instance.GetImage("Equip_17");
-                        
                         this.additionalOptions.Add(new AdditionalOption(AdditionalOptions.HitRate, 10f));
                         break;
                     case EquipSlot.Head:

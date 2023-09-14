@@ -14,8 +14,8 @@ public enum ItemLevel
     Advanced,
     Rare,
     Unique,
+    None,
 }
-
 [System.Serializable]
 public class Item 
 {

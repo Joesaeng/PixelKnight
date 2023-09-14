@@ -6,6 +6,7 @@ public enum EnemyAttackType
 {
     Meele,
     Ranged,
+    Boss,
 }
 [CreateAssetMenu(fileName = "Enemy", menuName = "EnemyData")]
 

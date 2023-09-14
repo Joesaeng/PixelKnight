@@ -2,6 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class CurUsedSkill
+{
+    public int num;
+    public SkillName skillName;
+    public CurUsedSkill(int num, SkillName skillName)
+    {
+        this.num = num;
+        this.skillName = skillName;
+    }
+}
 public class PlayerSkills : MonoBehaviour
 {
     // 플레이어 오브젝트에 컴포넌트로 부착되는 스킬 클래스 입니다.
@@ -31,7 +42,7 @@ public class PlayerSkills : MonoBehaviour
             case SkillName.Judgement: // Judgement
                 foreach (var target in player.GetJudgetTarget())
                 {
-                    if (target.GetComponent<Enemy>().IsDead) continue;
+                    if (target.GetComponent<Enemy>().IsDead()) continue;
                     GameObject judge = PoolManager.Instance.GetSkill(curUsedSkills[index].skillName);
                     judge.transform.position = target.transform.position;
                 }
@@ -52,6 +63,15 @@ public class PlayerSkills : MonoBehaviour
     public void LoadEnableSkills()
     {
         enableSkills = SaveDataManager.Instance.saveData.skills;
+    }
+    public void LoadUsedSkills()
+    {
+        List<CurUsedSkill> list = SaveDataManager.Instance.saveData.curSkills;
+        for(int i = 0; i < list.Count;++i)
+        {
+            SetUsedSkill(list[i].num, DataManager.Instance.GetSkillData(list[i].skillName));
+            Debug.Log(list[i].skillName + " Load1");
+        }
     }
     private void Update()
     {
@@ -75,7 +95,9 @@ public class PlayerSkills : MonoBehaviour
     }
     public float GetCoolTime(int index)
     {
-        return curUsedSkills[index].skillCoolTime;
+        if (curUsedSkills.ContainsKey(index))
+            return curUsedSkills[index].skillCoolTime;
+        else return 0f;
     }
     public bool CanChangeSkill()
     {
@@ -97,14 +119,15 @@ public class PlayerSkills : MonoBehaviour
     public void InitUI(UI_SkillMenu uI_SkillMenu)
     {
         skillUI = uI_SkillMenu;
-        skillUI.OnChangedUsedSkill += SetUsedSkill;
+        skillUI.OnChangedUsedSkill += SetUsedSkills;
         skillUI.LoadEnableSkills();
+        skillUI.LoadUsedSkills(curUsedSkills);
         UsedSkills nullSkills = new
             UsedSkills
         { skill_1 = null, skill_2 = null, skill_3 = null, skill_4 = null, };
-        SetUsedSkill(nullSkills);
+        SetUsedSkills(nullSkills);
     }
-    public void EnableSkill(int index, SkillData data)
+    public void SetUsedSkill(int index, SkillData data)
     {
         if (data == null) return;
         curUsedSkills.Add(index, data);
@@ -113,16 +136,16 @@ public class PlayerSkills : MonoBehaviour
             judgementRange.enabled = true;
         }
     }
-    void SetUsedSkill(UsedSkills skills)
+    void SetUsedSkills(UsedSkills skills)
     {
         judgementRange.enabled = false;
         curUsedSkills = new Dictionary<int, SkillData>();
         float[] t = { 0f, 0f, 0f, 0f };
         skillCoolTimes.AddRange(t);
-        EnableSkill(0, skills.skill_1);
-        EnableSkill(1, skills.skill_2);
-        EnableSkill(2, skills.skill_3);
-        EnableSkill(3, skills.skill_4);
+        SetUsedSkill(0, skills.skill_1);
+        SetUsedSkill(1, skills.skill_2);
+        SetUsedSkill(2, skills.skill_3);
+        SetUsedSkill(3, skills.skill_4);
     }
     public SkillData GetData(int index)
     {
@@ -134,5 +157,19 @@ public class PlayerSkills : MonoBehaviour
     public List<SkillName> GetEnableSkills()
     {
         return skillUI.GetEnableSkills();
+    }
+    public List<CurUsedSkill> GetCurUsedSkills()
+    {
+        List<CurUsedSkill> list = new List<CurUsedSkill>();
+        for(int i = 0; i < 4; ++i)
+        { 
+            if(curUsedSkills.ContainsKey(i))
+            {
+                CurUsedSkill t = new CurUsedSkill(i, curUsedSkills[i].skillName);
+                Debug.Log(t.skillName);
+                list.Add(t);
+            }    
+        }
+        return list;
     }
 }

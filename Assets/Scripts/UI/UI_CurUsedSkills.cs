@@ -31,7 +31,7 @@ public class UI_CurUsedSkills : MonoBehaviour
     {
         for(int i = 0; i < images.Length;++i)
         {
-            if (images[i].enabled == true)
+            if (playerSkills.GetCoolTime(i) != 0)
                 CoolTimeUpdate(i);
         }
     }

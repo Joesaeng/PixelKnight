@@ -34,7 +34,7 @@ public class GameManager : Singleton<GameManager>
     private bool firstScene = true;
     private void Start()
     {
-        ModifyGold(0);
+        curGold = 0;
         SceneManager.LoadScene("TitleScene");
     }
     private void Update()
@@ -66,12 +66,13 @@ public class GameManager : Singleton<GameManager>
     public void SelectCharacter(int charId)
     {
         selectPlayerData = DataManager.Instance.playerDatas[charId];
-        SaveDataManager.Instance.tempSaveData.charId = charId;
+        SaveDataManager.Instance.saveData.charId = charId;
         LoadingSceneController.LoadScene("Dev",true);
+        //LoadingSceneController.LoadScene("Test1",true);
     }
     public bool PlayScene(GameObject _player, string curSceneName)
     {
-        ModifyGold(0);
+        curGold = 0;
         player = _player.GetComponent<Player>();
         playerStatus = _player.GetComponent<PlayerStatus>();
         LoadPlayerData();
@@ -92,6 +93,7 @@ public class GameManager : Singleton<GameManager>
         Inventory.Instance.LoadItems();
         playerStatus.equipment.LoadEquip();
         player.skills.LoadEnableSkills();
+        player.skills.LoadUsedSkills();
     }
     public void ModifyGold(int value)
     {
@@ -121,7 +123,7 @@ public class GameManager : Singleton<GameManager>
     }
     public void GoToTitleScene()
     {
-        FakeLoading.instance.StartFakeLoding(1f, "TitleScene", false);
+        FakeLoading.instance.StartFakeLoding(2f, "TitleScene", false);
     }
     public PlayTime GetPlayTime()
     {
@@ -144,13 +146,11 @@ public class GameManager : Singleton<GameManager>
     }
     public void GameSave()
     {
-        SaveDataManager.Instance.SaveTempData();
         SaveDataManager.Instance.Save();
         SaveDataManager.Instance.SaveToJson();
     }
     public void GameSaveForSceneChange()
     {
-        SaveDataManager.Instance.SaveTempData();
         SaveDataManager.Instance.Save();
     }
     public void GameDataLoad()

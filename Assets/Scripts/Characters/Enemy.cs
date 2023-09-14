@@ -5,60 +5,59 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Enemy : MonoBehaviour
 {
+    protected enum State
+    {
+        Init,
+        Idle,
+        Chase,
+        Patrol,
+        Stun,
+        Attack,
+        Dead,
+        None,
+    };
     // 보유한 컴포넌트들
-    private Rigidbody2D rigid;
-    private Animator anim;
-    private EnemyStatus enemyStatus;
-
+    protected Rigidbody2D rigid;
+    protected Animator anim;
+    protected EnemyStatus enemyStatus;
+    [SerializeField]
+    protected State curState;
     // 공격 관련
-    private Rigidbody2D target;
-    private Rigidbody2D attackTarget; // Enemy의 공격범위 내에 Player가 있다면 Player를 담는 변수입니다.
-    private Player player;
+    protected Rigidbody2D target;       // 추적에 필요한 타겟입니다.
+    protected Rigidbody2D attackTarget; // Enemy의 공격범위 내에 Player가 있다면 Player를 담는 변수입니다.
+    protected Player player;
     private EnemyAttackType attackType;
-    private float attackRange;
+    protected float attackRange;
     private BulletName bulletName;
-    
+
     [SerializeField]
     RuntimeAnimatorController[] animCon;
 
-    private bool isDead;
-    public bool IsDead { get => isDead; set => isDead = value; }
-    private bool isAttacking;
-    public bool IsAttacking { get => isAttacking; set => isAttacking = value; }
-
-
     // 이동 및 공격 관련 변수
-    private WaitForSeconds attackDelay;
-    private int nextMove;
-    private float moveSpeed;
-    private Vector3 xFlipScale;
+    protected int nextMove;
+    protected float moveSpeed;
+    protected Vector3 xFlipScale;
 
-    public float thinkTime = 5f;
-    private float curThinkTime;
+    protected bool isStun;
+    protected bool isAttack;
+    protected bool isDead;
 
-    private void Awake()
+    protected WaitForSeconds attackDelay;
+    readonly WaitForSeconds thinkTime = new WaitForSeconds(4f);
+    readonly WaitForSeconds chaseTime = new WaitForSeconds(0.5f);
+    readonly WaitForSeconds stunTime = new WaitForSeconds(1f);
+
+    protected virtual void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         enemyStatus = GetComponent<EnemyStatus>();
         xFlipScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        
-        curThinkTime = 0f;
     }
-
-    private void OnEnable()
-    {
-        curThinkTime = 0f;
-        nextMove = 0;
-        target = null;
-        IsDead = false;
-        IsAttacking = false;
-        anim.SetBool("isDead", IsDead);
-        enemyStatus.OnEnemyDead += EnemyDead;
-    }
-    public void SetData(int enemyID)
+    public virtual void SetData(int enemyID)
     {
         anim.runtimeAnimatorController = animCon[enemyID];
         bulletName = enemyStatus.bulletName;
@@ -67,31 +66,193 @@ public class Enemy : MonoBehaviour
         attackType = DataManager.Instance.GetEnemyData(enemyID).attackType;
         attackRange = DataManager.Instance.GetEnemyData(enemyID).attackRange;
     }
-    private void Update()
-    {
-        curThinkTime += Time.deltaTime;
-    }
-    private void FixedUpdate()
-    {
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Hit") || IsDead || IsAttacking)
-        {
-            rigid.velocity = new Vector2(0f, rigid.velocity.y);
-            anim.SetFloat("WalkSpeed", 0f);
-            return;
-        }
-        if (target)
-        {
-            nextMove = (target.position.x - rigid.position.x) > 0 ? 1 : -1;
-            Chase();
-        }
-        else
-        {
-            if (curThinkTime >= thinkTime)
-                Think();
-            Move();
-        }
 
-        if (rigid.velocity.y <= -50f) // 맵 밖으로 이탈했을때 강제로 사망 처리
+    private void OnEnable()
+    {
+        nextMove = 0;
+        target = null;
+        isStun = false;
+        isAttack = false;
+        isDead = false;
+        anim.SetBool("isDead", isDead);
+        enemyStatus.OnEnemyDead += EnemyDead;
+        SetState(State.None);
+    }
+
+    protected void UpdateState()
+    {
+        switch (curState)
+        {
+            case State.Init:
+                StartCoroutine(CoStateInit());
+                break;
+            case State.Idle:
+                StartCoroutine(CoStateIdle());
+                break;
+            case State.Chase:
+                StartCoroutine(CoStateChase());
+                break;
+            case State.Patrol:
+                StartCoroutine(CoStatePatrol());
+                break;
+            case State.Stun:
+                StartCoroutine(CoStateStun());
+                break;
+            case State.Attack:
+                StartCoroutine(CoStateAttack());
+                break;
+            case State.Dead:
+                StartCoroutine(CoStateDead());
+                break;
+            default:
+                SetState(State.Init);
+                break;
+        }
+    }
+    protected void SetState(State state)
+    {
+        if (curState == state) return;
+        curState = state;
+        UpdateState();
+    }
+    public bool IsDead()
+    {
+        return isDead;
+    }
+    protected IEnumerator CoStateInit()
+    {
+        yield return new WaitForSeconds(0.5f);
+        nextMove = Random.Range(-1, 2);
+        SetState(State.Idle);
+    }
+    protected IEnumerator CoStateIdle()
+    {
+        while (curState == State.Idle)
+        {
+            if (target != null)
+            {
+                SetState(State.Chase);
+                yield break;
+            }
+            if (nextMove != 0)
+            {
+                SetState(State.Patrol);
+                yield break;
+            }
+            nextMove = Random.Range(-1, 2);
+            yield return thinkTime;
+        }
+        yield break;
+    }
+    protected IEnumerator CoStateChase()
+    {
+        while (curState == State.Chase && target != null)
+        {
+            nextMove = target.position.x - rigid.position.x > 0 ? 1 : -1;
+            // attackType에 따라 조금 다른 동작을 하게 됩니다.
+            switch (attackType)
+            {
+                case EnemyAttackType.Meele: // 근접공격 타입
+                    {
+                        if (attackTarget != null)
+                        {
+                            SetState(State.Attack);
+                            yield break;
+                        }
+                    }
+                    break;
+                case EnemyAttackType.Ranged:
+                    {
+                        float dis = Vector2.Distance(target.position, rigid.position);
+                        if (dis <= attackRange)
+                        {
+                            SetState(State.Attack);
+                            yield break;
+                        }
+                    }
+                    break;
+            }
+            yield return chaseTime;
+        }
+        yield break;
+    }
+    protected IEnumerator CoStatePatrol()
+    {
+        while (curState == State.Patrol)
+        {
+            if (target != null)
+            {
+                SetState(State.Chase);
+                yield break;
+            }
+            if (nextMove == 0)
+            {
+                SetState(State.Idle);
+                yield break;
+            }
+            nextMove = Random.Range(-1, 2);
+            yield return thinkTime;
+        }
+    }
+    public virtual void Stun()
+    {
+        SetState(State.Stun);
+    }
+
+    protected IEnumerator CoStateStun()
+    {
+        if (isStun) yield break;
+        isStun = true;
+        anim.SetTrigger("hurt");
+        yield return stunTime;
+        isStun = false;
+        SetState(State.Idle);
+    }
+    protected IEnumerator CoStateAttack()
+    {
+        if (isAttack) yield break;
+        isAttack = true;
+        anim.SetTrigger("isAttack");
+        yield return attackDelay;
+        isAttack = false;
+        SetState(State.Idle);
+    }
+    protected virtual void EnemyDead()
+    {
+        if (IsDead()) return;
+        isDead = true;
+        SetState(State.Dead);
+    }
+    IEnumerator CoStateDead()
+    {
+        Spawner.instance.ItemSpawn(transform.position);
+        if (GetComponentInParent<SpawnPoint>() == null)
+        {
+            Debug.LogError("SpawnPointNull");
+            yield break;
+        }
+        GetComponentInParent<SpawnPoint>()?.EnemyDead();
+        anim.SetBool("isDead", IsDead());
+        transform.SetParent(PoolManager.Instance.transform);
+        yield return new WaitForSeconds(2.5f);
+        gameObject.SetActive(false);
+    }
+
+    protected virtual void FixedUpdate()
+    {
+        if (IsDead()) rigid.velocity = new Vector2(0f, rigid.velocity.y);
+        CheckFloor();
+        switch (curState)
+        {
+            case State.Patrol:
+            case State.Chase:
+                rigid.velocity = new Vector2(nextMove * moveSpeed, rigid.velocity.y);
+                break;
+            default:
+                rigid.velocity = new Vector2(0f, rigid.velocity.y);
+                break;
+        }
+        if (rigid.velocity.y <= -50f && curState != State.Dead) // 맵 밖으로 이탈했을때 강제로 사망 처리
             enemyStatus.ModifyHp(-10000000f);
     }
     private void LateUpdate()
@@ -103,50 +264,8 @@ public class Enemy : MonoBehaviour
             transform.localScale = xFlipScale;
         }
     }
-    void Chase() // 타겟을 추적하는 기능을 하는 메서드입니다.
+    void CheckFloor()
     {
-        // attackType에 따라 조금 다른 동작을 하게 됩니다.
-        switch (attackType)
-        {
-            case EnemyAttackType.Meele: // 근접공격 타입
-                {
-                    if (!IsAttacking && attackTarget != null)
-                    {
-                        StartCoroutine(CoAttack());
-                    }
-                    else
-                    {
-                        Move();
-                    }
-                }
-                break;
-            case EnemyAttackType.Ranged:
-                {
-                    float dis = Vector2.Distance(target.position, rigid.position);
-                    if (!IsAttacking && dis <= attackRange)
-                    {
-                        StartCoroutine(CoAttack());
-                    }
-                    else
-                    {
-                        Move();
-                    }
-                }
-                break;
-        }
-
-    }
-    IEnumerator CoAttack()
-    {
-        IsAttacking = true;
-        anim.SetTrigger("isAttack");
-        yield return attackDelay;
-        IsAttacking = false;
-    }
-    void Move()
-    {
-        rigid.velocity = new Vector2(nextMove * moveSpeed, rigid.velocity.y);
-
         // 현재 포지션보다 살짝 앞에서 바닥을 향해 쏘는 레이를 생성하여 앞에 길이 있는지를 확인합니다.
         Vector2 frontVec = new Vector2(rigid.position.x + nextMove * 0.3f, rigid.position.y);
         RaycastHit2D rayHit = Physics2D.Raycast(frontVec, Vector3.down, 1, LayerMask.GetMask("Floor"));
@@ -155,6 +274,7 @@ public class Enemy : MonoBehaviour
         if (rayHit.collider == null && target == null)
         {
             nextMove *= -1;
+            rigid.velocity = new Vector2(nextMove * moveSpeed, rigid.velocity.y);
         }
         else if ((rayHit.collider == null && target != null) ||                         // 타겟을 쫓는 중에 더이상 진행할 수 없다면
             (target != null && Vector2.Distance(rigid.position, target.position) > 20f) // 타겟과의 거리가 일정거리만큼 벌어졌다면
@@ -164,70 +284,52 @@ public class Enemy : MonoBehaviour
             target = null;
             player = null;
             enemyStatus.ResetHpPoise();
-            curThinkTime = 0f;
+            SetState(State.Idle);
         }
-    }
-
-    void Think()
-    {
-        nextMove = Random.Range(-1, 2);
-        curThinkTime = 0f;
     }
     void SetTarget()
     {
         if (target != null) return;
         player = GameManager.Instance.player;
         target = player.GetComponent<Rigidbody2D>();
+        SetState(State.Chase);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // 플레이어 스킬 중 Dash 스킬이 오브젝트풀에서 꺼내오면서 Enemy와 충돌하기 때문에
         // 필요한 메서드 입니다. 추후 타게팅되는 스킬이 아닌 범위공격을 가지는 스킬을 구현 할 때
         // 사용 가능합니다.
-        if (collision.CompareTag("PlayerSkillRange") && !IsDead)
+        if (collision.CompareTag("PlayerSkillRange") && curState != State.Dead)
         {
             SetTarget();
             if (enemyStatus.CalculatedHit(player.playerStatus, collision.GetComponentInParent<Skill>().data))
             {
-                anim.SetTrigger("isHit");
+                enemyStatus.ModifyPoise(player.playerStatus.dPlayerFixedStatus[FixedStatusName.Stagger]);
             }
         }
     }
     public void MeeleAttackHit(PlayerStatus playerstatus)
     {
         // 플레이어의 기본공격의 피격을 담당합니다.
-        if (IsDead) return;
+        if (IsDead()) return;
         SetTarget();
         if (enemyStatus.CalculatedHit(playerstatus))
         {
-            anim.SetTrigger("isHit");
+            enemyStatus.ModifyPoise(player.playerStatus.dPlayerFixedStatus[FixedStatusName.Stagger]);
         }
 
     }
-    public void JudgementHit() 
+    public void JudgementHit()
     {
         // 플레이어 스킬 중 Judgement의 피격을 관리하는 메서드입니다.
-        if (IsDead) return;
+        if (curState == State.Dead) return;
         SetTarget();
-        enemyStatus.CalculatedHit(player.playerStatus, DataManager.Instance.GetSkillData(SkillName.Judgement));
-        anim.SetTrigger("isHit");
+        if (enemyStatus.CalculatedHit(player.playerStatus, DataManager.Instance.GetSkillData(SkillName.Judgement)))
+        {
+            enemyStatus.ModifyPoise(player.playerStatus.dPlayerFixedStatus[FixedStatusName.Stagger]);
+        }
     }
 
-    void EnemyDead()
-    {
-        if (!IsDead) Spawner.instance.ItemSpawn(transform.position);
-        IsDead = true;
-        curThinkTime = 0f;
-        GetComponentInParent<SpawnPoint>()?.EnemyDead();
-        StartCoroutine(EnemyDeadAnimPlay());
-    }
-    IEnumerator EnemyDeadAnimPlay()
-    {
-        anim.SetBool("isDead", IsDead);
-        transform.SetParent(PoolManager.Instance.transform);
-        yield return new WaitForSeconds(2.5f);
-        gameObject.SetActive(false);
-    }
 
     // Player가 Enemy의 공격범위 안에 있는지를 OnTrigger를 통해 확인합니다.
     private void OnTriggerStay2D(Collider2D collision)
@@ -240,9 +342,9 @@ public class Enemy : MonoBehaviour
         if (collision.CompareTag("PlayerHit"))
             attackTarget = null;
     }
-    
+
     // Enemy의 공격 애니메이션에서 호출되는 이벤트 메서드 입니다.
-    public void BeginAttack()
+    public virtual void BeginAttack()
     {
         switch (attackType)
         {

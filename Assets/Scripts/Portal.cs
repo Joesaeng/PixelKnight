@@ -11,7 +11,7 @@ public class Portal : MonoBehaviour
         if(collision.CompareTag("Player"))
         {
             GameManager.Instance.GameSaveForSceneChange();
-            FakeLoading.instance.StartFakeLoding(1f,nextSceneName,true);
+            FakeLoading.instance.StartFakeLoding(2f,nextSceneName,true);
         }
     }
 }

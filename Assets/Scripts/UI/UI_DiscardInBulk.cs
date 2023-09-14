@@ -33,6 +33,7 @@ public class UI_DiscardInBulk : MonoBehaviour
         List<Item> allInventoryItems = Inventory.Instance.GetItems();
         for(int i = 0; i < allInventoryItems.Count; ++i)
         {
+            if (allInventoryItems[i].itemLevel == ItemLevel.None) continue;
             if(toggles[(int)allInventoryItems[i].itemLevel].isOn)   
             {
                 discardItemsIndexs.Add(i); // Toggles에서 itemLevel이 할당되어있는 체크박스가

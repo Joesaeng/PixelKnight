@@ -145,7 +145,7 @@ public class PlayerStatus : MonoBehaviour
     public SaveData SaveStatus()
     {
         SaveData saveData = new();
-        saveData.name = SaveDataManager.Instance.tempSaveData.name;
+        saveData.name = SaveDataManager.Instance.saveData.name;
         saveData.level = playerLv;
         saveData.curExp = dPlayerDynamicStatus[DynamicStatusName.CurExp];
         saveData.expReq = ExpRequirement;
@@ -266,6 +266,10 @@ public class PlayerStatus : MonoBehaviour
         else if (dPlayerFixedStatus[FixedStatusName.CriticalChance] <= minCriticalChance)
             dPlayerFixedStatus[FixedStatusName.CriticalChance] = minCriticalChance;
         dPlayerFixedStatus[FixedStatusName.CriticalHitDamage] += minCriticalHitDamage;
+        if (dPlayerFixedStatus[FixedStatusName.AttackSpeed] >= maxAttackSpeed)
+            dPlayerFixedStatus[FixedStatusName.AttackSpeed] = maxAttackSpeed;
+        else if (dPlayerFixedStatus[FixedStatusName.AttackSpeed] <= minAttackSpeed)
+            dPlayerFixedStatus[FixedStatusName.AttackSpeed] = minAttackSpeed;
     }
     private void ApplyEquip(Equip[] _CurEquips) // 장비의 옵션을 스테이터스에 저장
     {
@@ -469,7 +473,7 @@ public class PlayerStatus : MonoBehaviour
         {
             isHit = true;
             TakeDamage(enemyStatus);
-            Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
+            Spawner.instance.ShowDamageEffect(3).transform.SetPositionAndRotation
                 (transform.position, Quaternion.identity);
         }
         else if (hitDiff > 0)
@@ -480,7 +484,7 @@ public class PlayerStatus : MonoBehaviour
         {
             isHit = true;
             TakeDamage(enemyStatus);
-            Spawner.instance.ShowDamageEffect(2).transform.SetPositionAndRotation
+            Spawner.instance.ShowDamageEffect(3).transform.SetPositionAndRotation
                 (transform.position, Quaternion.identity);
         }
         if (!isHit)

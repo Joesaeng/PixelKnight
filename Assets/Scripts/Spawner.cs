@@ -46,11 +46,13 @@ public class Spawner : MonoBehaviour
             {
                 Equip equip = new Equip();
                 equip.SetItemData(ItemDataBase.Instance.GetEquipData(randomIndex));
-                if (UnityEngine.Random.value <= 0.05f)
+                float ran = UnityEngine.Random.value;
+             
+                if (ran <= 0.05f)
                     equip.LevelUpItem(ItemLevel.Unique);
-                else if (UnityEngine.Random.value <= 0.15f)
+                else if (ran <= 0.15f)
                     equip.LevelUpItem(ItemLevel.Rare);
-                else if (UnityEngine.Random.value <= 0.4f)
+                else if (ran <= 0.4f)
                     equip.LevelUpItem(ItemLevel.Advanced);
                 else
                     equip.LevelUpItem(ItemLevel.Common);

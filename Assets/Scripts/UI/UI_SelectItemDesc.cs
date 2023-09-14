@@ -74,6 +74,9 @@ public class UI_SelectItemDesc : MonoBehaviour
             case ItemLevel.Unique:
                 nameColor = new Color(233f / 255f, 131f / 255f, 58f / 255f); // 정규화된 값 사용
                 break;
+            default:
+                nameColor = new Color(1f, 1f, 1f);
+                break;
         } // 아이템 레벨에 따른 이름 색깔 정하기
         itemName.color = nameColor;
         itemName.text = item.itemName;

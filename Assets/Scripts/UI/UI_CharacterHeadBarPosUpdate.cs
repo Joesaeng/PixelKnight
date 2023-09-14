@@ -23,7 +23,8 @@ public class UI_CharacterHeadBarPosUpdate : MonoBehaviour
         cam = Camera.main;
         // Enemy의 스폰을 담당하는 Spawner의 이벤트를 구독합니다.
         InitPlayerPoiseBar();
-        Spawner.instance.OnEnemySpawn += InitEnemyHpBar;
+        if(Spawner.instance != null)
+            Spawner.instance.OnEnemySpawn += InitEnemyHpBar;
     }
     public void InitEnemyHpBar(GameObject enemy)
     {

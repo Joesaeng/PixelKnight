@@ -26,6 +26,7 @@ public class SaveData
 
     public float curHp;
     public List<SkillName> skills = new();
+    public List<CurUsedSkill> curSkills = new();
     public List<Equip> curEquips = new();
     public int inventorySlotCount;
     public List<Consumable> inventoryConsumables = new();
@@ -47,7 +48,6 @@ public class SaveCountItem
 public class SaveDataManager : Singleton<SaveDataManager>
 {
     public SaveData saveData = new();
-    public SaveData tempSaveData = new();
     public string path;
     public int nowSlot;
 
@@ -57,27 +57,24 @@ public class SaveDataManager : Singleton<SaveDataManager>
     }
     public void Save()
     {
-        saveData = tempSaveData;
-    }
-    public void SaveTempData()
-    {
         if (GameManager.Instance.player != null)
         {
             Player savePlayer = GameManager.Instance.player;
-            tempSaveData = savePlayer.playerStatus.SaveStatus();
-            tempSaveData.curGold = GameManager.Instance.curGold;
-            tempSaveData.playerCurPos = GameManager.Instance.player.transform.position;
-            tempSaveData.skills = savePlayer.skills.GetEnableSkills();
-            tempSaveData.curEquips.AddRange(savePlayer.playerStatus.equipment.GetCurEquip());
+            saveData = savePlayer.playerStatus.SaveStatus();
+            saveData.curGold = GameManager.Instance.curGold;
+            saveData.playerCurPos = GameManager.Instance.player.transform.position;
+            saveData.skills = savePlayer.skills.GetEnableSkills();
+            saveData.curSkills = savePlayer.skills.GetCurUsedSkills();
+            saveData.curEquips.AddRange(savePlayer.playerStatus.equipment.GetCurEquip());
             List<Item> items = Inventory.Instance.GetItems();
             SaveInventoryItems(items);
 
-            tempSaveData.inventorySlotCount = Inventory.Instance.SlotCnt;
+            saveData.inventorySlotCount = Inventory.Instance.SlotCnt;
         }
-        tempSaveData.hour = GameManager.Instance.GetPlayTime().hour;
-        tempSaveData.minute = GameManager.Instance.GetPlayTime().minute;
-        tempSaveData.second = GameManager.Instance.GetPlayTime().second;
-        tempSaveData.curSceneName = GameManager.Instance.curScene.ToString();
+        saveData.hour = GameManager.Instance.GetPlayTime().hour;
+        saveData.minute = GameManager.Instance.GetPlayTime().minute;
+        saveData.second = GameManager.Instance.GetPlayTime().second;
+        saveData.curSceneName = GameManager.Instance.curScene.ToString();
     }
     public void SaveToJson()
     {
@@ -89,8 +86,6 @@ public class SaveDataManager : Singleton<SaveDataManager>
     {
         string jsonData = File.ReadAllText(path + nowSlot.ToString());
         saveData = JsonUtility.FromJson<SaveData>(jsonData);
-        tempSaveData = saveData;
-
     }
 
     public void DataClear()
@@ -104,13 +99,13 @@ public class SaveDataManager : Singleton<SaveDataManager>
         {
             if(items[i] is Equip equip)
             {
-                tempSaveData.inventoryEquips.Add(equip);
+                saveData.inventoryEquips.Add(equip);
             }
             else if(items[i] is Consumable consumable)
             {
                 SaveCountItem count = new SaveCountItem(items[i],Inventory.Instance.CountItemSave(items[i]));
-                tempSaveData.countItem.Add(count);                  // 고로 countItem의 인덱스 번호와
-                tempSaveData.inventoryConsumables.Add(consumable);  // inventoryConsumables의 인덱스가
+                saveData.countItem.Add(count);                  // 고로 countItem의 인덱스 번호와
+                saveData.inventoryConsumables.Add(consumable);  // inventoryConsumables의 인덱스가
             }                                                   // 가지고있는데 Item은 같다.
         }
     }

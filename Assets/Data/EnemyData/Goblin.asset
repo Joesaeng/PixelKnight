@@ -21,7 +21,7 @@ MonoBehaviour:
   bulletName: 1
   attackDelay: 2
   maxHp: 150
-  maxPoise: 0
+  maxPoise: 30
   damage: 30
   defence: 3
   stagger: 10

@@ -13,6 +13,7 @@ TagManager:
   - OptionUI
   - PlayerHit
   - Ladder
+  - Boss
   layers:
   - Default
   - TransparentFX

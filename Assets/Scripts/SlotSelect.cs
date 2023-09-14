@@ -70,7 +70,7 @@ public class SlotSelect : MonoBehaviour
             {
                 return;
             }
-            SaveDataManager.Instance.tempSaveData.name = username;
+            SaveDataManager.Instance.saveData.name = username;
             GameManager.Instance.NewGame();
         }
         else
@@ -79,5 +79,8 @@ public class SlotSelect : MonoBehaviour
         }
 
     }
-
+    public void GameExit()
+    {
+        GameManager.Instance.GameExit();
+    }
 }

@@ -249,6 +249,10 @@ public class Player : MonoBehaviour
         }
 
         Jump(); // 점프 처리
+        if(rigid.velocity.y <= -50f && !IsDead)
+        {
+            playerStatus.ModifyHp(-10000000f);
+        }
     }
 
     private void LateUpdate()
@@ -537,15 +541,15 @@ public class Player : MonoBehaviour
         animator.SetTrigger("isDead");
         yield return new WaitForSeconds(3f);
     }
-
-    // BeginAttack 함수: 공격 시작을 알리는 함수
+    // 공격 애니메이션 호출 메서드
     public void BeginAttack()
     {
         if (targets.Count > 0)
         {
             foreach (var target in targets)
             {
-                target.GetComponent<Enemy>().MeeleAttackHit(playerStatus);
+                if(target.GetComponent<Enemy>() != null)
+                    target.GetComponent<Enemy>().MeeleAttackHit(playerStatus);
             }
         }
     }

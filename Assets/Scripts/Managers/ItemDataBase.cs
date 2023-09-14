@@ -31,7 +31,7 @@ public class ItemDataBase : Singleton<ItemDataBase>
 
         Consumable[] consumables =
         {
-            new Consumable("HpPotion","potions_0",ItemType.Consumable,ItemLevel.Unique,ConsumableType.HpRecovery,50f,0f)
+            new Consumable("HpPotion","potions_0",ItemType.Consumable,ItemLevel.None,ConsumableType.HpRecovery,50f,0f)
         };
 
         itemDB.AddRange(equips);

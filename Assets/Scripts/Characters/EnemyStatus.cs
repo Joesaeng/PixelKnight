@@ -11,7 +11,7 @@ public class EnemyStatus : MonoBehaviour
      */
     public Transform effectPoint;
     Enemy enemy;
-    private string charName;
+    protected string charName;
     public float expReward;
     public int goldReward;
     public int enemyID;
@@ -27,8 +27,8 @@ public class EnemyStatus : MonoBehaviour
     public float moveSpeed;
     public BulletName bulletName;
 
-    private float curHp;
-    private float curPoise;
+    protected float curHp;
+    protected float curPoise;
 
     public Action OnEnemyDead;
 
@@ -38,15 +38,23 @@ public class EnemyStatus : MonoBehaviour
         get => curHp;
     }
 
-    private void Awake()
+    protected virtual void Awake()
     {
         enemy = GetComponent<Enemy>();
     }
-    private void Start()
+    protected virtual void Start()
     {
         spawner = Spawner.instance;
     }
-    public void SetData(int _enemyID) 
+    private void OnDisable()
+    {
+        if(enemy.IsDead())
+        {
+            GameManager.Instance.player.playerStatus.ModifyExp(expReward);
+            GameManager.Instance.ModifyGold(goldReward);
+        }
+    }
+    public virtual void SetData(int _enemyID) 
         // PoolManager에서 Enemy를 꺼낼때 호출되어 세팅합니다.
     {
         EnemyData data = DataManager.Instance.GetEnemyData(_enemyID);
@@ -82,13 +90,18 @@ public class EnemyStatus : MonoBehaviour
         {
             OnEnemyDead?.Invoke();
             curHp = 0;
-            GameManager.Instance.player.playerStatus.ModifyExp(expReward);
-            GameManager.Instance.ModifyGold(goldReward);
+            
         }
     }
-    void ModifyPoise(float value)
+    public virtual void ModifyPoise(float value)
     {
-        curPoise += value;
+        curPoise -= value;
+        
+        if (curPoise <= 0)
+        {
+            curPoise = maxPoise;
+            enemy.Stun();
+        }
     }
     public bool CalculatedHit(PlayerStatus playerStatus)
         // 피격을 계산하는 메서드입니다.
@@ -101,6 +114,7 @@ public class EnemyStatus : MonoBehaviour
         // 스킬 피격을 계산하는 메서드입니다.
     {
         CalculatedDamage caldmg = playerStatus.CalculateDamage();
+        ModifyPoise(playerStatus.dPlayerFixedStatus[FixedStatusName.Stagger]);
         float hitDiff = playerStatus.GetHitDiff(evade);
         return FinalCalculatedHit(caldmg.damage * skillData.damageRatio, hitDiff,caldmg.option == DamageOption.Critical ? true : false);
     }
@@ -117,7 +131,7 @@ public class EnemyStatus : MonoBehaviour
                 spawner.ShowDamageEffect(0).transform.SetPositionAndRotation
                 (effectPoint.position, Quaternion.identity);
             }
-            spawner.ShowDamageEffect(2).transform.SetPositionAndRotation
+            spawner.ShowDamageEffect(3).transform.SetPositionAndRotation
                 (transform.position, Quaternion.identity);
             TakeDamage(damage);
         }
@@ -135,7 +149,7 @@ public class EnemyStatus : MonoBehaviour
                 spawner.ShowDamageEffect(0).transform.SetPositionAndRotation
                 (effectPoint.position, Quaternion.identity);
             }
-            spawner.ShowDamageEffect(2).transform.SetPositionAndRotation
+            spawner.ShowDamageEffect(3).transform.SetPositionAndRotation
                 (transform.position, Quaternion.identity);
         }
         if (!isHit)

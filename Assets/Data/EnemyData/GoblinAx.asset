@@ -18,9 +18,10 @@ MonoBehaviour:
   expReward: 15
   goldReward: 25
   attackRange: 5
+  bulletName: 0
   attackDelay: 3
   maxHp: 180
-  maxPoise: 0
+  maxPoise: 30
   damage: 45
   defence: 5
   stagger: 15

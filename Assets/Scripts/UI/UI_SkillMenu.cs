@@ -69,9 +69,9 @@ public class UI_SkillMenu : UI_WindowMenu
         enableSkills = GameManager.Instance.player.skills.enableSkills;
         for (int i = 0; i < skillDescs.Length; ++i)
         {
-            for(int j = 0; j < enableSkills.Count; ++j)
+            for (int j = 0; j < enableSkills.Count; ++j)
             {
-                if(skillDescs[i].skillData != null &&
+                if (skillDescs[i].skillData != null &&
                     skillDescs[i].skillData.skillName == enableSkills[j])
                 {
                     skillDescs[i].EnableSkill();
@@ -79,6 +79,18 @@ public class UI_SkillMenu : UI_WindowMenu
                 }
             }
         }
+    }
+    public void LoadUsedSkills(Dictionary<int, SkillData> curUsedSkills)
+    {
+        for (int i = 0; i < usedSkillSlots.Length; ++i)
+        {
+            if (curUsedSkills.ContainsKey(i))
+            {
+                usedSkillSlots[i].SetSkillData(curUsedSkills[i]);
+                Debug.Log(curUsedSkills[i].skillName + " Load2");
+            }
+        }
+        OnChangedUsedSkill?.Invoke(GetUsedSkill());
     }
     void SelectSkill(UI_SkillDesc descUI)
     {
@@ -100,7 +112,7 @@ public class UI_SkillMenu : UI_WindowMenu
         for (int i = 0; i < usedSkillSlots.Length; ++i)
         {
             if (usedSkillSlots[i] == usedSkillSlot) continue;
-            if(usedSkillSlots[i].GetSkillData() == usedSkillSlot.GetSkillData())
+            if (usedSkillSlots[i].GetSkillData() == usedSkillSlot.GetSkillData())
             {
                 usedSkillSlots[i].SetSkillData(null);
             }
