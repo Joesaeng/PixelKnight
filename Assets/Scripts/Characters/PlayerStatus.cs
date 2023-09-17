@@ -168,7 +168,6 @@ public class PlayerStatus : MonoBehaviour
 
         playerLv = loadData.level;
         dPlayerDynamicStatus[DynamicStatusName.CurExp] = loadData.curExp;
-        dPlayerDynamicStatus[DynamicStatusName.CurHp] = loadData.curHp;
         ExpRequirement = loadData.expReq;
         remainingPoint = loadData.remainingPoint;
         addedPoint = loadData.addedPoint;
@@ -196,6 +195,13 @@ public class PlayerStatus : MonoBehaviour
         UpdateStatus();
         if(dPlayerDynamicStatus[DynamicStatusName.CurHp] == 0)
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp];
+        dPlayerDynamicStatus[DynamicStatusName.CurStamina] = dPlayerFixedStatus[FixedStatusName.MaxStamina];
+        dPlayerDynamicStatus[DynamicStatusName.CurPoise] = dPlayerFixedStatus[FixedStatusName.Poise];
+    }
+    public void LoadDynamincStatus()
+    {
+        SaveData loadData = SaveDataManager.Instance.saveData;
+        dPlayerDynamicStatus[DynamicStatusName.CurHp] = loadData.curHp;
         dPlayerDynamicStatus[DynamicStatusName.CurStamina] = dPlayerFixedStatus[FixedStatusName.MaxStamina];
         dPlayerDynamicStatus[DynamicStatusName.CurPoise] = dPlayerFixedStatus[FixedStatusName.Poise];
     }
@@ -249,7 +255,7 @@ public class PlayerStatus : MonoBehaviour
     {
         dPlayerFixedStatus[FixedStatusName.MaxHp] += dPlayerAttribute[PlayerAttribute.Vitality] * 20f;
         dPlayerFixedStatus[FixedStatusName.MaxStamina] += dPlayerAttribute[PlayerAttribute.Endurance] * 10f;
-        dPlayerFixedStatus[FixedStatusName.StaminaRegen] += dPlayerAttribute[PlayerAttribute.Endurance];
+        dPlayerFixedStatus[FixedStatusName.StaminaRegen] += dPlayerAttribute[PlayerAttribute.Endurance] * 0.5f;
         dPlayerFixedStatus[FixedStatusName.PoiseRegen] += dPlayerAttribute[PlayerAttribute.Endurance];
         dPlayerFixedStatus[FixedStatusName.HpRegen] += dPlayerAttribute[PlayerAttribute.Vitality];
         dPlayerFixedStatus[FixedStatusName.Defence] += dPlayerAttribute[PlayerAttribute.Vitality];

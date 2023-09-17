@@ -23,5 +23,5 @@ public class SkillData : ScriptableObject
     public float range;
     public float staminaUsage;
     [TextArea]
-    public string slillDesc;
+    public string skillDesc;
 }

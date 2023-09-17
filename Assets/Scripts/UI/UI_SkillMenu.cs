@@ -3,140 +3,63 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public struct UsedSkills
-{
-    public SkillData skill_1;
-    public SkillData skill_2;
-    public SkillData skill_3;
-    public SkillData skill_4;
-}
-
 public class UI_SkillMenu : UI_WindowMenu
 {
-    public static UI_SkillMenu instance;
-    private void Awake()
-    {
-        instance = this;
-    }
-    public Transform descPanel;
-    public Transform usedPanel;
-    public UI_SkillDesc[] skillDescs;
-    public UI_UsedSkillSlot[] usedSkillSlots;
-    public SkillData selectSkillData;
-    public Action<UsedSkills> OnChangedUsedSkill;
-    public List<SkillName> enableSkills = new();
-    private void Start()
-    {
-        menuPanel.SetActive(activeMenu);
-        skillDescs = descPanel.GetComponentsInChildren<UI_SkillDesc>();
-        usedSkillSlots = usedPanel.GetComponentsInChildren<UI_UsedSkillSlot>();
-        for (int i = 0; i < skillDescs.Length; ++i)
-        {
-            skillDescs[i].OnSelect += SelectSkill;
-            skillDescs[i].OnEnableSkill += EnableSkillData;
-        }
-        for (int i = 0; i < usedSkillSlots.Length; ++i)
-        {
-            usedSkillSlots[i].OnChangeUsedSkill += SetUsedSkill;
-        }
-        InputSystem.Instance.OnSkillMenu += KeyInputAtiveMenu;
-        GameManager.Instance.player.GetComponent<PlayerSkills>().InitUI(this);
-    }
-    private void OnDestroy()
-    {
-        InputSystem.Instance.OnSkillMenu -= KeyInputAtiveMenu;
-    }
+    public Transform skillDescsParent;
+    List<UI_SkillDesc> skillDescs;
+
     public override void ActiveMenu()
     {
         activeMenu = !activeMenu;
         menuPanel.SetActive(activeMenu);
+        SkillManager.Instance.curSelectSkillindex = -1;
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeySetting.keys[KeyAction.SkillMenu]))
+            KeyInputAtiveMenu();
     }
     public override void KeyInputAtiveMenu()
     {
         ActiveMenu();
     }
-    void EnableSkillData(SkillName skillName)
+    private void Start()
     {
-        if (enableSkills.Contains(skillName)) return;
-        enableSkills.Add(skillName);
-    }
-    public List<SkillName> GetEnableSkills()
-    {
-        return enableSkills;
-    }
-    public void LoadEnableSkills()
-    {
-        enableSkills = GameManager.Instance.player.skills.enableSkills;
-        for (int i = 0; i < skillDescs.Length; ++i)
+        skillDescs = new List<UI_SkillDesc>();
+        UI_SkillDesc[] uI_SkillDescs = skillDescsParent.GetComponentsInChildren<UI_SkillDesc>();
+        skillDescs.AddRange(uI_SkillDescs);
+        for(int i = 0; i < DataManager.Instance.skillDatas.Length;++i)
         {
-            for (int j = 0; j < enableSkills.Count; ++j)
-            {
-                if (skillDescs[i].skillData != null &&
-                    skillDescs[i].skillData.skillName == enableSkills[j])
-                {
-                    skillDescs[i].EnableSkill();
-                    break;
-                }
-            }
+            skillDescs[i].SetData(DataManager.Instance.GetSkillData(i));
+            skillDescs[i].descindex = i;
+        }
+        SkillManager.Instance.OnActivateSkill += ActiveSkill;
+        SkillManager.Instance.OnClickDesc += ActivatedSkillClick;
+        ActiveSkill();
+        SkillManager.Instance.OnSetUsedSkill += OutlineOff;
+    }
+    void ActiveSkill()
+    {
+        List<bool> activatedSkills = SkillManager.Instance.activatedSkills;
+        for(int i = 0; i < activatedSkills.Count;++i)
+        {
+            if (activatedSkills[i] == true)
+                skillDescs[i].ActiveSkill();
         }
     }
-    public void LoadUsedSkills(Dictionary<int, SkillData> curUsedSkills)
+    public void ActivatedSkillClick(int index)
     {
-        for (int i = 0; i < usedSkillSlots.Length; ++i)
+        foreach(UI_SkillDesc ui in skillDescs)
         {
-            if (curUsedSkills.ContainsKey(i))
-            {
-                usedSkillSlots[i].SetSkillData(curUsedSkills[i]);
-                Debug.Log(curUsedSkills[i].skillName + " Load2");
-            }
+            ui.outline.enabled = false;
         }
-        OnChangedUsedSkill?.Invoke(GetUsedSkill());
+        skillDescs[index].outline.enabled = true;
     }
-    void SelectSkill(UI_SkillDesc descUI)
+    public void OutlineOff()
     {
-        // UI에서 스킬을 선택했을 때 호출되는 메서드입니다.
-        for (int i = 0; i < skillDescs.Length; ++i)
+        foreach (UI_SkillDesc ui in skillDescs)
         {
-            if (skillDescs[i] == descUI) continue;
-            skillDescs[i].SetSelect(false);
-            // 현재 선택한 스킬을 제외한 모든 스킬들의 선택 상태를 false로 갱신합니다.
+            ui.outline.enabled = false;
         }
-        if (descUI)
-            selectSkillData = descUI.GetSelectData();
-        else selectSkillData = null;
-    }
-    void SetUsedSkill(UI_UsedSkillSlot usedSkillSlot)
-    {
-        // 사용할 스킬을 세팅했을때 호출되는 메서드입니다.
-        // UsedSkillSlot을 클릭했을 때 사용하는 스킬을 추가/제거 하거나 변경합니다.
-        for (int i = 0; i < usedSkillSlots.Length; ++i)
-        {
-            if (usedSkillSlots[i] == usedSkillSlot) continue;
-            if (usedSkillSlots[i].GetSkillData() == usedSkillSlot.GetSkillData())
-            {
-                usedSkillSlots[i].SetSkillData(null);
-            }
-        }
-        for (int i = 0; i < skillDescs.Length; ++i)
-        {
-            skillDescs[i].SetSelect(false);
-            selectSkillData = null;
-        }
-        OnChangedUsedSkill?.Invoke(GetUsedSkill());
-        // 사용하는 스킬이 변경되면 플레이어의 스킬 스크립트에
-        // 현재 사용중인 스킬을 이벤트로 전달합니다.
-    }
-    public SkillData GetSelectSkillData()
-    {
-        return selectSkillData;
-    }
-    UsedSkills GetUsedSkill()
-    {
-        UsedSkills usedSkills = new UsedSkills();
-        usedSkills.skill_1 = usedSkillSlots[0].GetSkillData();
-        usedSkills.skill_2 = usedSkillSlots[1].GetSkillData();
-        usedSkills.skill_3 = usedSkillSlots[2].GetSkillData();
-        usedSkills.skill_4 = usedSkillSlots[3].GetSkillData();
-        return usedSkills;
     }
 }

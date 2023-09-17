@@ -240,7 +240,11 @@ public class Enemy : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
-        if (IsDead()) rigid.velocity = new Vector2(0f, rigid.velocity.y);
+        if (IsDead())
+        {
+            rigid.velocity = new Vector2(0f, rigid.velocity.y);
+            return;
+        }
         CheckFloor();
         switch (curState)
         {
@@ -302,7 +306,7 @@ public class Enemy : MonoBehaviour
         if (collision.CompareTag("PlayerSkillRange") && curState != State.Dead)
         {
             SetTarget();
-            if (enemyStatus.CalculatedHit(player.playerStatus, collision.GetComponentInParent<Skill>().data))
+            if (enemyStatus.CalculatedHit(player.playerStatus, collision.GetComponentInParent<SkillEffect>().data))
             {
                 enemyStatus.ModifyPoise(player.playerStatus.dPlayerFixedStatus[FixedStatusName.Stagger]);
             }
@@ -324,7 +328,7 @@ public class Enemy : MonoBehaviour
         // 플레이어 스킬 중 Judgement의 피격을 관리하는 메서드입니다.
         if (curState == State.Dead) return;
         SetTarget();
-        if (enemyStatus.CalculatedHit(player.playerStatus, DataManager.Instance.GetSkillData(SkillName.Judgement)))
+        if (enemyStatus.CalculatedHit(player.playerStatus, DataManager.Instance.GetSkillData((int)SkillName.Judgement)))
         {
             enemyStatus.ModifyPoise(player.playerStatus.dPlayerFixedStatus[FixedStatusName.Stagger]);
         }

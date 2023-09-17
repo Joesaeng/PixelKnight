@@ -111,15 +111,21 @@ public class PoolManager : Singleton<PoolManager>
         {
             case PoolType.Enemy:
                 {
-                    foreach(GameObject enemy in enemyPool)
+                    for(int i = 0; i < enemyPool.Count; ++i)
                     {
-                        if(!enemy.activeSelf)
+                        if(enemyPool[i] == null)
                         {
-                            select = enemy;
+                            enemyPool.RemoveAt(i);
+                            --i;
+                            continue;
+                        }
+                        if(!enemyPool[i].activeSelf)
+                        {
+                            select = enemyPool[i];
                             break;
                         }
                     }
-                    if (!select)
+                    if (select == null)
                     {
                         select = Instantiate(enemyPrefab, transform);
                         enemyPool.Add(select);
@@ -128,15 +134,21 @@ public class PoolManager : Singleton<PoolManager>
                 break;
             case PoolType.EnemyHpUI:
                 {
-                    foreach (GameObject enemyUI in enemyHpUIPool)
+                    for (int i = 0; i < enemyHpUIPool.Count; ++i)
                     {
-                        if (!enemyUI.activeSelf)
+                        if (enemyHpUIPool[i] == null)
                         {
-                            select = enemyUI;
+                            enemyHpUIPool.RemoveAt(i);
+                            --i;
+                            continue;
+                        }
+                        if (!enemyHpUIPool[i].activeSelf)
+                        {
+                            select = enemyHpUIPool[i];
                             break;
                         }
                     }
-                    if (!select)
+                    if (select == null)
                     {
                         select = Instantiate(enemyHpUIPrefab, transform);
                         enemyHpUIPool.Add(select);
@@ -240,7 +252,7 @@ public class PoolManager : Singleton<PoolManager>
             select = Instantiate(skillPrefab, transform);
             skillPool.Add(select);
         }
-        select.GetComponent<Skill>().SetData(name);
+        select.GetComponent<SkillEffect>().SetData(name);
 
         select.SetActive(false);
         select.SetActive(true);

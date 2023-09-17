@@ -16,7 +16,8 @@ public class Player : MonoBehaviour
     public Transform chkPos;    // 플레이어의 발 위치 체크용 포지션
     public Transform frontChk;  // 플레이어의 정면 위치 체크용 포지션
     public PlayerStatus playerStatus;  // 플레이어의 상태 관련 정보를 가진 스크립트
-    public PlayerSkills skills;        // 플레이어의 스킬 관련 정보를 가진 스크립트
+    SkillManager skill;         // 매니저의 인스턴스를 받아옴 
+    public PlayerSkills skills;
 
     // 애니메이션 관련
     public List<AnimationClip> animationClips;
@@ -76,8 +77,10 @@ public class Player : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         playerStatus = GetComponent<PlayerStatus>();
-        skills = GetComponent<PlayerSkills>();
         myCollider = GetComponent<Collider2D>();
+        skills = GetComponent<PlayerSkills>();
+
+        skill = SkillManager.Instance;
 
         // 레이어 초기화
         groundChkLayer = LayerMask.GetMask("Floor");
@@ -179,18 +182,21 @@ public class Player : MonoBehaviour
             UseHpPotion();
     }
 
-    // GetSkillKeyDown 함수: 스킬 사용 입력을 처리하는 함수
+    //GetSkillKeyDown 함수: 스킬 사용 입력을 처리하는 함수
     void GetSkillKeyDown()
     {
         KeyAction key = InputSystem.Instance.GetSkillKeyDown();
+        int slotnum = key - KeyAction.Skill_1;
         if (key == KeyAction.KeyCount) return;
-        if (skills.GetData(key - KeyAction.Skill_1) == null) return;     // 입력된 슬롯에 스킬이 등록되어있는지 여부 체크
-        if (skills.CanUseSkill(key - KeyAction.Skill_1))                 // 쿨타임중인지 여부 체크
-            if (playerStatus.UseStamina(skills.GetData(key - KeyAction.Skill_1).staminaUsage)) // 스태미나가 충분한지 여부
+        if (skill.GetUsedSkill(slotnum) == -1) return;     // 입력된 슬롯에 스킬이 등록되어있는지 여부 체크
+                                                          // -1 이면 등록되있지 않다.
+        if (skill.IsCoolTime(slotnum))                   // 쿨타임중인지 여부 체크
+            if (playerStatus.UseStamina(skill.GetStaminaUsage(slotnum))) // 스태미나가 충분한지 여부
             {
-                if (skills.UseSkill(key - KeyAction.Skill_1))   // 최종적으로 스킬을 사용
+                if (skills.UseSkill(slotnum))   // 최종적으로 스킬을 사용
                 {
-                    StartCoroutine(CoSkill(skills.GetData(key - KeyAction.Skill_1).skillName));
+                    StartCoroutine(CoSkill(slotnum));
+                    skill.SetCoolTime(slotnum);
                 }
             }
     }
@@ -416,25 +422,25 @@ public class Player : MonoBehaviour
         isAttacking = false;
     }
 
-    IEnumerator CoSkill(SkillName name)
+    IEnumerator CoSkill(int slotnum)
     {
         isAttacking = true;
         isSkill = true;
-        SkillData skillData = DataManager.Instance.GetSkillData(name);
-        animator.SetFloat("SkillSpeed", skillData.skillSpeed);
+        SkillData cur = skill.skilldatas[skill.GetUsedSkill(slotnum)];
+        animator.SetFloat("SkillSpeed", cur.skillSpeed);
         animator.SetTrigger("Skill");
 
-        switch (name)
+        switch (cur.skillName)
         {
             case SkillName.Dash:
                 {
                     Vector2 nextPosition;
-                    var ray = Physics2D.Raycast(rigid.position, Vector2.right * transform.localScale.x, skillData.range, groundChkLayer);
-                    if (!ray) nextPosition = rigid.position + new Vector2(skillData.range * transform.localScale.x, 0f);
+                    var ray = Physics2D.Raycast(rigid.position, Vector2.right * transform.localScale.x, cur.range, groundChkLayer);
+                    if (!ray) nextPosition = rigid.position + new Vector2(cur.range * transform.localScale.x, 0f);
                     else nextPosition = new Vector2(ray.point.x - (0.2f * transform.localScale.x), rigid.position.y);
 
                     transform.position = nextPosition;
-                    yield return new WaitForSeconds(skillData.animationLength * 0.66f); // 애니메이션의 속도를 1.5로 설정해둬서 0.66f를 곱해줌
+                    yield return new WaitForSeconds(cur.animationLength * 0.66f); // 애니메이션의 속도를 1.5로 설정해둬서 0.66f를 곱해줌
                     break;
                 }
             case SkillName.Judgement:
@@ -443,7 +449,7 @@ public class Player : MonoBehaviour
                     {
                         target.GetComponent<Enemy>().JudgementHit();
                     }
-                    yield return new WaitForSeconds(skillData.animationLength * 0.66f); // 애니메이션의 속도를 1.5로 설정해둬서 0.66f를 곱해줌
+                    yield return new WaitForSeconds(cur.animationLength * 0.66f); // 애니메이션의 속도를 1.5로 설정해둬서 0.66f를 곱해줌
                     break;
                 }
             default:

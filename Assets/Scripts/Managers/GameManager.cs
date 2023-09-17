@@ -92,8 +92,8 @@ public class GameManager : Singleton<GameManager>
         playerStatus.InitSetStatus(selectPlayerData);
         Inventory.Instance.LoadItems();
         playerStatus.equipment.LoadEquip();
-        player.skills.LoadEnableSkills();
-        player.skills.LoadUsedSkills();
+        SkillManager.Instance.LoadSkillData();
+        playerStatus.LoadDynamincStatus();
     }
     public void ModifyGold(int value)
     {
@@ -123,6 +123,7 @@ public class GameManager : Singleton<GameManager>
     }
     public void GoToTitleScene()
     {
+        firstScene = true;
         FakeLoading.instance.StartFakeLoding(2f, "TitleScene", false);
     }
     public PlayTime GetPlayTime()

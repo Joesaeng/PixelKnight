@@ -12,7 +12,11 @@ public class UI_PlayerInfo : MonoBehaviour
     [SerializeField]
     private Slider sliderHp;
     [SerializeField]
+    private Text sliderHpText;
+    [SerializeField]
     private Slider sliderStm;
+    [SerializeField]
+    private Text sliderStmText;
     [SerializeField]
     private Slider sliderExp;
     [SerializeField]
@@ -45,7 +49,9 @@ public class UI_PlayerInfo : MonoBehaviour
             if (playerStatus != null)
             {
                 sliderHp.value = Utils.Percent(playerStatus.dPlayerDynamicStatus[DynamicStatusName.CurHp], playerStatus.dPlayerFixedStatus[FixedStatusName.MaxHp]);
+                sliderHpText.text = string.Format("{0:F0} / {1:F0}", playerStatus.dPlayerDynamicStatus[DynamicStatusName.CurHp], playerStatus.dPlayerFixedStatus[FixedStatusName.MaxHp]);
                 sliderStm.value = Utils.Percent(playerStatus.dPlayerDynamicStatus[DynamicStatusName.CurStamina], playerStatus.dPlayerFixedStatus[FixedStatusName.MaxStamina]);
+                sliderStmText.text = string.Format("{0:F0} / {1:F0}", playerStatus.dPlayerDynamicStatus[DynamicStatusName.CurStamina], playerStatus.dPlayerFixedStatus[FixedStatusName.MaxStamina]);
                 sliderExp.value = Utils.Percent(playerStatus.dPlayerDynamicStatus[DynamicStatusName.CurExp], playerStatus.ExpRequirement);
             }
         }

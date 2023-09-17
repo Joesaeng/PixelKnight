@@ -11,16 +11,11 @@ public class InputSystem : Singleton<InputSystem>
     public Action OnInventoryMenu;
     public Action OnStatusMenu;
     public Action OnSkillMenu;
-    private void OnApplicationQuit()
-    {
-        Destroy(this);
-    }
     private void Update()
     {
         SetHorizontalInput();
         SetVerticalInput();
         GetSkillKeyDown();
-        GetMenuKeyDown();
     }
     private void SetHorizontalInput()
     {
@@ -56,11 +51,5 @@ public class InputSystem : Singleton<InputSystem>
 
 
         return key;
-    }
-    private void GetMenuKeyDown()
-    {
-        if (Input.GetKeyDown(KeySetting.keys[KeyAction.InventoryMenu])) OnInventoryMenu?.Invoke();
-        else if (Input.GetKeyDown(KeySetting.keys[KeyAction.StatusMenu])) OnStatusMenu?.Invoke();
-        else if (Input.GetKeyDown(KeySetting.keys[KeyAction.SkillMenu])) OnSkillMenu?.Invoke();
     }
 }

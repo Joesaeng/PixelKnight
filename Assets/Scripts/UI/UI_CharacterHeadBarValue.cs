@@ -30,8 +30,12 @@ public class UI_CharacterHeadBarValue : MonoBehaviour
             if(enemyStatus != null)
             {
                 slider.value = Utils.Percent(enemyStatus.CurHp, enemyStatus.maxHp);
-                if (slider.gameObject.activeSelf && enemyStatus.CurHp <= 0f) slider.gameObject.SetActive(false);
-                else if (!slider.gameObject.activeSelf && enemyStatus.CurHp >0f) slider.gameObject.SetActive(true);
+                if (slider.gameObject.activeSelf && enemyStatus.CurHp <= 0f)
+                {
+                    gameObject.transform.SetParent(PoolManager.Instance.transform);
+                    slider.gameObject.SetActive(false);
+                }
+                else if (!slider.gameObject.activeSelf && enemyStatus.CurHp > 0f) slider.gameObject.SetActive(true);
             }
             if(playerStatus != null)
             {

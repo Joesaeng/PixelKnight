@@ -2,44 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using System;
-public class UI_UsedSkillSlot : MonoBehaviour , IPointerUpHandler
+
+public class UI_UsedSkillSlot : MonoBehaviour
 {
-    public Image skillIcon;
-    SkillData skillData;
-    UI_SkillMenu skillUI;
-    public Action<UI_UsedSkillSlot> OnChangeUsedSkill;
+    public int slotindex;
+    public Image skillImage;
+    Button button;
     private void Awake()
     {
-        skillUI = GetComponentInParent<UI_SkillMenu>();
+        button = GetComponent<Button>();
+        button.onClick.AddListener(UsedSkillSlotButton);
     }
-
-    public void OnPointerUp(PointerEventData eventData)
+    private void Start()
     {
-        if (!GameManager.Instance.player.skills.CanChangeSkill())
-        {
-            FindAnyObjectByType<UI_CenterPopupText>().SetPopupText
-                ("스킬 쿨타임 중에는 변경할 수 없습니다.");
-            return;
+        SetSkillData();
+        SkillManager.Instance.OnSetUsedSkill += SetSkillData;
+    }
+    public void UsedSkillSlotButton()
+    {
+        SkillManager.Instance.UsedSlotButton(slotindex);
+    }
+    public void SetSkillData()
+    {
+        if (SkillManager.Instance.curUsedSkills[slotindex] == -1)
+        { 
+            skillImage.sprite = null;
+            skillImage.enabled = false;
         }
-        SetSkillData(skillUI.GetSelectSkillData());
-        OnChangeUsedSkill?.Invoke(this);
-    }
-    public SkillData GetSkillData()
-    {
-        return skillData;
-    }
-    public void SetSkillData(SkillData _skillData)
-    {
-        if (_skillData == null)
+        else
         {
-            skillIcon.enabled = false;
-            skillData = null;
-            return;
+            SkillData data = SkillManager.Instance.skilldatas[SkillManager.Instance.curUsedSkills[slotindex]];
+            skillImage.enabled = true;
+            skillImage.sprite = data.skillIcon;
         }
-        skillData = _skillData;
-        skillIcon.sprite = skillData.skillIcon;
-        skillIcon.enabled = true;
     }
 }

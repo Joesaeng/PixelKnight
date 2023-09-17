@@ -28,11 +28,11 @@ public class UI_Inventory : UI_WindowMenu
         SlotChange(inventory.SlotCnt);
         RedrawSlotUI();
         menuPanel.SetActive(activeMenu);
-        InputSystem.Instance.OnInventoryMenu += KeyInputAtiveMenu;
     }
-    private void OnDestroy()
+    private void Update()
     {
-        InputSystem.Instance.OnInventoryMenu -= KeyInputAtiveMenu; 
+        if (Input.GetKeyDown(KeySetting.keys[KeyAction.InventoryMenu]))
+            KeyInputAtiveMenu();
     }
     private void SlotChange(int val) // val == 인벤토리의 활성화된 슬롯의 개수
     {

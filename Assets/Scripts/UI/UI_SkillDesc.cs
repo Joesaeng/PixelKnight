@@ -1,104 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 using System;
-public struct SkillSelectData
-{
-    public bool select;
-    public SkillData skillData;
-}
-public class UI_SkillDesc : MonoBehaviour, IPointerUpHandler
+
+public class UI_SkillDesc : MonoBehaviour
 {
     // 스킬 메뉴 내에서 스킬의 설명을 담당하는 UI 입니다.
-    [Header("Skill Info")]
-    public SkillData skillData;         // public 으로 스킬데이터를 세팅합니다.
+    public int descindex;
+    public SkillData skillData;
     public Image skillIcon;
     public TextMeshProUGUI skillName;
     public TextMeshProUGUI skillDesc;
 
-    Outline outline;
-    Button selectButton;
+    public Outline outline;
+    public Button button;
 
-    public SkillSelectData selectData;
-    public Action<UI_SkillDesc> OnSelect;
-    public Action<SkillName> OnEnableSkill;
-
-    [Header("Buy Skill")]
     public GameObject disableImage;
     public TextMeshProUGUI cost;
-    bool canUse = false;
+    bool isActive;
     private void Awake()
     {
         outline = GetComponent<Outline>();
-        selectData.select = false;
-        selectData.skillData = skillData;
-        outline.enabled = selectData.select;
-        selectButton = GetComponent<Button>();
+        button = GetComponent<Button>();
+        
     }
-    private void Start()
+    private void OnEnable()
     {
-        if (skillData)
-        {
-            skillIcon.enabled = true;
-            skillIcon.sprite = skillData.skillIcon;
-            skillName.text = skillData.skillNameString;
-            skillDesc.text = skillData.slillDesc;
-            cost.text = skillData.goldCost.ToString() + " 골드로 구매 가능";
-        }
-        else
-        {
-            skillIcon.sprite = null;
-            skillName.text = "업데이트 예정";
-            skillDesc.text = "";
-            selectButton.enabled = false;
-            disableImage.SetActive(false);
-        }
+        outline.enabled = false;
+        button.enabled = skillData != null;
+        disableImage.SetActive(!isActive);
+        cost.enabled = !isActive;
     }
-    public void OnPointerUp(PointerEventData eventData)
+    public void SetData(SkillData data)
     {
-        if(canUse)
-        {
-            if (selectData.select)
-            {
-                selectData.select = false;
-                OnSelect?.Invoke(null);
-            }
-            else
-            {
-                selectData.select = true;
-                OnSelect?.Invoke(this);
-
-            }
-            outline.enabled = selectData.select;
-        }
-        else
-        {
-            // 현재 선택된 스킬이 사용이 불가능한 상태일 때,
-            // 게임매니저에서 스킬을 배우는데 필요한 골드를 보유했는지 확인한 후
-            // 스킬을 사용가능하게 바꿉니다.
-            if(GameManager.Instance.GetCurGold() >= skillData.goldCost)
-            {
-                GameManager.Instance.ModifyGold(-skillData.goldCost);
-                EnableSkill();
-            }
-        }
+        skillData = data;
+        skillIcon.sprite = data.skillIcon;
+        skillIcon.enabled = true;
+        skillName.text = data.skillNameString;
+        skillDesc.text = data.skillDesc;
+        cost.text = data.goldCost.ToString() + "골드로 구매 가능";
+        button.enabled = true;
+        button.onClick.AddListener(SkillDescButton);
     }
-    public void EnableSkill()
+    public void ActiveSkill()
     {
-        canUse = true;
-        OnEnableSkill?.Invoke(skillData.skillName);
-        disableImage.SetActive(false);
+        isActive = true;
     }
-    public void SetSelect(bool select)
+    public void SkillDescButton()
     {
-        selectData.select = select;
-        outline.enabled = selectData.select;
-    }
-    public SkillData GetSelectData()
-    {
-        return selectData.skillData;
+        SkillManager.Instance.SkillDescButton(descindex);
     }
 }

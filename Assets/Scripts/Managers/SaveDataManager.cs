@@ -25,8 +25,8 @@ public class SaveData
     public int AddedLuk;
 
     public float curHp;
-    public List<SkillName> skills = new();
-    public List<CurUsedSkill> curSkills = new();
+    public List<bool> activatedSkills = new();
+    public List<int> curUsedSkills = new();
     public List<Equip> curEquips = new();
     public int inventorySlotCount;
     public List<Consumable> inventoryConsumables = new();
@@ -63,8 +63,7 @@ public class SaveDataManager : Singleton<SaveDataManager>
             saveData = savePlayer.playerStatus.SaveStatus();
             saveData.curGold = GameManager.Instance.curGold;
             saveData.playerCurPos = GameManager.Instance.player.transform.position;
-            saveData.skills = savePlayer.skills.GetEnableSkills();
-            saveData.curSkills = savePlayer.skills.GetCurUsedSkills();
+            SkillManager.Instance.SaveSkillData(ref saveData.activatedSkills,ref saveData.curUsedSkills);
             saveData.curEquips.AddRange(savePlayer.playerStatus.equipment.GetCurEquip());
             List<Item> items = Inventory.Instance.GetItems();
             SaveInventoryItems(items);
