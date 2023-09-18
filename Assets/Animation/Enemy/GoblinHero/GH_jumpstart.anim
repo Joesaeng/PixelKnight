@@ -22,9 +22,9 @@ AnimationClip:
     - time: 0
       value: {fileID: -141352536, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
     - time: 0.083333336
-      value: {fileID: -1970078966, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
+      value: {fileID: -141352536, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
     - time: 0.16666667
-      value: {fileID: 1798396122, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
+      value: {fileID: -141352536, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
     - time: 0.25
       value: {fileID: 1976903027, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
     - time: 0.33333334
@@ -53,8 +53,8 @@ AnimationClip:
       isPPtrCurve: 1
     pptrCurveMapping:
     - {fileID: -141352536, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
-    - {fileID: -1970078966, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
-    - {fileID: 1798396122, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
+    - {fileID: -141352536, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
+    - {fileID: -141352536, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
     - {fileID: 1976903027, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
     - {fileID: -1781243756, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
     - {fileID: -290828291, guid: d28b7996557fcb24ca511d1d6d5d585b, type: 3}
@@ -83,4 +83,11 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.16666667
+    functionName: Jump
+    data: 
+    objectReferenceParameter: {fileID: 11500000, guid: 08a675206008bcb46893eb2190b03c42, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0

@@ -11,7 +11,7 @@ public class PlayScene : MonoBehaviour
     public VirtualCam virtualCam;
     [SerializeField]
     Transform startPos;
-    void Awake()
+    protected virtual void Awake()
     {
         GameObject player = Instantiate(playerPrefab);
 

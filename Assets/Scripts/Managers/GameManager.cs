@@ -67,8 +67,8 @@ public class GameManager : Singleton<GameManager>
     {
         selectPlayerData = DataManager.Instance.playerDatas[charId];
         SaveDataManager.Instance.saveData.charId = charId;
-        LoadingSceneController.LoadScene("Dev",true);
-        //LoadingSceneController.LoadScene("Test1",true);
+        //LoadingSceneController.LoadScene("Dev",true);
+        LoadingSceneController.LoadScene("BossScene",true);
     }
     public bool PlayScene(GameObject _player, string curSceneName)
     {

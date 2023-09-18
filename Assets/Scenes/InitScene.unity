@@ -173,7 +173,7 @@ MonoBehaviour:
   enemyDatas:
   - {fileID: 11400000, guid: e6ff825aa9b054b49b7fc630594f3fa0, type: 2}
   - {fileID: 11400000, guid: bbd7729330862e143a1f7c1036677eea, type: 2}
-  - {fileID: 11400000, guid: 67d21e783bc19884e81a656badde7e19, type: 2}
+  - {fileID: 11400000, guid: dee1216e238db3f4f9af1be45a76bf73, type: 2}
   skillDatas:
   - {fileID: 11400000, guid: 4ddb3feb00daa1b43ac61451af85031a, type: 2}
   - {fileID: 11400000, guid: 784e460f10cb8fe49ad53cf7d83c1df8, type: 2}

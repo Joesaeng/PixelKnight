@@ -17,6 +17,7 @@ public class Enemy : MonoBehaviour
         Stun,
         Attack,
         Dead,
+        Spell,
         None,
     };
     // 보유한 컴포넌트들
@@ -46,9 +47,9 @@ public class Enemy : MonoBehaviour
     protected bool isDead;
 
     protected WaitForSeconds attackDelay;
-    readonly WaitForSeconds thinkTime = new WaitForSeconds(4f);
-    readonly WaitForSeconds chaseTime = new WaitForSeconds(0.5f);
-    readonly WaitForSeconds stunTime = new WaitForSeconds(1f);
+    protected readonly WaitForSeconds thinkTime = new WaitForSeconds(4f);
+    protected readonly WaitForSeconds chaseTime = new WaitForSeconds(0.5f);
+    protected readonly WaitForSeconds stunTime = new WaitForSeconds(1f);
 
     protected virtual void Awake()
     {
@@ -67,7 +68,7 @@ public class Enemy : MonoBehaviour
         attackRange = DataManager.Instance.GetEnemyData(enemyID).attackRange;
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         nextMove = 0;
         target = null;
@@ -79,7 +80,7 @@ public class Enemy : MonoBehaviour
         SetState(State.None);
     }
 
-    protected void UpdateState()
+    protected virtual void UpdateState()
     {
         switch (curState)
         {
@@ -125,7 +126,7 @@ public class Enemy : MonoBehaviour
         nextMove = Random.Range(-1, 2);
         SetState(State.Idle);
     }
-    protected IEnumerator CoStateIdle()
+    protected virtual IEnumerator CoStateIdle()
     {
         while (curState == State.Idle)
         {
@@ -144,7 +145,7 @@ public class Enemy : MonoBehaviour
         }
         yield break;
     }
-    protected IEnumerator CoStateChase()
+    protected virtual IEnumerator CoStateChase()
     {
         while (curState == State.Chase && target != null)
         {
@@ -199,18 +200,19 @@ public class Enemy : MonoBehaviour
         SetState(State.Stun);
     }
 
-    protected IEnumerator CoStateStun()
+    protected virtual IEnumerator CoStateStun()
     {
         if (isStun) yield break;
         isStun = true;
-        anim.SetTrigger("hurt");
+        anim.SetTrigger("isHurt");
         yield return stunTime;
         isStun = false;
+        enemyStatus.ResetPoise();
         SetState(State.Idle);
     }
     protected IEnumerator CoStateAttack()
     {
-        if (isAttack) yield break;
+        if (isAttack || isStun) yield break;
         isAttack = true;
         anim.SetTrigger("isAttack");
         yield return attackDelay;
@@ -221,9 +223,10 @@ public class Enemy : MonoBehaviour
     {
         if (IsDead()) return;
         isDead = true;
+        enemyStatus.OnEnemyDead -= EnemyDead;
         SetState(State.Dead);
     }
-    IEnumerator CoStateDead()
+    protected virtual IEnumerator CoStateDead()
     {
         Spawner.instance.ItemSpawn(transform.position);
         if (GetComponentInParent<SpawnPoint>() == null)
@@ -262,13 +265,13 @@ public class Enemy : MonoBehaviour
     private void LateUpdate()
     {
         anim.SetFloat("WalkSpeed", Mathf.Abs(rigid.velocity.x));
-        if (nextMove != 0)
+        if (nextMove != 0 && isStun == false)
         {
             xFlipScale.x = nextMove;
             transform.localScale = xFlipScale;
         }
     }
-    void CheckFloor()
+    protected void CheckFloor()
     {
         // 현재 포지션보다 살짝 앞에서 바닥을 향해 쏘는 레이를 생성하여 앞에 길이 있는지를 확인합니다.
         Vector2 frontVec = new Vector2(rigid.position.x + nextMove * 0.3f, rigid.position.y);
@@ -281,7 +284,7 @@ public class Enemy : MonoBehaviour
             rigid.velocity = new Vector2(nextMove * moveSpeed, rigid.velocity.y);
         }
         else if ((rayHit.collider == null && target != null) ||                         // 타겟을 쫓는 중에 더이상 진행할 수 없다면
-            (target != null && Vector2.Distance(rigid.position, target.position) > 20f) // 타겟과의 거리가 일정거리만큼 벌어졌다면
+            (target != null && Vector2.Distance(rigid.position, target.position) > 20f) 
             || (player != null && player.IsDead))                                       // 플레이어가 죽었을 때
         {
             // 등록된 타겟과 플레이어를 null로 밀어주고 체력 및 경직도를 초기화합니다.
@@ -291,7 +294,7 @@ public class Enemy : MonoBehaviour
             SetState(State.Idle);
         }
     }
-    void SetTarget()
+    protected void SetTarget()
     {
         if (target != null) return;
         player = GameManager.Instance.player;
@@ -308,7 +311,6 @@ public class Enemy : MonoBehaviour
             SetTarget();
             if (enemyStatus.CalculatedHit(player.playerStatus, collision.GetComponentInParent<SkillEffect>().data))
             {
-                enemyStatus.ModifyPoise(player.playerStatus.dPlayerFixedStatus[FixedStatusName.Stagger]);
             }
         }
     }
@@ -319,7 +321,7 @@ public class Enemy : MonoBehaviour
         SetTarget();
         if (enemyStatus.CalculatedHit(playerstatus))
         {
-            enemyStatus.ModifyPoise(player.playerStatus.dPlayerFixedStatus[FixedStatusName.Stagger]);
+            enemyStatus.ModifyPoise(playerstatus.dPlayerFixedStatus[FixedStatusName.Stagger]);
         }
 
     }
@@ -330,7 +332,6 @@ public class Enemy : MonoBehaviour
         SetTarget();
         if (enemyStatus.CalculatedHit(player.playerStatus, DataManager.Instance.GetSkillData((int)SkillName.Judgement)))
         {
-            enemyStatus.ModifyPoise(player.playerStatus.dPlayerFixedStatus[FixedStatusName.Stagger]);
         }
     }
 

@@ -12,6 +12,10 @@ public class EnemyStatus : MonoBehaviour
     public Transform effectPoint;
     Enemy enemy;
     protected string charName;
+    public string GetName
+    {
+        get => charName;
+    }
     public float expReward;
     public int goldReward;
     public int enemyID;
@@ -29,6 +33,10 @@ public class EnemyStatus : MonoBehaviour
 
     protected float curHp;
     protected float curPoise;
+    public float CurPoise
+    {
+        get => curPoise;
+    }
 
     public Action OnEnemyDead;
 
@@ -46,7 +54,7 @@ public class EnemyStatus : MonoBehaviour
     {
         spawner = Spawner.instance;
     }
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         if(enemy.IsDead())
         {
@@ -95,13 +103,18 @@ public class EnemyStatus : MonoBehaviour
     }
     public virtual void ModifyPoise(float value)
     {
+        if (curPoise <= 0) return;
         curPoise -= value;
         
-        if (curPoise <= 0)
+        if (curPoise <= 0f)
         {
-            curPoise = maxPoise;
+            curPoise = 0f;
             enemy.Stun();
         }
+    }
+    public void ResetPoise()
+    {
+        curPoise = maxPoise;
     }
     public bool CalculatedHit(PlayerStatus playerStatus)
         // 피격을 계산하는 메서드입니다.

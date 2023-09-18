@@ -115,6 +115,7 @@ public class Player : MonoBehaviour
         isJump = false;
         canUseLadder = false;
         isLadder = false;
+        animator.SetBool("isStun", isStun);
         jumpCount = 1;
     }
 
@@ -148,6 +149,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         if (IsDead) return;
+        if (isStun) return;
         GetKey();
         moveDir = new Vector3(horizontal, 0, 0); // 스프라이트의 Xflip값을 위한 방향값
 
@@ -217,13 +219,11 @@ public class Player : MonoBehaviour
             Physics2D.IgnoreLayerCollision(playerLayer, airFloorLayer, true);
             rigid.gravityScale = 2f;
         }
-
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
+        if(isStun)
         {
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
             return;
         }
-
         if (isAttacking && (isGround || isSlope))
         {
             rigid.velocity = new Vector2(0f, rigid.velocity.y);
@@ -513,7 +513,27 @@ public class Player : MonoBehaviour
     public bool Hit(EnemyStatus enemyStatus)
     {
         if (IsDead) return false;
-        return playerStatus.CalculatedHit(enemyStatus);
+        float hitrate = enemyStatus.hitrate;
+        float damage = enemyStatus.damage;
+        float stagger = enemyStatus.stagger;
+        return playerStatus.CalculatedHit(hitrate,damage,stagger);
+    }
+    public bool Hit(EnemyStatus enemyStatus,BossSpell spell)
+    {
+        if (IsDead) return false;
+        EnemyData tdata = DataManager.Instance.GetEnemyData(enemyStatus.enemyID);
+        if (tdata is BossData data)
+        {
+            float hitrate = enemyStatus.hitrate;
+            float damage = data.damageRatio[(int)spell] * enemyStatus.damage;
+            float stagger = data.staggerRatio[(int)spell] * enemyStatus.stagger;
+            return playerStatus.CalculatedHit(hitrate, damage, stagger);
+        }
+        else
+        {
+            Debug.LogError("보스스펠의 Hit 메서드의 데이터가 보스데이터가 아닙니다");
+            return false;
+        }
     }
 
     // PlayerStun 함수: 플레이어가 스턴 상태가 되었을 때 호출되는 함수
@@ -526,10 +546,11 @@ public class Player : MonoBehaviour
     IEnumerator CoStun()
     {
         isStun = true;
+        animator.SetBool("isStun", isStun);
         animator.SetTrigger("isHit");
-        float WFS = animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return WFS;
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
         isStun = false;
+        animator.SetBool("isStun", isStun);
     }
 
     // PlayerDead 함수: 플레이어가 사망했을 때 호출되는 함수

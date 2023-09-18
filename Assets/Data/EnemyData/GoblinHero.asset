@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c1dce94716bb2f4cab4071897754280, type: 3}
+  m_Script: {fileID: 11500000, guid: e95fd8cb4c76fbc47bc8e28f5f0adb44, type: 3}
   m_Name: GoblinHero
   m_EditorClassIdentifier: 
   enemyID: 2
@@ -19,8 +19,8 @@ MonoBehaviour:
   goldReward: 2500
   attackRange: 2.5
   bulletName: 1
-  attackDelay: 3
-  maxHp: 3000
+  attackDelay: 2.2
+  maxHp: 30000
   maxPoise: 250
   damage: 120
   defence: 25
@@ -28,3 +28,13 @@ MonoBehaviour:
   evade: 15
   hitrate: 35
   moveSpeed: 1.3
+  bossSpells: 0000000001000000
+  cooltimes:
+  - 16
+  - 8
+  damageRatio:
+  - 2
+  - 2.5
+  staggerRatio:
+  - 100
+  - 2

@@ -201,7 +201,8 @@ public class PlayerStatus : MonoBehaviour
     public void LoadDynamincStatus()
     {
         SaveData loadData = SaveDataManager.Instance.saveData;
-        dPlayerDynamicStatus[DynamicStatusName.CurHp] = loadData.curHp;
+        if (dPlayerDynamicStatus[DynamicStatusName.CurHp] == 0)
+            dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp];
         dPlayerDynamicStatus[DynamicStatusName.CurStamina] = dPlayerFixedStatus[FixedStatusName.MaxStamina];
         dPlayerDynamicStatus[DynamicStatusName.CurPoise] = dPlayerFixedStatus[FixedStatusName.Poise];
     }
@@ -448,37 +449,43 @@ public class PlayerStatus : MonoBehaviour
         playerLv += 1;
         ModifyRemainingPoint(5);
         OnLevelUp?.Invoke();
+        if(dPlayerDynamicStatus[DynamicStatusName.CurExp] >= expRequirement)
+        {
+            dPlayerDynamicStatus[DynamicStatusName.CurExp] -= expRequirement;
+            expRequirement *= expRequirementIncrese;
+            LevelUp();
+        }
     }
     public void ModifyRemainingPoint(int value)
     {
         remainingPoint += value;
         OnUpdateRemaingPoint?.Invoke();
     }
-    public void TakeDamage(EnemyStatus enemyStatus)
+    public void TakeDamage(float damage, float stagger)
     {
-        if (dPlayerFixedStatus[FixedStatusName.Defence] < enemyStatus.damage)
+        if (dPlayerFixedStatus[FixedStatusName.Defence] < damage)
         {
-            ModifyHp(dPlayerFixedStatus[FixedStatusName.Defence] - enemyStatus.damage);
+            ModifyHp(dPlayerFixedStatus[FixedStatusName.Defence] - damage);
         }
         else
         {
             ModifyHp(-1f);
         }
-        ModifyPoise(-enemyStatus.stagger);
+        ModifyPoise(-stagger);
     }
     public void HpRecovery(float value)
     {
         ModifyHp(value);
     }
-    public bool CalculatedHit(EnemyStatus enemyStatus) // 피격 계산
+    public bool CalculatedHit(float hitrate,float damage, float stagger) // 피격 계산
     {
         bool isHit = false;
         float hitRate = 0f;
-        float hitDiff = enemyStatus.hitrate - dPlayerFixedStatus[FixedStatusName.Evade];
+        float hitDiff = hitrate - dPlayerFixedStatus[FixedStatusName.Evade];
         if (hitDiff > 25)
         {
             isHit = true;
-            TakeDamage(enemyStatus);
+            TakeDamage(damage,stagger);
             Spawner.instance.ShowDamageEffect(3).transform.SetPositionAndRotation
                 (transform.position, Quaternion.identity);
         }
@@ -489,7 +496,7 @@ public class PlayerStatus : MonoBehaviour
         if (UnityEngine.Random.value < hitRate)
         {
             isHit = true;
-            TakeDamage(enemyStatus);
+            TakeDamage(damage,stagger);
             Spawner.instance.ShowDamageEffect(3).transform.SetPositionAndRotation
                 (transform.position, Quaternion.identity);
         }
@@ -500,7 +507,7 @@ public class PlayerStatus : MonoBehaviour
         }
         return isHit;
     }
-    public CalculatedDamage CalculateDamage() // 피격 데미지 계산
+    public CalculatedDamage CalculateDamage() // 적의 피격 데미지 계산
     {
         CalculatedDamage result = new();
         if (UnityEngine.Random.value < dPlayerFixedStatus[FixedStatusName.CriticalChance])

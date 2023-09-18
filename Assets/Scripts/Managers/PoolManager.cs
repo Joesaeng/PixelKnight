@@ -252,7 +252,29 @@ public class PoolManager : Singleton<PoolManager>
             select = Instantiate(skillPrefab, transform);
             skillPool.Add(select);
         }
-        select.GetComponent<SkillEffect>().SetData(name);
+        select.GetComponent<SkillEffect>().SetPlayerSKill(name);
+
+        select.SetActive(false);
+        select.SetActive(true);
+        return select;
+    }
+    public GameObject GetEnemySkill(int index)
+    {
+        GameObject select = null;
+        foreach (GameObject obj in skillPool)
+        {
+            if (!obj.activeSelf)
+            {
+                select = obj;
+                break;
+            }
+        }
+        if (!select)
+        {
+            select = Instantiate(skillPrefab, transform);
+            skillPool.Add(select);
+        }
+        select.GetComponent<SkillEffect>().SetEnemySKill(index);
 
         select.SetActive(false);
         select.SetActive(true);
