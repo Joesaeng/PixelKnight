@@ -51,7 +51,7 @@ public class SaveDataManager : Singleton<SaveDataManager>
     public string path;
     public int nowSlot;
 
-    private void Awake()
+    private void Start()
     {
         path = Application.persistentDataPath + "/save";
     }

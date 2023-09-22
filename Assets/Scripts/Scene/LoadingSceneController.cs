@@ -8,14 +8,12 @@ public class LoadingSceneController : MonoBehaviour
 {
     static string nextScene;
     static bool playScene;
-    [SerializeField]
-    Image progressBar;
     public static void LoadScene(string sceneName, bool _playScene)
     {
         nextScene = sceneName;
         playScene = _playScene;
         SceneManager.LoadScene("LoadingScene");
-        
+
     }
     private void Start()
     {
@@ -25,29 +23,16 @@ public class LoadingSceneController : MonoBehaviour
     {
         AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);
         op.allowSceneActivation = false;
-        float time = 0f;
         while (!op.isDone)
         {
             yield return null;
-            
-            if (op.progress >= 0.5f && op.progress < 0.9f)
+
+            if (playScene)
             {
-                progressBar.fillAmount = op.progress;
+                SceneManager.LoadScene("UI_SceneAdditiveOnly", LoadSceneMode.Additive);
             }
-            else
-            {
-                time += Time.unscaledDeltaTime;
-                progressBar.fillAmount = Mathf.Lerp(0.9f, 1f, time);
-                if (progressBar.fillAmount >= 1f)
-                {
-                    if (playScene)
-                    {
-                        SceneManager.LoadScene("UI_SceneAdditiveOnly", LoadSceneMode.Additive);
-                    }
-                    op.allowSceneActivation = true;
-                    yield break;
-                }
-            }
+            op.allowSceneActivation = true;
+            yield break;
         }
     }
 }

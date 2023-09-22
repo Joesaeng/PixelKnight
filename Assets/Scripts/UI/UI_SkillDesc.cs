@@ -47,6 +47,8 @@ public class UI_SkillDesc : MonoBehaviour
     public void ActiveSkill()
     {
         isActive = true;
+        disableImage.SetActive(!isActive);
+        cost.enabled = !isActive;
     }
     public void SkillDescButton()
     {

@@ -9,6 +9,7 @@ public enum KeyAction
     MeleeAttack,
     Jump,
     UseHpPotion,
+    Interaction,
     Skill_1,
     Skill_2,
     Skill_3,
@@ -32,7 +33,7 @@ public class KeyManager : Singleton<KeyManager>
     KeyCode[] defaultKeys = new KeyCode[]
     {
         KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.LeftArrow,KeyCode.RightArrow,
-        KeyCode.Z,KeyCode.C,KeyCode.R,
+        KeyCode.Z,KeyCode.C,KeyCode.R,KeyCode.G,
         KeyCode.Q,KeyCode.W,KeyCode.E,KeyCode.R,
         KeyCode.I,KeyCode.P,KeyCode.K
     };
@@ -46,8 +47,10 @@ public class KeyManager : Singleton<KeyManager>
     public void InitKeyChangeButtons(UI_Option ui)
     {
         keyChangeButtons = ui.GetComponentsInChildren<UI_KeyChangeButton>();
+        KeyAction i = 0;
         foreach (UI_KeyChangeButton t in keyChangeButtons)
         {
+            t.keyAction = i++;
             t.SetKeyCodeText(KeySetting.keys[t.GetKeyAction()]);
             t.Init();
         }

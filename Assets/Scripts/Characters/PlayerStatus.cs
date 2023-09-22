@@ -203,8 +203,11 @@ public class PlayerStatus : MonoBehaviour
         SaveData loadData = SaveDataManager.Instance.saveData;
         if (dPlayerDynamicStatus[DynamicStatusName.CurHp] == 0)
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp];
+        else
+            dPlayerDynamicStatus[DynamicStatusName.CurHp] = loadData.curHp;
         dPlayerDynamicStatus[DynamicStatusName.CurStamina] = dPlayerFixedStatus[FixedStatusName.MaxStamina];
         dPlayerDynamicStatus[DynamicStatusName.CurPoise] = dPlayerFixedStatus[FixedStatusName.Poise];
+        DeleteOverStatus();
     }
     public void ResetStatus()
     {
@@ -384,13 +387,13 @@ public class PlayerStatus : MonoBehaviour
     {
         float staminaRegenAmount = dPlayerFixedStatus[FixedStatusName.StaminaRegen] * Time.deltaTime;
         if (dPlayerDynamicStatus[DynamicStatusName.CurStamina] < dPlayerFixedStatus[FixedStatusName.MaxStamina])
-            ModifyStamina(staminaRegenAmount);
+            ModifyStamina(staminaRegenAmount,true);
     }
     void RegeneratePoise()
     {
         float poiseRegenAmount = dPlayerFixedStatus[FixedStatusName.PoiseRegen] * Time.deltaTime;
         if (dPlayerDynamicStatus[DynamicStatusName.CurPoise] < dPlayerFixedStatus[FixedStatusName.Poise])
-            ModifyPoise(poiseRegenAmount);
+            ModifyPoise(poiseRegenAmount,true);
     }
     public void HpRegeneration()
     {
@@ -420,22 +423,32 @@ public class PlayerStatus : MonoBehaviour
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp];
         }
     }
-    public void ModifyStamina(float value)
+    public void ModifyStamina(float value, bool isAdd)
     {
-        dPlayerDynamicStatus[DynamicStatusName.CurStamina] += value;
+        if(isAdd)
+            dPlayerDynamicStatus[DynamicStatusName.CurStamina] += value;
+        else
+            dPlayerDynamicStatus[DynamicStatusName.CurStamina] -= value;
     }
-    public void ModifyPoise(float value)
+    public void ModifyPoise(float value, bool isAdd)
     {
-        dPlayerDynamicStatus[DynamicStatusName.CurPoise] += value;
+        if(isAdd)
+            dPlayerDynamicStatus[DynamicStatusName.CurPoise] += value;
+        else
+            dPlayerDynamicStatus[DynamicStatusName.CurPoise] -= value;
         if (dPlayerDynamicStatus[DynamicStatusName.CurPoise] <= 0f)
         {
             OnPlayerHit?.Invoke();
             dPlayerDynamicStatus[DynamicStatusName.CurPoise] = 0f;
         }
     }
-    public void ModifyExp(float value)
+    public void ModifyExp(float value, bool isAdd)
     {
-        dPlayerDynamicStatus[DynamicStatusName.CurExp] += value;
+        if(isAdd)
+            dPlayerDynamicStatus[DynamicStatusName.CurExp] += value;
+        else
+            dPlayerDynamicStatus[DynamicStatusName.CurExp] -= value;
+
         if (dPlayerDynamicStatus[DynamicStatusName.CurExp] >= expRequirement)
         {
             dPlayerDynamicStatus[DynamicStatusName.CurExp] -= expRequirement;
@@ -471,7 +484,7 @@ public class PlayerStatus : MonoBehaviour
         {
             ModifyHp(-1f);
         }
-        ModifyPoise(-stagger);
+        ModifyPoise(stagger,false);
     }
     public void HpRecovery(float value)
     {
@@ -528,7 +541,7 @@ public class PlayerStatus : MonoBehaviour
         bool isUse = false;
         if (dPlayerDynamicStatus[DynamicStatusName.CurStamina] >= value)
         {
-            ModifyStamina(-value);
+            ModifyStamina(value,false);
             isUse = true;
         }
 

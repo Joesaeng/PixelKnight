@@ -11,7 +11,8 @@ public enum PoolType
     DamageEffect,
     Skill,
     Slot,
-    Bullet
+    Bullet,
+    SFX,
 }
 
 public class PoolManager : Singleton<PoolManager>
@@ -24,6 +25,7 @@ public class PoolManager : Singleton<PoolManager>
     public GameObject skillPrefab;
     public GameObject inventorySlotPrefab;
     public GameObject bulletPrefab;
+    public GameObject sfxPrefab;
     int poolSize = 2;
 
     List<GameObject> enemyPool;
@@ -34,6 +36,7 @@ public class PoolManager : Singleton<PoolManager>
     List<GameObject> skillPool;
     List<GameObject> slotPool;
     List<GameObject> bulletPool;
+    List<GameObject> sfxPool;
 
     List<List<GameObject>> allObjectPoolList;
     private void Start()
@@ -46,10 +49,11 @@ public class PoolManager : Singleton<PoolManager>
         skillPool = new List<GameObject>();
         slotPool = new List<GameObject>();
         bulletPool = new List<GameObject>();
+        sfxPool = new List<GameObject>();
 
         List<GameObject>[] allPool =
             {enemyPool,enemyHpUIPool,fieldEquipPool,fieldConsumablePool
-        ,damageEffectPool,skillPool,slotPool,bulletPool};
+        ,damageEffectPool,skillPool,slotPool,bulletPool,sfxPool};
 
         allObjectPoolList = new List<List<GameObject>>();
         allObjectPoolList.AddRange(allPool);
@@ -100,6 +104,12 @@ public class PoolManager : Singleton<PoolManager>
             GameObject newObj = Instantiate(bulletPrefab, transform);
             newObj.SetActive(false);
             bulletPool.Add(newObj);
+        }
+        for (int i = 0; i < poolSize; ++i)
+        {
+            GameObject newObj = Instantiate(sfxPrefab, transform);
+            newObj.SetActive(false);
+            sfxPool.Add(newObj);
         }
 
     }
@@ -220,6 +230,23 @@ public class PoolManager : Singleton<PoolManager>
                     {
                         select = Instantiate(inventorySlotPrefab, transform);
                         slotPool.Add(select);
+                    }
+                }
+                break;
+            case PoolType.SFX:
+                {
+                    foreach (GameObject obj in sfxPool)
+                    {
+                        if (!obj.activeSelf)
+                        {
+                            select = obj;
+                            break;
+                        }
+                    }
+                    if (!select)
+                    {
+                        select = Instantiate(sfxPrefab, transform);
+                        sfxPool.Add(select);
                     }
                 }
                 break;

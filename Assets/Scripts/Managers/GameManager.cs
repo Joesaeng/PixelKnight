@@ -31,11 +31,14 @@ public class GameManager : Singleton<GameManager>
     private int playTimeMinute = 0;
     private int playTimeHour = 0;
 
-    private bool firstScene = true;
+    // 씬 이동 관련
+    private bool firstScene = true;     // 씬 이동 시 플레이어의 인스턴스 위치를 정하기 위함
+    public int curPortalID;
+
     private void Start()
     {
         curGold = 0;
-        SceneManager.LoadScene("TitleScene");
+        LoadingSceneController.LoadScene("TitleScene", false);
     }
     private void Update()
     {
@@ -56,7 +59,8 @@ public class GameManager : Singleton<GameManager>
     }
     public void NewGame()
     {
-        SceneManager.LoadScene("SelectCharacter");
+        firstScene = false;
+        LoadingSceneController.LoadScene("SelectCharacter", false);
     }
     public void LoadGame(int charId)
     {
@@ -67,8 +71,7 @@ public class GameManager : Singleton<GameManager>
     {
         selectPlayerData = DataManager.Instance.playerDatas[charId];
         SaveDataManager.Instance.saveData.charId = charId;
-        //LoadingSceneController.LoadScene("Dev",true);
-        LoadingSceneController.LoadScene("BossScene",true);
+        LoadingSceneController.LoadScene("Dev",true);
     }
     public bool PlayScene(GameObject _player, string curSceneName)
     {
@@ -76,7 +79,7 @@ public class GameManager : Singleton<GameManager>
         player = _player.GetComponent<Player>();
         playerStatus = _player.GetComponent<PlayerStatus>();
         LoadPlayerData();
-        ModifyGold(SaveDataManager.Instance.saveData.curGold);
+        ModifyGold(SaveDataManager.Instance.saveData.curGold,true);
         LoadPlayTime();
         player.playerStatus.OnPlayerDead += PlayerDead;
         curScene = curSceneName;
@@ -95,9 +98,13 @@ public class GameManager : Singleton<GameManager>
         SkillManager.Instance.LoadSkillData();
         playerStatus.LoadDynamincStatus();
     }
-    public void ModifyGold(int value)
+    public void ModifyGold(int value, bool isAdd)
     {
-        curGold += value;
+        if(isAdd)
+            curGold += value;
+        else
+            curGold -= value;
+
         OnChangedGold?.Invoke();
     }
     public int GetCurGold()
@@ -124,7 +131,7 @@ public class GameManager : Singleton<GameManager>
     public void GoToTitleScene()
     {
         firstScene = true;
-        FakeLoading.instance.StartFakeLoding(2f, "TitleScene", false);
+        FakeLoading.instance.StartFakeLoding(0.3f, "TitleScene", false);
     }
     public PlayTime GetPlayTime()
     {

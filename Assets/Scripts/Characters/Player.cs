@@ -69,6 +69,8 @@ public class Player : MonoBehaviour
     public float slopeAngle;    // 경사각
     Vector2 slopePerp;          // 경사면에 수직인 벡터
 
+    // 사운드
+    public SFX sfx;
     public bool IsDead { get => isDead; set => isDead = value; }
 
     private void Awake()
@@ -79,6 +81,7 @@ public class Player : MonoBehaviour
         playerStatus = GetComponent<PlayerStatus>();
         myCollider = GetComponent<Collider2D>();
         skills = GetComponent<PlayerSkills>();
+        sfx = GetComponent<SFX>();
 
         skill = SkillManager.Instance;
 

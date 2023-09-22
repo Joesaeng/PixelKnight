@@ -122,7 +122,7 @@ public class SkillManager : Singleton<SkillManager>
         {
             if(skilldatas[index].goldCost <= GameManager.Instance.GetCurGold())
             {
-                GameManager.Instance.ModifyGold(-skilldatas[index].goldCost);
+                GameManager.Instance.ModifyGold(skilldatas[index].goldCost,false);
                 ActiveSkill(index);
             }
         }

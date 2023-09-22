@@ -58,8 +58,8 @@ public class EnemyStatus : MonoBehaviour
     {
         if(enemy.IsDead())
         {
-            GameManager.Instance.player.playerStatus.ModifyExp(expReward);
-            GameManager.Instance.ModifyGold(goldReward);
+            GameManager.Instance.player.playerStatus.ModifyExp(expReward,true);
+            GameManager.Instance.ModifyGold(goldReward,true);
         }
     }
     public virtual void SetData(int _enemyID) 

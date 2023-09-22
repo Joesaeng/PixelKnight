@@ -8,8 +8,6 @@ public class FakeLoading : MonoBehaviour
     public static FakeLoading instance;
     [SerializeField]
     GameObject fakeLoadingUI;
-    [SerializeField]
-    Image progressBar;
     private void Awake()
     {
         instance = this;
@@ -30,10 +28,9 @@ public class FakeLoading : MonoBehaviour
         float curtime = 0f;
         yield return null;
 
-        while(progressBar.fillAmount < 0.5f)
+        while(curtime < time)
         {
             curtime += Time.deltaTime;
-            progressBar.fillAmount = curtime / time;
             yield return null;
         }
         LoadingSceneController.LoadScene(nextSceneName, playScene);

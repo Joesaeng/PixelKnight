@@ -88,12 +88,12 @@ public class Boss : Enemy
 
     IEnumerator CoSetTarget() // temp
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(5f);
         SetTarget();
     }
     protected override IEnumerator CoStateIdle()
     {
-        while (curState == State.Idle)
+        while (isStun == false && curState == State.Idle)
         {
             nextMove = target.position.x - rigid.position.x > 0 ? 1 : -1;
             if (target != null)
@@ -107,23 +107,23 @@ public class Boss : Enemy
     }
     protected override IEnumerator CoStateChase()
     {
-        while (curState == State.Chase && target != null)
+        while (isStun == false && curState == State.Chase && target != null)
         {
             nextMove = target.position.x - rigid.position.x > 0 ? 1 : -1;
             float distance = Vector2.Distance(target.position, rigid.position);
-            if (distance < 5f && isCooltimes[BossSpell.Roar] == false)
+            if (isSpell == false && distance < 5f && isCooltimes[BossSpell.Roar] == false)
             {
                 curBossSpell = BossSpell.Roar;
                 SetState(State.Spell);
                 yield break;
             }
-            if (distance >= 4f && isCooltimes[BossSpell.JumpAttack] == false)
+            if (isSpell == false && distance >= 4f && isCooltimes[BossSpell.JumpAttack] == false)
             {
                 curBossSpell = BossSpell.JumpAttack;
                 SetState(State.Spell);
                 yield break;
             }
-            if (attackTarget != null)
+            if (attackTarget != null && isAttack == false)
             {
                 SetState(State.Attack);
                 yield break;

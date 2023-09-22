@@ -15,9 +15,9 @@ MonoBehaviour:
   playerID: 0
   charName: Knight
   attackAnimationName: knight_Attack
-  vitality: 150
+  vitality: 15
   endurance: 10
-  strength: 150
+  strength: 15
   dexterity: 5
   luck: 5
   minAttackSpeed: 1

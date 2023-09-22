@@ -18,8 +18,8 @@ public class BossStatus : EnemyStatus
     {
         if (boss.IsDead())
         {
-            GameManager.Instance.player.playerStatus.ModifyExp(expReward);
-            GameManager.Instance.ModifyGold(goldReward);
+            GameManager.Instance.player.playerStatus.ModifyExp(expReward,true);
+            GameManager.Instance.ModifyGold(goldReward,true);
         }
     }
     public override void SetData(int _enemyID)

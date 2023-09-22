@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: -8624652967976029335}
   - component: {fileID: 7376285422946378824}
   - component: {fileID: 6978033305073334550}
+  - component: {fileID: 1418286685277873681}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -284,10 +285,6 @@ MonoBehaviour:
   animCon:
   - {fileID: 22100000, guid: d6a4e754843ec0c4282a15f87a477d50, type: 2}
   - {fileID: 9100000, guid: fda745a5b5b0f6a4eb5c3a866d99b19b, type: 2}
-  attackRangePos:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   attackAnimationClipName: 
   attackSpeed: 1
   moveSpeed: 3
@@ -314,6 +311,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   items: []
+  hpPotionSlot: -1
+  slotCnt: 0
 --- !u!114 &-8624652967976029335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,8 +355,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 067b47cfb9713f14a8cb2c2d09024198, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableSkills: 
   judgementRange: {fileID: 7953474786170240068}
+--- !u!114 &1418286685277873681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3497617318878869567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6243f353e60be1444a3bc5c7a891b6ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundEffects:
+  - name: Run1
+    audioClip: {fileID: 8300000, guid: b9826d0a1ba73a94e9d23850246399ac, type: 3}
+  - name: Run2
+    audioClip: {fileID: 8300000, guid: 5d9c8ae9ba9da3545b0d32cdbfa5c23b, type: 3}
+  - name: Attack
+    audioClip: {fileID: 8300000, guid: d1d037759c8ebaf47b1efa0a223104e6, type: 3}
+  - name: Jump
+    audioClip: {fileID: 8300000, guid: 62dc7abd915fc354c931e2a4ebda074e, type: 3}
+  - name: Land
+    audioClip: {fileID: 8300000, guid: af4ee1c12dd78af42ab217d8b47f5c86, type: 3}
+  - name: Hit
+    audioClip: {fileID: 8300000, guid: 2d25783df7de5704fa876ab5369a4429, type: 3}
 --- !u!1 &3589923249704920327
 GameObject:
   m_ObjectHideFlags: 0
