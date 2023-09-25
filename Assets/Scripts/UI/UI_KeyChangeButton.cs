@@ -15,6 +15,10 @@ public class UI_KeyChangeButton : MonoBehaviour, IPointerUpHandler
     {
         return keyAction;
     }
+    public void SetKeyAction(KeyAction keyAction)
+    {
+        this.keyAction = keyAction;
+    }
     public void SetKeyCodeText(KeyCode keyCode)
     {
         this.keyCode = keyCode;

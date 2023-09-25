@@ -57,6 +57,7 @@ public class Boss : Enemy
     }
     protected override void UpdateState()
     {
+        Debug.Log(curState);
         switch (curState)
         {
             case State.Init:
@@ -93,8 +94,10 @@ public class Boss : Enemy
     }
     protected override IEnumerator CoStateIdle()
     {
+        
         while (isStun == false && curState == State.Idle)
         {
+            Debug.Log("IDLE");
             nextMove = target.position.x - rigid.position.x > 0 ? 1 : -1;
             if (target != null)
             {
@@ -145,6 +148,7 @@ public class Boss : Enemy
                 roarRange.SetActive(true);
                 yield return attackDelay;
                 isSpell = false;
+                if (isStun) yield break;
                 SetState(State.Idle);
                 break;
             case BossSpell.JumpAttack:
@@ -159,6 +163,7 @@ public class Boss : Enemy
                 anim.SetTrigger("jumplanding");
                 isSpell = false;
                 yield return attackDelay;
+                if (isStun) yield break;
                 SetState(State.Idle);
                 break;
             default:
@@ -182,7 +187,9 @@ public class Boss : Enemy
     }
     protected override IEnumerator CoStateStun()
     {
+        Debug.Log("StateStun");
         if (isStun) yield break;
+        Debug.Log("StateStun2");
         isStun = true;
         isAttack = false;
         isSpell = false;
@@ -193,6 +200,7 @@ public class Boss : Enemy
         isStun = false;
         enemyStatus.ResetPoise();
         anim.SetBool("isStun", isStun);
+        Debug.Log("StateStun3");
         SetState(State.Idle);
     }
     protected override IEnumerator CoStateDead()
@@ -276,9 +284,3 @@ public class Boss : Enemy
         SetState(State.Stun);
     }
 }
-/*
- * 플레이어 추적
- * 상태기계
- * 애니메이션
- * 이동
- */

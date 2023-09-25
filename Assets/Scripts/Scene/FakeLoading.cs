@@ -18,6 +18,7 @@ public class FakeLoading : MonoBehaviour
     }
     public void StartFakeLoding(float time, string nextSceneName,bool playScene)
     {
+        SoundManager.Instance.bgm.Stop();
         fakeLoadingUI.SetActive(true);
         if (PoolManager.Instance != null)
             PoolManager.Instance.ReturnAllObj();

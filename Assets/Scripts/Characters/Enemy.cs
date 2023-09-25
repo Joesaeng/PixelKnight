@@ -217,6 +217,7 @@ public class Enemy : MonoBehaviour
         anim.SetTrigger("isAttack");
         yield return attackDelay;
         isAttack = false;
+        if (isStun) yield break;
         SetState(State.Idle);
     }
     protected virtual void EnemyDead()

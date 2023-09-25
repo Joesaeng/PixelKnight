@@ -15,6 +15,8 @@ public class PlayScene : MonoBehaviour
     bool newGameScene;
     [SerializeField]
     Portal[] portals;
+    [SerializeField]
+    BGMName bgm;
     protected virtual void Awake()
     {
         portals = FindObjectsByType<Portal>(FindObjectsSortMode.None);
@@ -41,5 +43,6 @@ public class PlayScene : MonoBehaviour
             }
         }
         virtualCam.SetFollow(player.transform);
+        SoundManager.Instance.SetBgm(bgm);
     }
 }

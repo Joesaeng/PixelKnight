@@ -50,9 +50,10 @@ public class KeyManager : Singleton<KeyManager>
         KeyAction i = 0;
         foreach (UI_KeyChangeButton t in keyChangeButtons)
         {
-            t.keyAction = i++;
+            t.SetKeyAction(i);
             t.SetKeyCodeText(KeySetting.keys[t.GetKeyAction()]);
             t.Init();
+            i++;
         }
     }
     private void OnGUI()

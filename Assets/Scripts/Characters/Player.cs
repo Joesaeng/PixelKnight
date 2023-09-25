@@ -70,7 +70,8 @@ public class Player : MonoBehaviour
     Vector2 slopePerp;          // 경사면에 수직인 벡터
 
     // 사운드
-    public SFX sfx;
+    SoundManager soundmgr;
+
     public bool IsDead { get => isDead; set => isDead = value; }
 
     private void Awake()
@@ -81,7 +82,7 @@ public class Player : MonoBehaviour
         playerStatus = GetComponent<PlayerStatus>();
         myCollider = GetComponent<Collider2D>();
         skills = GetComponent<PlayerSkills>();
-        sfx = GetComponent<SFX>();
+        soundmgr = SoundManager.Instance;
 
         skill = SkillManager.Instance;
 
@@ -325,6 +326,7 @@ public class Player : MonoBehaviour
                         animator.SetBool("isGround", false);
                         isJump = true;
                         jumpCount--;
+                        soundmgr.SFXPlay(SFXName.Player_Jump, transform.position);
                     }
                 }
             }
@@ -335,6 +337,7 @@ public class Player : MonoBehaviour
                     StartCoroutine(CoDownJump());
                     animator.SetBool("isGround", false);
                     jumpCount--;
+                    soundmgr.SFXPlay(SFXName.Player_Jump, transform.position);
                 }
                 else if (playerStatus.UseStamina(jumpStamina))
                 {
@@ -342,6 +345,7 @@ public class Player : MonoBehaviour
                     animator.SetBool("isGround", false);
                     isJump = true;
                     jumpCount--;
+                    soundmgr.SFXPlay(SFXName.Player_Jump, transform.position);
                 }
             }
         }
@@ -513,29 +517,30 @@ public class Player : MonoBehaviour
             ladderCollider = null;
         }
     }
-    public bool Hit(EnemyStatus enemyStatus)
+    public void Hit(EnemyStatus enemyStatus)
     {
-        if (IsDead) return false;
+        if (IsDead) return;
         float hitrate = enemyStatus.hitrate;
         float damage = enemyStatus.damage;
         float stagger = enemyStatus.stagger;
-        return playerStatus.CalculatedHit(hitrate,damage,stagger);
+        if (playerStatus.CalculatedHit(hitrate, damage, stagger))
+            soundmgr.SFXPlay(SFXName.Player_Hit, transform.position);
     }
-    public bool Hit(EnemyStatus enemyStatus,BossSpell spell)
+    public void Hit(EnemyStatus enemyStatus,BossSpell spell)
     {
-        if (IsDead) return false;
+        if (IsDead) return;
         EnemyData tdata = DataManager.Instance.GetEnemyData(enemyStatus.enemyID);
         if (tdata is BossData data)
         {
             float hitrate = enemyStatus.hitrate;
             float damage = data.damageRatio[(int)spell] * enemyStatus.damage;
             float stagger = data.staggerRatio[(int)spell] * enemyStatus.stagger;
-            return playerStatus.CalculatedHit(hitrate, damage, stagger);
+            if (playerStatus.CalculatedHit(hitrate, damage, stagger))
+                soundmgr.SFXPlay(SFXName.Player_Hit, transform.position);
         }
         else
         {
             Debug.LogError("보스스펠의 Hit 메서드의 데이터가 보스데이터가 아닙니다");
-            return false;
         }
     }
 
@@ -571,9 +576,11 @@ public class Player : MonoBehaviour
         animator.SetTrigger("isDead");
         yield return new WaitForSeconds(3f);
     }
-    // 공격 애니메이션 호출 메서드
+
+    // 애니메이션 호출 메서드
     public void BeginAttack()
     {
+        soundmgr.SFXPlay(SFXName.Player_Attack,transform.position);
         if (targets.Count > 0)
         {
             foreach (var target in targets)
@@ -582,6 +589,10 @@ public class Player : MonoBehaviour
                     target.GetComponent<Enemy>().MeeleAttackHit(playerStatus);
             }
         }
+    }
+    public void RunSFX()
+    {
+        soundmgr.SFXPlay(SFXName.Player_Run1, transform.position);
     }
 }
 
