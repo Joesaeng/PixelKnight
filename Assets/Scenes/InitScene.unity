@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mixer: {fileID: 24100000, guid: 88d91fe6f6536a14d943c120df2f2f8b, type: 2}
-  soundEffects:
+  soundEffectList:
   - name: 0
     audioClip: {fileID: 8300000, guid: d1d037759c8ebaf47b1efa0a223104e6, type: 3}
   - name: 1
@@ -262,6 +262,26 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: b9826d0a1ba73a94e9d23850246399ac, type: 3}
   - name: 5
     audioClip: {fileID: 8300000, guid: 5d9c8ae9ba9da3545b0d32cdbfa5c23b, type: 3}
+  - name: 6
+    audioClip: {fileID: 8300000, guid: 3e5937ce2171b664bbdd5c9392cccaa1, type: 3}
+  - name: 7
+    audioClip: {fileID: 8300000, guid: 169f2476da3fc9f4fa4c08528cc793be, type: 3}
+  - name: 8
+    audioClip: {fileID: 8300000, guid: 70ae58247a0262a43abebb254cffe61b, type: 3}
+  - name: 9
+    audioClip: {fileID: 8300000, guid: a102886dab1942a438247bb9439036cc, type: 3}
+  - name: 10
+    audioClip: {fileID: 8300000, guid: d0928ad197f4dfa4fb8f2a3b4119c982, type: 3}
+  - name: 11
+    audioClip: {fileID: 8300000, guid: cba828e66f359254d8344ba1fd215134, type: 3}
+  - name: 12
+    audioClip: {fileID: 8300000, guid: fb2a89cc53e04d34584c2a46652c2ce0, type: 3}
+  - name: 13
+    audioClip: {fileID: 8300000, guid: 074a9b5cf8543d64286b49810689be77, type: 3}
+  - name: 14
+    audioClip: {fileID: 8300000, guid: 074a9b5cf8543d64286b49810689be77, type: 3}
+  - name: 15
+    audioClip: {fileID: 8300000, guid: e28fb067a716245498e12a0ab53c2159, type: 3}
   bgms:
   - name: 0
     audioClip: {fileID: 8300000, guid: 522201db7204c154daf5e0fa6d9dea71, type: 3}

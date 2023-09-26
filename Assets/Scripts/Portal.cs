@@ -47,6 +47,7 @@ public class Portal : MonoBehaviour
         {
             PortalManager.Instance.SetCurUsePortalID(portalID);
             GameManager.Instance.GameSaveForSceneChange();
+            SoundManager.Instance.SFXPlay(SFXName.Door, transform.position);
             FakeLoading.instance.StartFakeLoding(0.3f, nextSceneName, true);
         }
     }

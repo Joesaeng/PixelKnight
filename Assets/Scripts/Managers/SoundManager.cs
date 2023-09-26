@@ -12,8 +12,22 @@ public enum SFXName
     Player_Land,
     Player_Run1,
     Player_Run2,
+    Player_Dash,
+    Player_Judgement,
 
-    //...
+    // Enemy
+    Enemy_Hit,
+    GoblinAx_Throw,
+
+    // GoblinHero
+    GoblinHero_Roar,
+    GoblinHero_Jump,
+    GoblinHero_Landing,
+    GoblinHero_Attack,
+    
+    // UI 등 특수효과
+    Button,
+    Door,
 }
 public enum BGMName
 {
@@ -41,18 +55,26 @@ public enum Volume
 public class SoundManager : Singleton<SoundManager>
 {
     public AudioMixer mixer;
-    public List<SoundEffect> soundEffects;
+    public List<SoundEffect> soundEffectList; // 인스펙터 창에서 사운드와 사운드네임을 설정하기 위함
+
+    Dictionary<SFXName, AudioClip> soundEffects; // 빠른 찾기를 위한 Dictionary 클래스
     public List<BGMusic> bgms;
-    public Dictionary<Volume, float> volumeValues = new();
+    public Dictionary<Volume, float> volumeValues;
 
     public AudioSource bgm;
 
     private void Start()
     {
-        MasterVolumeChange(0.1f);
+        soundEffects = new();
+        foreach(SoundEffect soundEffect in soundEffectList) // Dictionary 초기화
+        {
+            soundEffects.Add(soundEffect.name, soundEffect.audioClip);
+        }
+        volumeValues = new Dictionary<Volume, float>();
         volumeValues.Add(Volume.Master, 1f);
         volumeValues.Add(Volume.BGM, 1f);
         volumeValues.Add(Volume.SFX, 1f);
+        MasterVolumeChange(0.1f);
     }
     public void MasterVolumeChange(float value)
     {
@@ -76,13 +98,7 @@ public class SoundManager : Singleton<SoundManager>
     }
     private AudioClip FindSFX(SFXName name)
     {
-        foreach(SoundEffect effect in soundEffects)
-        {
-            if (effect.name == name)
-                return effect.audioClip;
-        }
-        Debug.LogError("SFX를 찾을 수 없습니다.");
-        return null;
+        return soundEffects[name];
     }
     IEnumerator CoSFXPlay(AudioClip clip,Vector2 pos)
     {

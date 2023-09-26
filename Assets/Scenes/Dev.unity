@@ -7423,6 +7423,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2979105556746140647, guid: aff62d984d65bf044932a032c9e5fa61, type: 3}
+      propertyPath: enemyID
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aff62d984d65bf044932a032c9e5fa61, type: 3}
 --- !u!1001 &773944164
@@ -7576,6 +7580,10 @@ PrefabInstance:
     - target: {fileID: 2979105556746140646, guid: aff62d984d65bf044932a032c9e5fa61, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2979105556746140647, guid: aff62d984d65bf044932a032c9e5fa61, type: 3}
+      propertyPath: enemyID
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aff62d984d65bf044932a032c9e5fa61, type: 3}
@@ -8635,6 +8643,7 @@ MonoBehaviour:
   newGameScene: 0
   portals:
   - {fileID: 0}
+  bgm: 0
 --- !u!4 &1364997144
 Transform:
   m_ObjectHideFlags: 0
@@ -9136,6 +9145,10 @@ PrefabInstance:
     - target: {fileID: 2979105556746140646, guid: aff62d984d65bf044932a032c9e5fa61, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2979105556746140647, guid: aff62d984d65bf044932a032c9e5fa61, type: 3}
+      propertyPath: enemyID
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aff62d984d65bf044932a032c9e5fa61, type: 3}

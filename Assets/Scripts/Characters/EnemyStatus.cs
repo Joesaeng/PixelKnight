@@ -121,6 +121,7 @@ public class EnemyStatus : MonoBehaviour
     {
         CalculatedDamage caldmg = playerStatus.CalculateDamage();
         float hitDiff = playerStatus.GetHitDiff(evade);
+        ModifyPoise(playerStatus.dPlayerFixedStatus[FixedStatusName.Stagger]);
         return FinalCalculatedHit(caldmg.damage, hitDiff, caldmg.option == DamageOption.Critical ? true : false);
     }
     public bool CalculatedHit(PlayerStatus playerStatus, SkillData skillData)

@@ -193,15 +193,11 @@ public class PlayerStatus : MonoBehaviour
         initialPlayerData = data;
         LoadStatus();
         UpdateStatus();
-        if(dPlayerDynamicStatus[DynamicStatusName.CurHp] == 0)
-            dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp];
-        dPlayerDynamicStatus[DynamicStatusName.CurStamina] = dPlayerFixedStatus[FixedStatusName.MaxStamina];
-        dPlayerDynamicStatus[DynamicStatusName.CurPoise] = dPlayerFixedStatus[FixedStatusName.Poise];
     }
     public void LoadDynamincStatus()
     {
         SaveData loadData = SaveDataManager.Instance.saveData;
-        if (dPlayerDynamicStatus[DynamicStatusName.CurHp] == 0)
+        if (dPlayerDynamicStatus[DynamicStatusName.CurHp] <= 0f)
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp];
         else
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = loadData.curHp;

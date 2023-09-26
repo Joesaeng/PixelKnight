@@ -445,17 +445,20 @@ public class Player : MonoBehaviour
                     var ray = Physics2D.Raycast(rigid.position, Vector2.right * transform.localScale.x, cur.range, groundChkLayer);
                     if (!ray) nextPosition = rigid.position + new Vector2(cur.range * transform.localScale.x, 0f);
                     else nextPosition = new Vector2(ray.point.x - (0.2f * transform.localScale.x), rigid.position.y);
-
+                    soundmgr.SFXPlay(SFXName.Player_Dash, transform.position);
                     transform.position = nextPosition;
                     yield return new WaitForSeconds(cur.animationLength * 0.66f); // 애니메이션의 속도를 1.5로 설정해둬서 0.66f를 곱해줌
                     break;
                 }
             case SkillName.Judgement:
                 {
+                    bool hit = false;
                     foreach (var target in GetJudgetTarget())
                     {
                         target.GetComponent<Enemy>().JudgementHit();
+                        hit = true;
                     }
+                    if (hit) soundmgr.SFXPlay(SFXName.Player_Judgement, transform.position);
                     yield return new WaitForSeconds(cur.animationLength * 0.66f); // 애니메이션의 속도를 1.5로 설정해둬서 0.66f를 곱해줌
                     break;
                 }

@@ -57,7 +57,6 @@ public class Boss : Enemy
     }
     protected override void UpdateState()
     {
-        Debug.Log(curState);
         switch (curState)
         {
             case State.Init:
@@ -89,22 +88,24 @@ public class Boss : Enemy
 
     IEnumerator CoSetTarget() // temp
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
         SetTarget();
     }
     protected override IEnumerator CoStateIdle()
     {
-        
-        while (isStun == false && curState == State.Idle)
+        while (curState == State.Idle)
         {
-            Debug.Log("IDLE");
-            nextMove = target.position.x - rigid.position.x > 0 ? 1 : -1;
-            if (target != null)
+            if (isStun) yield return thinkTime;
+            else
             {
-                SetState(State.Chase);
-                yield break;
+                nextMove = target.position.x - rigid.position.x > 0 ? 1 : -1;
+                if (target != null)
+                {
+                    SetState(State.Chase);
+                    yield break;
+                }
+                yield return thinkTime;
             }
-            yield return thinkTime;
         }
         yield break;
     }
@@ -148,7 +149,11 @@ public class Boss : Enemy
                 roarRange.SetActive(true);
                 yield return attackDelay;
                 isSpell = false;
-                if (isStun) yield break;
+                if (isStun)
+                {
+
+                    yield break;
+                }
                 SetState(State.Idle);
                 break;
             case BossSpell.JumpAttack:
@@ -187,9 +192,8 @@ public class Boss : Enemy
     }
     protected override IEnumerator CoStateStun()
     {
-        Debug.Log("StateStun");
         if (isStun) yield break;
-        Debug.Log("StateStun2");
+        roarRange.SetActive(false);
         isStun = true;
         isAttack = false;
         isSpell = false;
@@ -200,7 +204,6 @@ public class Boss : Enemy
         isStun = false;
         enemyStatus.ResetPoise();
         anim.SetBool("isStun", isStun);
-        Debug.Log("StateStun3");
         SetState(State.Idle);
     }
     protected override IEnumerator CoStateDead()
@@ -242,11 +245,13 @@ public class Boss : Enemy
     }
     public override void BeginAttack()
     {
+        SoundManager.Instance.SFXPlay(SFXName.GoblinHero_Attack, transform.position);
         if (attackTarget != null)
             attackTarget.GetComponent<Player>().Hit(enemyStatus);
     }
     public void Roar()
     {
+        SoundManager.Instance.SFXPlay(SFXName.GoblinHero_Roar, transform.position);
         float distance = Vector2.Distance(target.position, rigid.position);
         roarRange.SetActive(false);
         if (distance < 5f)
@@ -263,18 +268,19 @@ public class Boss : Enemy
         eft.transform.position = transform.position;
         eft.transform.localScale = transform.localScale;
         rigid.AddForce(Vector2.up * 5f, ForceMode2D.Impulse);
-
+        SoundManager.Instance.SFXPlay(SFXName.GoblinHero_Jump, transform.position);
     }
     public void Landing()
     {
-        rigid.MovePosition(new Vector2(jumpAttackPos.x,-0.2f));
+        rigid.MovePosition(new Vector2(jumpAttackPos.x, -0.2f));
+        SoundManager.Instance.SFXPlay(SFXName.GoblinHero_Landing, transform.position);
         rigid.velocity = Vector2.zero;
         GameObject eft = PoolManager.Instance.GetEnemySkill(1);
         eft.transform.position = new Vector2(jumpAttackPos.x, -0.5f);
         eft.transform.localScale = transform.localScale;
         rigid.gravityScale = 2f;
         float distance = Mathf.Abs(target.position.x - rigid.position.x);
-        if(distance <= 1.5f)
+        if (distance <= 1.5f)
         {
             target.GetComponent<Player>().Hit(enemyStatus, BossSpell.JumpAttack);
         }

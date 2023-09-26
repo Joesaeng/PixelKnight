@@ -312,6 +312,7 @@ public class Enemy : MonoBehaviour
             SetTarget();
             if (enemyStatus.CalculatedHit(player.playerStatus, collision.GetComponentInParent<SkillEffect>().data))
             {
+                SoundManager.Instance.SFXPlay(SFXName.Enemy_Hit, transform.position);
             }
         }
     }
@@ -322,7 +323,7 @@ public class Enemy : MonoBehaviour
         SetTarget();
         if (enemyStatus.CalculatedHit(playerstatus))
         {
-            enemyStatus.ModifyPoise(playerstatus.dPlayerFixedStatus[FixedStatusName.Stagger]);
+            SoundManager.Instance.SFXPlay(SFXName.Enemy_Hit, transform.position);
         }
 
     }
@@ -333,6 +334,7 @@ public class Enemy : MonoBehaviour
         SetTarget();
         if (enemyStatus.CalculatedHit(player.playerStatus, DataManager.Instance.GetSkillData((int)SkillName.Judgement)))
         {
+            SoundManager.Instance.SFXPlay(SFXName.Enemy_Hit, transform.position);
         }
     }
 
@@ -369,6 +371,7 @@ public class Enemy : MonoBehaviour
                     bullet.transform.SetLocalPositionAndRotation(transform.position, Quaternion.FromToRotation(Vector3.up, dir));
                     // 생성된 Bullet 오브젝트에 현재 Enemy의 스테이터스 정보를 전달합니다.
                     bullet.GetComponent<Bullet>().Init(dir, enemyStatus, bulletName);
+                    SoundManager.Instance.SFXPlay(SFXName.GoblinAx_Throw, transform.position);
                 }
                 break;
         }

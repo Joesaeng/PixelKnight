@@ -8,8 +8,8 @@ public class Bullet : MonoBehaviour
     Rigidbody2D rigid;
     SpriteRenderer spriteR;
     BulletData bulletData;
-    float time;
     float speed;
+    WaitForSeconds durTime;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -23,16 +23,18 @@ public class Bullet : MonoBehaviour
     {
         SetBulletData(bulletName);
         enemyStatus = _enemyStatus;
-        time = bulletData.durTime;
+        durTime = new WaitForSeconds(bulletData.durTime);
         speed = bulletData.speed;
         spriteR.flipX = dir.x < 0 ? true : false;
         rigid.velocity = dir * speed;
+        StartCoroutine(CoBulletReturn());
     }
-    private void Update()
+
+    IEnumerator CoBulletReturn()
     {
-        time -= Time.deltaTime;
-        if (time < 0)
-            gameObject.SetActive(false);
+        yield return durTime;
+        gameObject.SetActive(false);
+
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -40,6 +42,7 @@ public class Bullet : MonoBehaviour
         {
             Player player = collision.GetComponentInParent<Player>();
             player.Hit(enemyStatus);
+            StopCoroutine(CoBulletReturn());
             gameObject.SetActive(false);
         }
     }
