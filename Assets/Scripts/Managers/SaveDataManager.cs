@@ -25,6 +25,8 @@ public class SaveData
     public int AddedLuk;
 
     public float curHp;
+    public float curStamina;
+    public float curPoise;
     public List<bool> activatedSkills = new();
     public List<int> curUsedSkills = new();
     public List<Equip> curEquips = new();
@@ -100,12 +102,12 @@ public class SaveDataManager : Singleton<SaveDataManager>
             {
                 saveData.inventoryEquips.Add(equip);
             }
-            else if(items[i] is Consumable consumable)
+            else if(items[i] is Consumable consumable)  // i 번째 아이템이 소모품(개수가 있는 아이템) 일때
             {
                 SaveCountItem count = new SaveCountItem(items[i],Inventory.Instance.CountItemSave(items[i]));
-                saveData.countItem.Add(count);                  // 고로 countItem의 인덱스 번호와
-                saveData.inventoryConsumables.Add(consumable);  // inventoryConsumables의 인덱스가
-            }                                                   // 가지고있는데 Item은 같다.
+                saveData.countItem.Add(count);                  // SaveCountItem 클래스에 현재 아이템과, 개수를 저장한다
+                saveData.inventoryConsumables.Add(consumable);  // items[i]와 consumable은 동일 객체
+            }                                                   // items[i]의 정보와 개수를 알고있으니 로드가가능하다.
         }
     }
 }

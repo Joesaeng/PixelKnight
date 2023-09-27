@@ -101,7 +101,8 @@ public class UI_SelectItemDesc : MonoBehaviour
         {
             useButton.gameObject.SetActive(false);
             baseOptionName = consumable.consumableType.ToString();
-            baseOptionValue = ((int)consumable.value).ToString();
+            baseOptionValue = ((int)consumable.value + 
+                                (int)GameManager.Instance.playerStatus.dPlayerFixedStatus[FixedStatusName.HpPotionIncrease]).ToString();
             itemBaseOption.text = string.Format(baseOptionName + " " + baseOptionValue);
         }
     }

@@ -60,7 +60,10 @@ public class GameManager : Singleton<GameManager>
     public void NewGame()
     {
         firstScene = false;
-        LoadingSceneController.LoadScene("SelectCharacter", false);
+        //LoadingSceneController.LoadScene("SelectCharacter", false);
+        selectPlayerData = DataManager.Instance.playerDatas[0];
+        SaveDataManager.Instance.saveData.charId = 0;
+        LoadingSceneController.LoadScene("Dev", true);
     }
     public void LoadGame(int charId)
     {

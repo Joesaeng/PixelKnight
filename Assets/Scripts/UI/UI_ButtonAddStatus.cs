@@ -14,7 +14,7 @@ public class UI_ButtonAddStatus : MonoBehaviour, IPointerUpHandler
     {
         PlayerStatus playerStatus = GameManager.Instance.player.playerStatus;
         if (playerStatus.remainingPoint < 1) return;
-        playerStatus.ModifyAttribute(index, 1);
-        playerStatus.ModifyRemainingPoint(-1);
+        playerStatus.AddAttribute(index, 1);
+        playerStatus.ModifyRemainingPoint(1,false);
     }
 }

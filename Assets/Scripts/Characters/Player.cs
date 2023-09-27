@@ -261,7 +261,7 @@ public class Player : MonoBehaviour
         Jump(); // 점프 처리
         if(rigid.velocity.y <= -50f && !IsDead)
         {
-            playerStatus.ModifyHp(-10000000f);
+            playerStatus.ModifyHp(10000000f,false);
         }
     }
 

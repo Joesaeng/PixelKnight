@@ -30,6 +30,7 @@ public enum FixedStatusName
     HpRegen,
     StaminaRegen,
     PoiseRegen,
+    HpPotionIncrease,
 }
 public enum DynamicStatusName
 {
@@ -56,14 +57,14 @@ public class PlayerStatus : MonoBehaviour
     public event StatsCalculatedDelegate OnStatsCalculated;
 
     #region Player Attribute Allocation
-    public Dictionary<PlayerAttribute, int> dPlayerAttribute;
-    public Dictionary<PlayerAttribute, int> dAddedAttribute;
+    public Dictionary<PlayerAttribute, int> dPlayerAttribute;   // 현재 플레이어의 애트리뷰트 값
+    public Dictionary<PlayerAttribute, int> dAddedAttribute;    // 레벨업시 얻는 스테이터스로 추가된 애트리뷰트 값
     #endregion
 
     #region Player Status
     private PlayerData initialPlayerData;
-    public Dictionary<FixedStatusName, float> dPlayerFixedStatus;
-    public Dictionary<DynamicStatusName, float> dPlayerDynamicStatus;
+    public Dictionary<FixedStatusName, float> dPlayerFixedStatus;       // 애트리뷰트와 장비 등이 계산된 최종 상태값
+    public Dictionary<DynamicStatusName, float> dPlayerDynamicStatus;   // hp,stamina 등 동적 상태값
     public float minAttackSpeed;
     public float maxAttackSpeed;
 
@@ -159,6 +160,8 @@ public class PlayerStatus : MonoBehaviour
         saveData.AddedLuk = dAddedAttribute[PlayerAttribute.Luck];
 
         saveData.curHp = dPlayerDynamicStatus[DynamicStatusName.CurHp];
+        saveData.curStamina = dPlayerDynamicStatus[DynamicStatusName.CurStamina];
+        saveData.curPoise = dPlayerDynamicStatus[DynamicStatusName.CurPoise];
 
         return saveData;
     }
@@ -201,14 +204,23 @@ public class PlayerStatus : MonoBehaviour
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp];
         else
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = loadData.curHp;
-        dPlayerDynamicStatus[DynamicStatusName.CurStamina] = dPlayerFixedStatus[FixedStatusName.MaxStamina];
-        dPlayerDynamicStatus[DynamicStatusName.CurPoise] = dPlayerFixedStatus[FixedStatusName.Poise];
+
+        if (dPlayerDynamicStatus[DynamicStatusName.CurStamina] <= 0f)
+            dPlayerDynamicStatus[DynamicStatusName.CurStamina] = dPlayerFixedStatus[FixedStatusName.MaxStamina];
+        else
+            dPlayerDynamicStatus[DynamicStatusName.CurStamina] = loadData.curStamina;
+
+        if (dPlayerDynamicStatus[DynamicStatusName.CurPoise] <= 0f)
+            dPlayerDynamicStatus[DynamicStatusName.CurPoise] = dPlayerFixedStatus[FixedStatusName.Poise];
+        else
+            dPlayerDynamicStatus[DynamicStatusName.CurPoise] = loadData.curPoise;
+
         DeleteOverStatus();
     }
     public void ResetStatus()
     {
         ResetAddedAttribute();
-        ModifyRemainingPoint(addedPoint);
+        ModifyRemainingPoint(addedPoint,true);
         addedPoint = 0;
         UpdateStatus();
     }
@@ -267,6 +279,7 @@ public class PlayerStatus : MonoBehaviour
         dPlayerFixedStatus[FixedStatusName.AttackSpeed] += minAttackSpeed;
         dPlayerFixedStatus[FixedStatusName.MoveSpeed] += minMoveSpeed;
         dPlayerFixedStatus[FixedStatusName.CriticalChance] += dPlayerAttribute[PlayerAttribute.Luck] * 0.01f;
+        dPlayerFixedStatus[FixedStatusName.HpPotionIncrease] += dPlayerAttribute[PlayerAttribute.Vitality] * 2f;
         if (dPlayerFixedStatus[FixedStatusName.CriticalChance] >= maxCriticalChance)
             dPlayerFixedStatus[FixedStatusName.CriticalChance] = maxCriticalChance;
         else if (dPlayerFixedStatus[FixedStatusName.CriticalChance] <= minCriticalChance)
@@ -369,7 +382,7 @@ public class PlayerStatus : MonoBehaviour
     {
 
     }
-    private void DeleteOverStatus()
+    private void DeleteOverStatus() // DynamicStatus가 변경될 때, 최대값을 넘어가는것을 방지합니다.
     {
         if (dPlayerDynamicStatus[DynamicStatusName.CurHp] > dPlayerFixedStatus[FixedStatusName.MaxHp])
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp];
@@ -396,24 +409,29 @@ public class PlayerStatus : MonoBehaviour
         if (dPlayerDynamicStatus[DynamicStatusName.CurHp] + dPlayerFixedStatus[FixedStatusName.HpRegen] // 이번에 코루틴에 회복하는 Hp가 MaxHp를 넘어설 경우
             >= dPlayerFixedStatus[FixedStatusName.MaxHp])
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp]; // 현재 HP를 MaxHp로
-        else ModifyHp(dPlayerFixedStatus[FixedStatusName.HpRegen]);
+        else ModifyHp(dPlayerFixedStatus[FixedStatusName.HpRegen], true);
     }
     #endregion
-    public void ModifyAttribute(PlayerAttribute key, int value)
+    public void AddAttribute(PlayerAttribute key, int value)
     {
         dAddedAttribute[key] += value;
         addedPoint += value;
         UpdateStatus();
     }
     #region Dynanimc 스테이터스들 수정 메서드
-    public void ModifyHp(float value)
+    public void ModifyHp(float value, bool isAdd)
     {
-        dPlayerDynamicStatus[DynamicStatusName.CurHp] += value;
+        if(isAdd)
+            dPlayerDynamicStatus[DynamicStatusName.CurHp] += value;
+        else
+            dPlayerDynamicStatus[DynamicStatusName.CurHp] -= value;
+
         if (dPlayerDynamicStatus[DynamicStatusName.CurHp] <= 0f)
         {
             OnPlayerDead?.Invoke();
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = 0f;
         }
+
         if (dPlayerDynamicStatus[DynamicStatusName.CurHp] > dPlayerFixedStatus[FixedStatusName.MaxHp])
         {
             dPlayerDynamicStatus[DynamicStatusName.CurHp] = dPlayerFixedStatus[FixedStatusName.MaxHp];
@@ -432,6 +450,7 @@ public class PlayerStatus : MonoBehaviour
             dPlayerDynamicStatus[DynamicStatusName.CurPoise] += value;
         else
             dPlayerDynamicStatus[DynamicStatusName.CurPoise] -= value;
+
         if (dPlayerDynamicStatus[DynamicStatusName.CurPoise] <= 0f)
         {
             OnPlayerHit?.Invoke();
@@ -456,7 +475,7 @@ public class PlayerStatus : MonoBehaviour
     private void LevelUp()
     {
         playerLv += 1;
-        ModifyRemainingPoint(5);
+        ModifyRemainingPoint(5, true);
         OnLevelUp?.Invoke();
         if(dPlayerDynamicStatus[DynamicStatusName.CurExp] >= expRequirement)
         {
@@ -465,26 +484,30 @@ public class PlayerStatus : MonoBehaviour
             LevelUp();
         }
     }
-    public void ModifyRemainingPoint(int value)
+    public void ModifyRemainingPoint(int value, bool isAdd)
     {
-        remainingPoint += value;
+        if (isAdd)
+            remainingPoint += value;
+        else
+            remainingPoint -= value;
+
         OnUpdateRemaingPoint?.Invoke();
     }
     public void TakeDamage(float damage, float stagger)
     {
         if (dPlayerFixedStatus[FixedStatusName.Defence] < damage)
         {
-            ModifyHp(dPlayerFixedStatus[FixedStatusName.Defence] - damage);
+            ModifyHp(dPlayerFixedStatus[FixedStatusName.Defence] - damage, false);
         }
         else
         {
-            ModifyHp(-1f);
+            ModifyHp(1f, false);
         }
         ModifyPoise(stagger,false);
     }
     public void HpRecovery(float value)
     {
-        ModifyHp(value);
+        ModifyHp(value + dPlayerFixedStatus[FixedStatusName.HpPotionIncrease], true);
     }
     public bool CalculatedHit(float hitrate,float damage, float stagger) // 피격 계산
     {
