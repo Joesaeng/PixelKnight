@@ -52,11 +52,15 @@ public class UI_SelectItemDesc : MonoBehaviour
             Destroy(text.gameObject);
         }
         itemAddtionalOption.Clear();
-
         selectItemPanel.SetActive(true);
         slotNum = _slotNum;
 
-        item = Inventory.Instance.items[slotNum];
+        item = Inventory.Instance.GetItem(slotNum);
+        if(item == null)
+        {
+            selectItemPanel.SetActive(false);
+            return;
+        }
         itemIcon.sprite = item.itemImage;
 
         Color nameColor = new Color();

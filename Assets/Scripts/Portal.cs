@@ -6,13 +6,11 @@ public class Portal : MonoBehaviour
 {
     public int portalID;
     public string nextSceneName;
-    Animator animator;
 
     private bool isUseable;
     private void Awake()
     {
         isUseable = false;
-        animator = GetComponent<Animator>();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -34,20 +32,10 @@ public class Portal : MonoBehaviour
     }
     private void Update()
     {
-        float distance = Vector2.Distance(transform.position, GameManager.Instance.player.transform.position);
-        if(distance <= 1.5f)
-        {
-            animator.SetBool("isOn", true);
-        }
-        else
-        {
-            animator.SetBool("isOn", false);
-        }
         if (isUseable && Input.GetKey(KeySetting.keys[KeyAction.Interaction]))
         {
             PortalManager.Instance.SetCurUsePortalID(portalID);
             GameManager.Instance.GameSaveForSceneChange();
-            SoundManager.Instance.SFXPlay(SFXName.Door, transform.position);
             FakeLoading.instance.StartFakeLoding(0.3f, nextSceneName, true);
         }
     }

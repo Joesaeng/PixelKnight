@@ -80,7 +80,7 @@ public class SaveDataManager : Singleton<SaveDataManager>
     public void SaveToJson()
     {
         File.WriteAllText(path + nowSlot.ToString(), JsonUtility.ToJson(saveData));
-        FindAnyObjectByType<UI_CenterPopupText>()?.SetPopupText
+        UI_CenterPopupText.instance.SetPopupText
                 ("저장이 완료되었습니다.");
     }
     public void LoadFromJson()

@@ -655,6 +655,7 @@ Transform:
   - {fileID: 1368111576}
   - {fileID: 1719737512}
   - {fileID: 473021038}
+  - {fileID: 1799213896}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -702,8 +703,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c15273af292a454da27cd7f4e2a3b44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  connectedPortalID: 01000000000000000300000002000000
+  connectedPortalID: 010000000000000003000000020000000500000004000000
   curUsePortalID: 0
+--- !u!1 &1799213895
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1799213896}
+  - component: {fileID: 1799213897}
+  m_Layer: 0
+  m_Name: QuestManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1799213896
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1799213895}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1678958527}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1799213897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1799213895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a0e488f85c90334485f2e27e5986d61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  questDatas:
+  - {fileID: 11400000, guid: cc3c3967babfd6847b838c95712a4c8c, type: 2}
+  - {fileID: 11400000, guid: 8163c9a3032375546aaca3d592127703, type: 2}
+  - {fileID: 11400000, guid: 5b4bd789405d3d74aa451507ffdf7ac7, type: 2}
+  curQuestData: {fileID: 0}
+  curQuestIndex: 0
+  curQuestCount: 0
 --- !u!1 &1879971221
 GameObject:
   m_ObjectHideFlags: 0

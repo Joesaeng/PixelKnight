@@ -20,7 +20,7 @@ MonoBehaviour:
   attackRange: 2.5
   bulletName: 1
   attackDelay: 2.2
-  maxHp: 30000
+  maxHp: 3000
   maxPoise: 250
   damage: 120
   defence: 25

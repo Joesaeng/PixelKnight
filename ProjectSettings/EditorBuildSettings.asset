@@ -27,6 +27,9 @@ EditorBuildSettings:
     path: Assets/Scenes/BossScene.unity
     guid: c61f715482d63984b83d0a666b25cbdc
   - enabled: 1
+    path: Assets/Scenes/Town.unity
+    guid: 7ce39aee6a3682a45ab32db04f135f37
+  - enabled: 1
     path: Assets/Scenes/UI_SceneAdditiveOnly.unity
     guid: 7dc4bb5e78a8a504cb70e0d82951f9e5
   m_configObjects:

@@ -211,6 +211,7 @@ public class Boss : Enemy
         Spawner.instance.ItemSpawn(transform.position);
         anim.SetTrigger("Death");
         anim.SetBool("isDead", IsDead());
+        QuestManager.Instance.KillEnemy(enemyStatus.enemyID);
         yield return new WaitForSeconds(2.5f);
         gameObject.SetActive(false);
     }

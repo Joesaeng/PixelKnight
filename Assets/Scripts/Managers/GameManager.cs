@@ -63,7 +63,8 @@ public class GameManager : Singleton<GameManager>
         //LoadingSceneController.LoadScene("SelectCharacter", false);
         selectPlayerData = DataManager.Instance.playerDatas[0];
         SaveDataManager.Instance.saveData.charId = 0;
-        LoadingSceneController.LoadScene("Dev", true);
+        LoadingSceneController.LoadScene("Town", true);
+        
     }
     public void LoadGame(int charId)
     {
@@ -86,6 +87,9 @@ public class GameManager : Singleton<GameManager>
         LoadPlayTime();
         player.playerStatus.OnPlayerDead += PlayerDead;
         curScene = curSceneName;
+
+        ModifyGold(20000, true);
+
         if (firstScene)
         {
             firstScene = false;

@@ -235,9 +235,10 @@ public class Enemy : MonoBehaviour
             Debug.LogError("SpawnPointNull");
             yield break;
         }
-        GetComponentInParent<SpawnPoint>()?.EnemyDead();
+        GetComponentInParent<SpawnPoint>().EnemyDead();
         anim.SetBool("isDead", IsDead());
         transform.SetParent(PoolManager.Instance.transform);
+        QuestManager.Instance.KillEnemy(enemyStatus.enemyID);
         yield return new WaitForSeconds(2.5f);
         gameObject.SetActive(false);
     }

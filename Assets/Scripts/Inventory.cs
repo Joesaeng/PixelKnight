@@ -67,6 +67,12 @@ public class Inventory : MonoBehaviour
     {
         return items;
     }
+    public Item GetItem(int index)
+    {
+        if (items.Count < index)
+            return null;
+        return items[index];
+    }
     public int CountItemSave(Item item)
     {
         if (countItems.ContainsKey(item))

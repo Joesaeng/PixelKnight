@@ -38,7 +38,7 @@ public class Spawner : MonoBehaviour
     }
     public void ItemSpawn(Vector2 pos)
     {
-        //if(UnityEngine.Random.value <= 0.5f)
+        if(UnityEngine.Random.value <= 0.3f)
         {
             GameObject obj;
             int randomIndex = UnityEngine.Random.Range(0, ItemDataBase.Instance.itemDB.Count);
