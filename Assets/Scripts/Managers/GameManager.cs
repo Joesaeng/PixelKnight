@@ -88,8 +88,6 @@ public class GameManager : Singleton<GameManager>
         player.playerStatus.OnPlayerDead += PlayerDead;
         curScene = curSceneName;
 
-        ModifyGold(20000, true);
-
         if (firstScene)
         {
             firstScene = false;
@@ -104,6 +102,7 @@ public class GameManager : Singleton<GameManager>
         playerStatus.equipment.LoadEquip();
         SkillManager.Instance.LoadSkillData();
         playerStatus.LoadDynamincStatus();
+        QuestManager.Instance.LoadQuest();
     }
     public void ModifyGold(int value, bool isAdd)
     {

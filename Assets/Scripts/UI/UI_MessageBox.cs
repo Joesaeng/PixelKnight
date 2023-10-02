@@ -10,6 +10,8 @@ public class UI_MessageBox : MonoBehaviour
     GameObject messageBox;
     [SerializeField]
     Text boxText;
+    [SerializeField]
+    Text pressInteractionKeyText;
     public List<string> messages;
 
     int messageIndex;
@@ -36,6 +38,7 @@ public class UI_MessageBox : MonoBehaviour
     public void SetText(string text)
     {
         messageBox.SetActive(true);
+        pressInteractionKeyText.text = "PREES " + KeySetting.keys[KeyAction.Interaction].ToString() + " KEY";
         if (isTyping) return;
         targetText = text;
         StartCoroutine(CoTypeText());

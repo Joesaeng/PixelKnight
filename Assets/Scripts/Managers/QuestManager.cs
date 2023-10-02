@@ -16,6 +16,24 @@ public class QuestManager : Singleton<QuestManager>
         curQuestCount = 0;
         curQuestIndex = -1;
     }
+    public void SaveQuest(ref int index, ref int count)
+    {
+        index = curQuestIndex;
+        count = curQuestCount;
+    }
+    public void LoadQuest()
+    {
+        SaveData loadData = SaveDataManager.Instance.saveData;
+        curQuestIndex = loadData.curQuestIndex;
+        if (curQuestIndex < 0)
+        {
+            curQuestData = null;
+            return;
+        }
+        curQuestData = questDatas[curQuestIndex];
+        curQuestCount = loadData.curQuestCount;
+        //onQuestUpdate.Invoke();
+    }
     public List<string> GetMessages(int index)
     {
         return questDatas[index].conversation;

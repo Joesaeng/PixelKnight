@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class UI_Shop : MonoBehaviour
 {
-    private void Start()
-    {
-        gameObject.SetActive(false);
-    }
     private void Update()
     {
         if (gameObject.activeSelf == true && Input.GetKeyDown(KeyCode.Escape))

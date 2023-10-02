@@ -5343,7 +5343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94e0d955bf844b14abb8ee3ef4cacbc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curSceneName: Dev
+  curSceneName: Town
   playerPrefab: {fileID: 3497617318878869567, guid: bb597593267c3a94c8529acb11e84dd2, type: 3}
   virtualCam: {fileID: 874378296}
   startPos: {fileID: 499697224}

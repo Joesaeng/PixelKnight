@@ -6,17 +6,18 @@ public class SaveData
 {
     public string name;
     public string curSceneName;
-    public int level;
     public int charId;
     public int hour = 0;
     public int minute = 0;
     public float second = 0f;
+    public Vector2 playerCurPos = new();
+
+    public int level;
     public float curExp;
     public float expReq = 50f;
     public int remainingPoint;
     public int addedPoint;
     public int curGold;
-    public Vector2 playerCurPos = new();
 
     public int AddedVit;
     public int AddedEnd;
@@ -34,6 +35,9 @@ public class SaveData
     public List<Consumable> inventoryConsumables = new();
     public List<Equip> inventoryEquips = new();
     public List<SaveCountItem> countItem = new();
+
+    public int curQuestIndex = -1;
+    public int curQuestCount = 0;
 }
 [System.Serializable]
 public class SaveCountItem
@@ -76,6 +80,7 @@ public class SaveDataManager : Singleton<SaveDataManager>
         saveData.minute = GameManager.Instance.GetPlayTime().minute;
         saveData.second = GameManager.Instance.GetPlayTime().second;
         saveData.curSceneName = GameManager.Instance.curScene.ToString();
+        QuestManager.Instance.SaveQuest(ref saveData.curQuestIndex,ref saveData.curQuestCount);
     }
     public void SaveToJson()
     {
